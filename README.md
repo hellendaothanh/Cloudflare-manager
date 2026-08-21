@@ -22,12 +22,19 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 
 ## 🌟 Danh sách Tính năng Đã triển khai
 
-### 1. Quản lý Zone & Tác vụ Khẩn cấp (Zones & Quick Actions)
+### 1. Quản lý Zone & Trung tâm Xóa Cache Chi tiết (Zones & Granular Purge Center)
 - Danh sách vùng (Zones), trạng thái kích hoạt, tên miền, nameservers và plan.
-- **Tác vụ phản ứng nhanh (Quick Actions)**:
-  - Xóa bộ nhớ đệm khẩn cấp (**Purge Cache Everything** hoặc theo danh sách URL cụ thể).
-  - Bật/tắt **Development Mode** (bỏ qua cache trong 3 giờ).
-  - Kích hoạt chế độ **I'm Under Attack!** (chống DDoS khẩn cấp bằng JS Challenge).
+- **Trung tâm Xóa Cache Chi tiết (Granular Purge Center)**:
+  - **Theo URLs / Files cụ thể**: Nhập danh sách URL tĩnh cần xóa (hỗ trợ tối đa 30 URLs mỗi lượt gửi).
+  - **Phím tắt 1-Click Presets**: Tự động điền nhanh các loại tài nguyên phổ biến (⚡ CSS & JS Bundles, 🖼️ Hình ảnh & Media, 🏠 Trang chủ & Apex Domain).
+  - **Theo Hostnames / Subdomains**: Xóa toàn bộ cache của các subdomain riêng biệt (ví dụ: `static.example.com`, `cdn.example.com`).
+  - **Theo Cache-Tags & Thư mục Prefixes**: Xóa theo header `Cache-Tag` hoặc đường dẫn tiền tố thư mục (`example.com/assets/`).
+  - **Xóa toàn bộ (Purge Everything)**: Xóa sạch toàn bộ cache cho toàn Zone kèm hộp thoại cảnh báo an toàn.
+  - **Nhật ký Lịch sử Xóa Cache (Purge Audit History)**: Theo dõi danh sách các lượt xóa cache gần nhất (thời gian, mục tiêu, số lượng, trạng thái).
+- **Bảng Xác nhận An toàn Development Mode (Dev Mode Safety Modal)**:
+  - Hộp thoại cảnh báo và xác nhận trước khi Bật/Tắt Development Mode nhằm chống thao tác nhầm.
+  - Nêu rõ cơ chế bypass Edge Cache trong 3 giờ và cảnh báo tải máy chủ gốc (Origin Load).
+- **Chế độ Bị tấn công (I'm Under Attack! Mode)**: Kích hoạt khẩn cấp JS Challenge cho 100% người dùng khi phát hiện DDoS Layer 7.
 
 ### 2. Quản trị DNS Nâng cao (DNS Records Manager)
 - CRUD đầy đủ các loại bản ghi: `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `SRV`, `CAA`, `PTR`.

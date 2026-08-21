@@ -22,12 +22,19 @@ The application includes built-in multilingual capabilities with fully synchroni
 
 ## 🌟 Implemented Features
 
-### 1. Zone Management & Emergency Operations (Zones & Quick Actions)
+### 1. Zone Hub & Granular Cache Purge Center (Zones & Purge Center)
 - Centralized overview of active zones, domains, status, nameservers, and subscription plans.
-- **Emergency Quick Actions**:
-  - Instant cache purging (**Purge Everything** or selective URL list).
-  - Toggle **Development Mode** (bypasses CDN cache for 3 hours).
-  - Activate **I'm Under Attack!** mode (emergency DDoS challenge for all inbound visitors).
+- **Granular Cache Purge Center**:
+  - **By Custom URLs / Files**: Invalidate specific static assets (up to 30 URLs per batch).
+  - **1-Click Asset Presets**: Instant prefill shortcuts for common asset types (⚡ CSS & JS Bundles, 🖼️ Images & Media, 🏠 Homepage & Apex Domain).
+  - **By Hostnames / Subdomains**: Invalidate all edge cache belonging to specific subdomains (e.g. `static.example.com`, `cdn.example.com`).
+  - **By Cache-Tags & URL Path Prefixes**: Invalidate cache based on origin `Cache-Tag` headers or path prefixes (`example.com/assets/`).
+  - **Purge Everything**: Complete zone edge cache flush equipped with critical safety warning dialog.
+  - **Purge Audit History Log**: Review recent purge executions with target counts, details, timestamps, and status.
+- **Development Mode Safety Confirmation Modal**:
+  - Safety modal preventing accidental toggles of Development Mode.
+  - Transparent notifications highlighting origin cache bypass, 3-hour auto-expiration, and origin server load considerations.
+- **I'm Under Attack! Emergency Mode**: Instant JS Challenge deployment for all inbound visitors during active Layer 7 DDoS incidents.
 
 ### 2. Advanced DNS Management (DNS Records Manager)
 - Full CRUD operations for DNS record types: `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `SRV`, `CAA`, `PTR`.
