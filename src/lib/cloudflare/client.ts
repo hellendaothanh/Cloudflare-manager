@@ -64,7 +64,7 @@ export class CloudflareClient {
     return this.request<any>(`/zones/${zoneId}`);
   }
 
-  async purgeCache(zoneId: string, options: { purge_everything?: boolean; files?: string[]; tags?: string[]; hosts?: string[] }): Promise<any> {
+  async purgeCache(zoneId: string, options: { purge_everything?: boolean; files?: Array<string | { url: string; headers?: Record<string, string> }>; tags?: string[]; hosts?: string[]; prefixes?: string[] }): Promise<any> {
     return this.request<any>(`/zones/${zoneId}/purge_cache`, {
       method: 'POST',
       body: JSON.stringify(options),
