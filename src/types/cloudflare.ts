@@ -12,6 +12,9 @@ export interface RolePermissions {
   canPurgeCache: boolean;
   canAutoFix: boolean;
   canManageAccounts: boolean;
+  canManageWorkers: boolean;
+  canManageRateLimit: boolean;
+  canManageZeroTrust: boolean;
 }
 
 export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
@@ -23,6 +26,9 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canPurgeCache: true,
     canAutoFix: true,
     canManageAccounts: true,
+    canManageWorkers: true,
+    canManageRateLimit: true,
+    canManageZeroTrust: true,
   },
   dns_operator: {
     canEditDns: true,
@@ -32,6 +38,9 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canPurgeCache: true,
     canAutoFix: false,
     canManageAccounts: false,
+    canManageWorkers: false,
+    canManageRateLimit: false,
+    canManageZeroTrust: false,
   },
   security_engineer: {
     canEditDns: false,
@@ -41,6 +50,9 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canPurgeCache: true,
     canAutoFix: true,
     canManageAccounts: false,
+    canManageWorkers: true,
+    canManageRateLimit: true,
+    canManageZeroTrust: true,
   },
   viewer: {
     canEditDns: false,
@@ -50,6 +62,9 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canPurgeCache: false,
     canAutoFix: false,
     canManageAccounts: false,
+    canManageWorkers: false,
+    canManageRateLimit: false,
+    canManageZeroTrust: false,
   },
 };
 
@@ -247,4 +262,153 @@ export interface ZoneConfigSnapshot {
   firewall_rules: FirewallRule[];
   ip_access_rules: IpAccessRule[];
   page_rules: PageRule[];
+}
+
+// --- Cloudflare Workers & Pages ---
+export interface WorkerSecret {
+  name: string;
+  type: 'secret_text' | 'plain_text';
+  hasValue?: boolean;
+}
+
+export interface WorkerDeployment {
+  id: string;
+  created_on: string;
+  author: string;
+  version: string;
+  source: string;
+  status: 'active' | 'superseded' | 'failed';
+}
+
+export interface WorkerScript {
+  id: string;
+  name: string;
+  created_on: string;
+  modified_on: string;
+  etag: string;
+  routes: string[];
+  usage_model: 'bundled' | 'unbound' | 'standard';
+  handlers: string[];
+  compatibility_date?: string;
+  secrets?: WorkerSecret[];
+  deployments?: WorkerDeployment[];
+  logTailSample?: Array<{
+    timestamp: string;
+    level: 'info' | 'warn' | 'error' | 'log';
+    message: string;
+    durationMs: number;
+    cpuTimeUs: number;
+    clientIp: string;
+    requestMethod: string;
+    requestUrl: string;
+    status: number;
+  }>;
+}
+
+export interface PagesProject {
+  id: string;
+  name: string;
+  subdomain: string;
+  production_branch: string;
+  created_on: string;
+  domains: string[];
+  latest_deployment?: {
+    id: string;
+    created_on: string;
+    status: 'success' | 'building' | 'failed';
+    environment: 'production' | 'preview';
+    short_id: string;
+    commit_hash?: string;
+    commit_message?: string;
+    url: string;
+  };
+}
+
+// --- Rate Limiting Rules & Analytics ---
+export interface RateLimitRule {
+  id: string;
+  disabled: boolean;
+  description: string;
+  match: {
+    request: {
+      url: string;
+      methods?: string[];
+      schemes?: string[];
+    };
+    response?: {
+      status?: number[];
+      origin_traffic?: boolean;
+      headers?: Record<string, string>;
+    };
+  };
+  threshold: number; // e.g. 100 requests
+  period: number; // in seconds, e.g. 60
+  action: {
+    mode: 'simulate' | 'ban' | 'challenge' | 'js_challenge' | 'managed_challenge';
+    timeout?: number; // timeout for ban mode in seconds
+    response?: {
+      content_type: string;
+      body: string;
+    };
+  };
+  bypass?: Array<{ name: string; value: string }>;
+  created_on?: string;
+}
+
+export interface RateLimitAnalytics {
+  breachesCount: number;
+  blockedRequestsCount: number;
+  challengedRequestsCount: number;
+  topTargetPaths: Array<{ path: string; count: number }>;
+  topViolatingIps: Array<{ ip: string; country: string; count: number }>;
+  timeseries: Array<{
+    timestamp: string;
+    breaches: number;
+    mitigated: number;
+  }>;
+}
+
+// --- Zero Trust Access & Cloudflare Tunnels ---
+export interface ZeroTrustAccessApp {
+  id: string;
+  name: string;
+  domain: string;
+  type: 'self_hosted' | 'saas' | 'bookmark';
+  session_duration: string;
+  aud: string;
+  created_at: string;
+  updated_at: string;
+  allowed_idps: string[];
+  policies_count: number;
+  policies?: Array<{
+    id: string;
+    name: string;
+    decision: 'allow' | 'deny' | 'bypass';
+    rules: {
+      include: Array<{ email?: string; email_domain?: string; ip?: string; group?: string }>;
+      require?: Array<{ email?: string; email_domain?: string }>;
+      exclude?: Array<{ email?: string }>;
+    };
+  }>;
+}
+
+export interface CloudflareTunnel {
+  id: string;
+  name: string;
+  status: 'healthy' | 'down' | 'inactive' | 'degraded';
+  created_at: string;
+  deleted_at?: string | null;
+  connections_count: number;
+  active_connectors: Array<{
+    id: string;
+    version: string;
+    arch: string;
+    origin_ip: string;
+    opened_at: string;
+  }>;
+  ingress_rules: Array<{
+    hostname: string;
+    service: string;
+    path?: string;
+  }>;
 }

@@ -11,10 +11,24 @@ import {
   BarChart3, 
   ActivitySquare,
   Sparkles,
-  GitBranch
+  GitBranch,
+  Cpu,
+  Shield,
+  Network
 } from 'lucide-react';
 
-export type NavTab = 'overview' | 'dns' | 'security' | 'ssl' | 'page-rules' | 'analytics' | 'audit' | 'compliance';
+export type NavTab = 
+  | 'overview' 
+  | 'dns' 
+  | 'security' 
+  | 'ratelimit'
+  | 'ssl' 
+  | 'page-rules' 
+  | 'workers'
+  | 'zerotrust'
+  | 'analytics' 
+  | 'audit' 
+  | 'compliance';
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -47,6 +61,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
       color: 'text-rose-400',
     },
     {
+      id: 'ratelimit' as NavTab,
+      label: t.sidebar.rateLimit.title,
+      subtitle: t.sidebar.rateLimit.subtitle,
+      icon: Shield,
+      color: 'text-red-400',
+      badge: 'L7',
+    },
+    {
       id: 'ssl' as NavTab,
       label: t.sidebar.ssl.title,
       subtitle: t.sidebar.ssl.subtitle,
@@ -59,6 +81,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
       subtitle: t.sidebar.pageRules.subtitle,
       icon: SlidersHorizontal,
       color: 'text-purple-400',
+    },
+    {
+      id: 'workers' as NavTab,
+      label: t.sidebar.workers.title,
+      subtitle: t.sidebar.workers.subtitle,
+      icon: Cpu,
+      color: 'text-orange-400',
+      badge: 'EDGE',
+    },
+    {
+      id: 'zerotrust' as NavTab,
+      label: t.sidebar.zeroTrust.title,
+      subtitle: t.sidebar.zeroTrust.subtitle,
+      icon: Network,
+      color: 'text-indigo-400',
+      badge: 'VPN-LESS',
     },
     {
       id: 'analytics' as NavTab,

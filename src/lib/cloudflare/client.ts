@@ -258,4 +258,80 @@ export class CloudflareClient {
       return null;
     }
   }
+
+  // --- Workers & Pages (Edge Compute) ---
+  async getWorkerScripts(accountId: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/accounts/${accountId}/workers/scripts`);
+    } catch {
+      return [];
+    }
+  }
+
+  async getWorkerScript(accountId: string, scriptName: string): Promise<any> {
+    return this.request<any>(`/accounts/${accountId}/workers/scripts/${scriptName}`);
+  }
+
+  async getWorkerDeployments(accountId: string, scriptName: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/accounts/${accountId}/workers/scripts/${scriptName}/deployments`);
+    } catch {
+      return [];
+    }
+  }
+
+  async getPagesProjects(accountId: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/accounts/${accountId}/pages/projects`);
+    } catch {
+      return [];
+    }
+  }
+
+  // --- Rate Limiting Rules ---
+  async getRateLimitRules(zoneId: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/zones/${zoneId}/rate_limits`);
+    } catch {
+      return [];
+    }
+  }
+
+  async createRateLimitRule(zoneId: string, rule: any): Promise<any> {
+    return this.request<any>(`/zones/${zoneId}/rate_limits`, {
+      method: 'POST',
+      body: JSON.stringify(rule),
+    });
+  }
+
+  async deleteRateLimitRule(zoneId: string, ruleId: string): Promise<any> {
+    return this.request<any>(`/zones/${zoneId}/rate_limits/${ruleId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // --- Zero Trust Access & Cloudflare Tunnels ---
+  async getAccessApps(accountId: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/accounts/${accountId}/access/apps`);
+    } catch {
+      return [];
+    }
+  }
+
+  async getAccessPolicies(accountId: string, appId: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/accounts/${accountId}/access/apps/${appId}/policies`);
+    } catch {
+      return [];
+    }
+  }
+
+  async getTunnels(accountId: string): Promise<any[]> {
+    try {
+      return await this.request<any[]>(`/accounts/${accountId}/cfd_tunnel?is_deleted=false`);
+    } catch {
+      return [];
+    }
+  }
 }

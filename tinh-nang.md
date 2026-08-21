@@ -1,9 +1,7 @@
-3. Nâng cấp WAF & Traffic Management
-Cloudflare Workers & Pages Integration: Quản lý deployment, theo dõi log và cấu hình biến môi trường cho Workers/Pages.
-
-Rate Limiting Rules & Rate Limit Analytics: Cấu hình quy tắc giới hạn tần suất truy cập chi tiết để chống Brute Force và Layer 7 DDoS.
-
-Zero Trust / Access Rules Management: Quản lý các chính sách Cloudflare Access và Tunnel (cloudflared) trực tiếp trên bảng điều khiển.
+3. Nâng cấp WAF & Traffic Management [HOÀN THÀNH]
+- [x] Cloudflare Workers & Pages Integration: Quản lý deployment, theo dõi log và cấu hình biến môi trường cho Workers/Pages.
+- [x] Rate Limiting Rules & Rate Limit Analytics: Cấu hình quy tắc giới hạn tần suất truy cập chi tiết để chống Brute Force và Layer 7 DDoS.
+- [x] Zero Trust / Access Rules Management: Quản lý các chính sách Cloudflare Access và Tunnel (cloudflared) trực tiếp trên bảng điều khiển.
 
 4. Nhật ký thao tác & Khôi phục (Audit Log & Rollback)
 System Audit Trail: Ghi lại lịch sử ai đã thực hiện thao tác gì trên giao diện (ví dụ: User A đã bật Dev Mode trên Domain X vào lúc Y).

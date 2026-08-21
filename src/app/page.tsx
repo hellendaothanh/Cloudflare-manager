@@ -8,6 +8,9 @@ import { DnsView } from '@/components/views/DnsView';
 import { SecurityView } from '@/components/views/SecurityView';
 import { SslView } from '@/components/views/SslView';
 import { PageRulesView } from '@/components/views/PageRulesView';
+import { WorkersView } from '@/components/views/WorkersView';
+import { RateLimitView } from '@/components/views/RateLimitView';
+import { ZeroTrustView } from '@/components/views/ZeroTrustView';
 import { AnalyticsView } from '@/components/views/AnalyticsView';
 import { AuditView } from '@/components/views/AuditView';
 import { ComplianceView } from '@/components/views/ComplianceView';
@@ -39,8 +42,11 @@ export default function DashboardPage() {
           {activeTab === 'overview' && <ZonesView />}
           {activeTab === 'dns' && <DnsView />}
           {activeTab === 'security' && <SecurityView />}
+          {activeTab === 'ratelimit' && <RateLimitView />}
           {activeTab === 'ssl' && <SslView />}
           {activeTab === 'page-rules' && <PageRulesView />}
+          {activeTab === 'workers' && <WorkersView />}
+          {activeTab === 'zerotrust' && <ZeroTrustView />}
           {activeTab === 'analytics' && <AnalyticsView />}
           {activeTab === 'audit' && <AuditView />}
           {activeTab === 'compliance' && <ComplianceView />}

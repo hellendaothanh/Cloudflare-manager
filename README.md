@@ -108,6 +108,37 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - **1-Click Download** file `main.tf` và `terraform.tfvars`.
   - Hướng dẫn triển khai từng bước (`terraform init` ➔ `terraform plan` ➔ `terraform apply`).
 
+### 12. Quản lý Cloudflare Workers & Pages (Edge Compute Hub)
+- **Workers Serverless Scripts**:
+  - Quản lý danh sách Worker Scripts, đường dẫn liên kết Routes (vd: `api.example.com/*`), Usage model (`standard` / `bundled`), và Compatibility Date.
+  - **Biến Môi Trường & Secrets**: Lưu trữ và quản lý Plaintext Variables cũng như Encrypted Secrets (`JWT_SECRET_KEY`, `UPSTREAM_GATEWAY_URL`).
+  - **Lịch sử Triển khai (Deployments Timeline)**: Theo dõi phiên bản deploy, commit author và nguồn deploy (GitHub Actions, Wrangler CLI).
+- **Giả lập Luồng Log Thời gian thực (Live Log Tail Simulator)**:
+  - Giám sát luồng log thực thi của Worker theo thời gian thực (HTTP Status, Execution Duration, CPU time, Client IP).
+- **Cloudflare Pages Fullstack Apps**:
+  - Quản trị dự án Pages, Production Branch, Custom Domains, và trạng thái build deployment mới nhất.
+
+### 13. Giới hạn Tần suất & Chống DDoS Layer 7 (Rate Limiting)
+- **Quản lý Quy tắc Rate Limiting**:
+  - Cấu hình ngưỡng Request (Threshold count) và chu kỳ thời gian (Period seconds: 10s, 60s, 10m, 1h).
+  - Hành động thực thi khi vượt ngưỡng: `Ban (Block HTTP 429 kèm thời gian Timeout)`, `Managed Challenge`, `JS Challenge`.
+- **1-Click DevSecOps Presets**:
+  - ⚡ *Anti-Brute-Force Login*: 10 req / 1m ➔ Ban 5m cho endpoint `/api/v1/auth/login`.
+  - 💳 *Payment Gateway Shield*: 15 req / 1m ➔ Managed Challenge cho `/api/v1/checkout/*`.
+  - 🛡️ *Anti-Scraping API*: 120 req / 1m ➔ JS Challenge cho `/api/v1/catalog/*`.
+- **Biểu đồ & Telemetry Vi phạm**:
+  - Thống kê tổng số lần vượt ngưỡng (Breaches), số request bị chặn (Blocked 429), và số request bị thử thách (Challenged).
+  - Top Endpoints bị tấn công nhiều nhất và Top IP vi phạm theo quốc gia.
+
+### 14. Zero Trust Access & Cloudflare Tunnels (cloudflared)
+- **Zero Trust Access Applications**:
+  - Bảo vệ các cổng nội bộ (Jira, Grafana, Admin Panel) bằng xác thực định danh (IdPs: Google Workspace, GitHub Enterprise SAML, Azure AD).
+  - Cấu hình Session Duration và chính sách Access Policies (cho phép theo Email, Domain `@company.com`, hoặc IP Whitelist).
+- **Cloudflare Tunnels Network (`cloudflared`)**:
+  - Kết nối trực tiếp máy chủ private / cụm Kubernetes ra Cloudflare Edge không cần mở Port Firewall hay Public IP.
+  - Giám sát trạng thái Tunnel (Healthy / Down), Active Edge Connectors, và Public Ingress Routing.
+  - **1-Click Launch Command**: Lệnh khởi chạy connector nhanh `cloudflared tunnel run --token <TOKEN>`.
+
 ---
 
 ## 🚀 Hướng dẫn Cài đặt & Khởi chạy
@@ -124,28 +155,38 @@ npm run dev
 Truy cập giao diện tại: [http://localhost:3000](http://localhost:3000)
 
 ### 3. Cấu hình API Token
-- Nhập API Token trực tiếp trong cửa sổ **"Cloudflare API Token"** trên giao diện web.
+- Nhập API Token trực tiếp trong cửa sổ **"Cloudflare API Token"** hoặc **"Quản lý Tài khoản"** trên thanh Navbar.
 - Hoặc cấu hình trong file `.env`:
 ```env
 CLOUDFLARE_API_TOKEN=your_cloudflare_api_token_here
 ```
 
-### 4. Quyền hạn API Token khuyến nghị:
-Khi tạo Token trên [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens), chọn **Create Custom Token** và cấp các quyền sau:
+### 4. Danh mục Quyền hạn API Token Yêu cầu (Cloudflare API Permissions Table):
+Khi tạo Token trên [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens), chọn **Create Custom Token** và cấp đầy đủ các quyền sau:
 
-| Quyền hạn (Permission) | Mức độ | Mục đích |
-| :--- | :--- | :--- |
-| `Zone - Zone` | **Read** | Đọc danh sách Zones và thông tin tài khoản |
-| `Zone - Zone Settings` | **Edit** | Quản lý SSL Mode, TLS 1.3, Always Use HTTPS, HSTS, Dev Mode |
-| `Zone - SSL and Certificates` | **Edit** | Đọc và cấu hình chứng chỉ Edge Certificates |
-| `Zone - DNS` | **Edit** | Thêm, sửa, xóa bản ghi DNS và đổi trạng thái Proxy |
-| `Zone - Firewall Services` | **Edit** | Quản lý Custom WAF Rules và IP Access Rules |
-| `Zone - Page Rules` | **Edit** | Quản lý Page Rules và URL Forwarding |
-| `Zone - Analytics` | **Read** | Xem số liệu telemetry lưu lượng và mối đe dọa |
+#### A. Quyền cấp độ Vùng (Zone-Level Permissions)
+| Quyền hạn (Permission) | Mức độ | Phân hệ ứng dụng | Mục đích |
+| :--- | :---: | :--- | :--- |
+| `Zone - Zone` | **Read** | Zones Overview | Đọc danh sách Zones, trạng thái kích hoạt, Plan |
+| `Zone - Zone Settings` | **Edit** | SSL / Overview | Quản lý SSL Mode, TLS 1.3, Always Use HTTPS, HSTS, Dev Mode, Under Attack |
+| `Zone - SSL and Certificates` | **Edit** | SSL Security | Quản lý chứng chỉ Edge Certificates và cấu hình mã hóa |
+| `Zone - DNS` | **Edit** | DNS Manager | Thêm, sửa, xóa bản ghi DNS (A, CNAME, MX, TXT...) và bật/tắt Proxy CDN |
+| `Zone - Firewall Services` | **Edit** | WAF & Rate Limiting | Quản lý Custom WAF Rules, IP Access Rules và Rate Limiting |
+| `Zone - Page Rules` | **Edit** | Page Rules | Quản lý quy tắc trang, URL Forwarding (301/302), Cache Overrides |
+| `Zone - Analytics` | **Read** | Analytics & Drift | Truy vấn số liệu lưu lượng, mối đe dọa GraphQL & REST API |
+
+#### B. Quyền cấp độ Tài khoản (Account-Level Permissions)
+| Quyền hạn (Permission) | Mức độ | Phân hệ ứng dụng | Mục đích |
+| :--- | :---: | :--- | :--- |
+| `Account - Workers Scripts` | **Edit** | Workers & Pages | Quản lý Serverless Worker scripts, route bindings, secrets |
+| `Account - Pages` | **Edit** | Workers & Pages | Quản lý dự án Cloudflare Pages và lịch sử deployment Git |
+| `Account - Access: Apps and Policies` | **Edit** | Zero Trust Access | Quản trị ứng dụng nội bộ, IdPs và chính sách Access Policies |
+| `Account - Cloudflare Tunnel` | **Edit** | Cloudflare Tunnels | Giám sát và quản trị kết nối Tunnels `cloudflared` |
+| `Account - Account Settings` | **Read** | Multi-Account | Đọc thông tin tổ chức và xác thực tài khoản |
 
 ---
 
 ## 🔒 Bảo mật Kiến trúc (DevSecOps Security Architecture)
 - Toàn bộ giao tiếp với Cloudflare API v4 được thực hiện tại **Server-Side Route Handlers (BFF Architecture)**.
-- API Token được bảo vệ an toàn trên backend, không bao giờ lộ ra client browser.
+- API Token được bảo vệ an toàn trên backend và lưu trữ client-side cách ly, không bao giờ bị rò rỉ.
 - Hỗ trợ chế độ **Sandbox Demo** để kiểm thử mọi tính năng mà không cần Token thật.

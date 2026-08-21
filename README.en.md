@@ -108,6 +108,37 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
   - **1-Click Download** `main.tf` and `terraform.tfvars`.
   - Step-by-step deployment guide (`terraform init` ➔ `terraform plan` ➔ `terraform apply`).
 
+### 12. Cloudflare Workers & Pages Hub (Edge Compute)
+- **Serverless Workers Scripts**:
+  - Manage worker scripts, bound HTTP routes (e.g. `api.example.com/*`), execution usage models (`standard` / `bundled`), and compatibility dates.
+  - **Environment Variables & Secrets**: Manage plaintext variables and encrypted secrets (`JWT_SECRET_KEY`, `UPSTREAM_GATEWAY_URL`).
+  - **Deployment History Timeline**: Track deployment versions, commit authors, and CI/CD sources.
+- **Real-Time Event Tail Simulator**:
+  - Live log streaming for edge executions (HTTP Status, CPU execution time, duration, client IP).
+- **Cloudflare Pages Fullstack Apps**:
+  - Manage Pages projects, production branches, custom domains, and latest build statuses.
+
+### 13. Rate Limiting & Layer 7 DDoS Shield
+- **Rate Limiting Policies**:
+  - Configure request threshold counts and evaluation time windows (10s, 60s, 10m, 1h).
+  - Enforcement actions: `Ban (Block HTTP 429 with custom timeout)`, `Managed Challenge`, `JS Challenge`.
+- **1-Click DevSecOps Presets**:
+  - ⚡ *Anti-Brute-Force Login*: 10 req / 1m ➔ Ban 5m on `/api/v1/auth/login`.
+  - 💳 *Payment Gateway Shield*: 15 req / 1m ➔ Managed Challenge on `/api/v1/checkout/*`.
+  - 🛡️ *Anti-Content Scraping*: 120 req / 1m ➔ JS Challenge on `/api/v1/catalog/*`.
+- **Breach Telemetry & Analytics**:
+  - Total threshold breaches, blocked requests (429), and challenged requests.
+  - Top attacked endpoint paths and top violating IPs by country.
+
+### 14. Zero Trust Access & Cloudflare Tunnels (cloudflared)
+- **Zero Trust Access Applications**:
+  - Secure internal portals (Jira, Grafana, Admin Panel) with identity-based SSO (Google Workspace, GitHub SAML, Azure AD).
+  - Configure session durations and access policies (allow by email, corporate domain `@company.com`, or IP range).
+- **Cloudflare Tunnels Network (`cloudflared`)**:
+  - Direct outbound-only tunnels connecting private servers and Kubernetes clusters without open inbound ports.
+  - Monitor tunnel health, active connectors, and public ingress routing.
+  - **1-Click Launch Command**: Quick connector launch script `cloudflared tunnel run --token <TOKEN>`.
+
 ---
 
 ## 🚀 Getting Started & Installation
@@ -124,24 +155,34 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 3. Configure API Token
-- Enter your Cloudflare API Token directly via the **"Cloudflare API Token"** modal in the top navigation.
+- Enter your Cloudflare API Token directly via the **"Cloudflare API Token"** or **"Account Manager"** modal in the top navigation bar.
 - Or specify it in your `.env` file:
 ```env
 CLOUDFLARE_API_TOKEN=your_cloudflare_api_token_here
 ```
 
-### 4. Recommended API Token Permissions
+### 4. Required Cloudflare API Token Permissions Table
 When creating an API Token at [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens), select **Create Custom Token** and grant the following permissions:
 
+#### A. Zone-Level Permissions
 | Permission Group | Permission Name | Access Level | Purpose |
-| :--- | :--- | :--- | :--- |
-| `Zone` | **Zone** | **Read** | View zones list and account metadata |
-| `Zone` | **Zone Settings** | **Edit** | Manage SSL Mode, TLS 1.3, Always Use HTTPS, HSTS, Dev Mode |
-| `Zone` | **SSL and Certificates** | **Edit** | Query and manage Edge certificates |
-| `Zone` | **DNS** | **Edit** | Create, update, delete DNS records and proxy states |
-| `Zone` | **Firewall Services** | **Edit** | Manage Custom WAF Rules and IP Access Rules |
-| `Zone` | **Page Rules** | **Edit** | Configure URL redirects and cache overrides |
-| `Zone` | **Analytics** | **Read** | Access traffic telemetry and threat data |
+| :--- | :--- | :---: | :--- |
+| `Zone` | `Zone` | **Read** | View zones list and account metadata |
+| `Zone` | `Zone Settings` | **Edit** | Manage SSL Mode, TLS 1.3, Always Use HTTPS, HSTS, Dev Mode, Under Attack |
+| `Zone` | `SSL and Certificates` | **Edit** | Query and manage Edge certificates |
+| `Zone` | `DNS` | **Edit** | Create, update, delete DNS records and proxy states |
+| `Zone` | `Firewall Services` | **Edit** | Manage Custom WAF Rules, IP Access Rules, and Rate Limiting |
+| `Zone` | `Page Rules` | **Edit** | Configure URL redirects (301/302) and cache overrides |
+| `Zone` | `Analytics` | **Read** | Access traffic telemetry and threat data |
+
+#### B. Account-Level Permissions
+| Permission Group | Permission Name | Access Level | Purpose |
+| :--- | :--- | :---: | :--- |
+| `Account` | `Workers Scripts` | **Edit** | Manage serverless worker scripts, route bindings, and secrets |
+| `Account` | `Pages` | **Edit** | Manage Cloudflare Pages projects and build deployments |
+| `Account` | `Access: Apps and Policies` | **Edit** | Manage Zero Trust Access applications, IdPs, and access policies |
+| `Account` | `Cloudflare Tunnel` | **Edit** | Monitor and manage `cloudflared` edge tunnels |
+| `Account` | `Account Settings` | **Read** | Read account metadata and organization name |
 
 ---
 
