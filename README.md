@@ -1,6 +1,6 @@
 # Cloudflare DevSecOps Management Platform 🛡️⚡
 
-[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-15%2F15%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-18%2F18%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/)
@@ -42,17 +42,23 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
   - Nêu rõ cơ chế bypass Edge Cache trong 3 giờ và cảnh báo tải máy chủ gốc (Origin Load).
 - **Chế độ Bị tấn công (I'm Under Attack! Mode)**: Kích hoạt khẩn cấp JS Challenge cho 100% người dùng khi phát hiện DDoS Layer 7.
 
-### 2. Quản trị DNS Nâng cao (DNS Records Manager)
+### 2. Quản trị DNS Nâng cao & Nút Làm mới Danh sách (DNS Records Manager & Refresh)
 - CRUD đầy đủ các loại bản ghi: `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `SRV`, `CAA`, `PTR`.
-- Bật/tắt **Cloudflare Proxy (Orange Cloud / CDN & WAF)** với 1 cú nhấp chuột.
+- **Nút Refresh List chủ động**: Cho phép tải lại danh sách bản ghi trực tiếp từ Cloudflare API mà không cần tải lại toàn bộ trang web.
+- **Modal Xác nhận Bật/Tắt Proxy (Orange Cloud / DNS Only)**: Cảnh báo chi tiết nguy cơ lộ Origin IP khi tắt Proxy hoặc giải thích lợi ích định tuyến Edge khi bật Proxy trước khi gửi lệnh.
+- **Modal Xác nhận Xóa DNS Record**: Hộp thoại an toàn cảnh báo rủi ro downtime dịch vụ trước khi xóa.
 - Xuất file cấu hình chuẩn **BIND Zone File (`.zone.txt`)**.
 
-### 3. Tường lửa & Bảo mật WAF (WAF & Firewall Shield)
+### 3. Tường lửa WAF, Giới hạn Tần suất & Xác nhận Thao tác (WAF & Rate Limiting Shield)
+- **Nút Refresh List**: Tải mới quy tắc WAF, IP Access List và Rate Limiting tức thì.
+- **Modal Xác nhận Xóa WAF / IP / RateLimit**: Ngăn chặn việc vô tình xóa bỏ các bộ lọc bảo vệ hệ thống.
+- **Modal Xác nhận Đổi Security Level**: Cảnh báo tác động đến trải nghiệm người dùng cuối khi chuyển đổi sang chế độ *Under Attack* hoặc *Essentially Off*.
 - Quản trị quy tắc tùy biến (**Custom Firewall Rules**) theo biểu thức `Wirefilter` (IP, URI, Headers, Threat Score).
 - **IP Access List**: Danh sách trắng (Whitelist) và danh sách chặn (Blocklist) cho IP đơn, dải CIDR, ASN, hoặc Quốc gia.
 - Cấu hình **Mức độ Bảo mật (Security Level)** và **Bot Fight Mode**.
 
-### 4. Trung tâm Mã hóa SSL/TLS (Certificates & Encryption Center)
+### 4. Trung tâm Mã hóa SSL/TLS & Modal Cảnh báo Đổi Chế độ (SSL/TLS Encryption Center)
+- **Modal Xác nhận Đổi Chế độ SSL/TLS Mode**: Cảnh báo nguy cơ lỗi 525/526 khi chuyển sang chế độ `Full (Strict)` nếu Origin Server chưa có chứng chỉ hợp lệ.
 - Chuyển đổi linh hoạt giữa 4 chế độ: `Off`, `Flexible`, `Full`, `Full (Strict)`.
 - Ép buộc phiên bản mã hóa tối thiểu **Minimum TLS Version (TLS 1.2 / TLS 1.3)**.
 - Kích hoạt **Always Use HTTPS** và **Automatic HTTPS Rewrites**.

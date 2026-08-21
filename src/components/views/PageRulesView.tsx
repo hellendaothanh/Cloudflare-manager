@@ -8,11 +8,14 @@ import {
   SlidersHorizontal, 
   Plus, 
   Trash2, 
+  Globe, 
+  Zap, 
   CheckCircle2, 
   AlertCircle, 
   RefreshCw, 
   ArrowRight 
 } from 'lucide-react';
+import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
 
 export const PageRulesView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -21,6 +24,12 @@ export const PageRulesView: React.FC = () => {
   const [rules, setRules] = useState<PageRule[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Safety Confirmation Modal state
+  const [deleteRuleTarget, setDeleteRuleTarget] = useState<PageRule | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [formData, setFormData] = useState({
     urlPattern: '',
     actionType: 'forwarding_url',
@@ -28,7 +37,6 @@ export const PageRulesView: React.FC = () => {
     statusCode: 301,
     cacheLevel: 'cache_everything',
   });
-  const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const fetchRules = async () => {
     if (!selectedZone) return;
@@ -51,32 +59,43 @@ export const PageRulesView: React.FC = () => {
     e.preventDefault();
     if (!selectedZone) return;
 
-    let actions: any[] = [];
-    if (formData.actionType === 'forwarding_url') {
-      actions.push({
-        id: 'forwarding_url',
-        value: {
-          url: formData.forwardUrl.trim(),
-          status_code: Number(formData.statusCode),
-        },
-      });
-    } else if (formData.actionType === 'cache_level') {
-      actions.push({
-        id: 'cache_level',
-        value: formData.cacheLevel,
-      });
-    } else if (formData.actionType === 'always_use_https') {
-      actions.push({ id: 'always_use_https' });
-    }
-
     try {
+      const actions: any[] = [];
+      if (formData.actionType === 'forwarding_url') {
+        actions.push({
+          id: 'forwarding_url',
+          value: {
+            url: formData.forwardUrl,
+            status_code: formData.statusCode,
+          },
+        });
+      } else if (formData.actionType === 'cache_level') {
+        actions.push({
+          id: 'cache_level',
+          value: formData.cacheLevel,
+        });
+      } else if (formData.actionType === 'always_use_https') {
+        actions.push({
+          id: 'always_use_https',
+          value: 'on',
+        });
+      }
+
       await authFetch('/api/page-rules', {
         method: 'POST',
         body: JSON.stringify({
           zoneId: selectedZone.id,
-          urlPattern: formData.urlPattern.trim(),
+          targets: [
+            {
+              target: 'url',
+              constraint: {
+                operator: 'matches',
+                value: formData.urlPattern,
+              },
+            },
+          ],
           actions,
-          priority: rules.length + 1,
+          status: 'active',
         }),
       });
 
@@ -95,16 +114,20 @@ export const PageRulesView: React.FC = () => {
     }
   };
 
-  const handleDeleteRule = async (ruleId: string) => {
-    if (!confirm(t.pageRulesView.messages.confirmDelete)) return;
+  const confirmDeleteRule = async () => {
+    if (!deleteRuleTarget || !selectedZone) return;
+    const ruleId = deleteRuleTarget.id;
     try {
-      await authFetch(`/api/page-rules?zoneId=${selectedZone?.id}&ruleId=${ruleId}`, {
+      await authFetch(`/api/page-rules?zoneId=${selectedZone.id}&ruleId=${ruleId}`, {
         method: 'DELETE',
       });
       setRules(prev => prev.filter(r => r.id !== ruleId));
       setNotification({ type: 'success', text: t.pageRulesView.messages.ruleDeleted });
     } catch (err: any) {
       setNotification({ type: 'error', text: err.message || t.common.error });
+    } finally {
+      setDeleteRuleTarget(null);
+      setIsDeleteModalOpen(false);
     }
   };
 
@@ -124,19 +147,31 @@ export const PageRulesView: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => canEditPageRules && setIsModalOpen(true)}
-          disabled={!canEditPageRules}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-lg transition-all self-start md:self-center ${
-            canEditPageRules
-              ? 'bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white shadow-purple-500/20'
-              : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
-          }`}
-          title={!canEditPageRules ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
-        >
-          <Plus className="w-4 h-4" />
-          <span>{t.pageRulesView.addRuleBtn}</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={fetchRules}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-750 border border-gray-700 text-gray-300 text-xs font-medium transition-all"
+            title={t.pageRulesView.refreshBtn || t.common.refresh}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-purple-400' : ''}`} />
+            <span>{t.pageRulesView.refreshBtn || t.common.refresh}</span>
+          </button>
+
+          <button
+            onClick={() => canEditPageRules && setIsModalOpen(true)}
+            disabled={!canEditPageRules}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-lg transition-all ${
+              canEditPageRules
+                ? 'bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white shadow-purple-500/20'
+                : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+            }`}
+            title={!canEditPageRules ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
+          >
+            <Plus className="w-4 h-4" />
+            <span>{t.pageRulesView.addRuleBtn}</span>
+          </button>
+        </div>
       </div>
 
       {notification && (
@@ -197,11 +232,15 @@ export const PageRulesView: React.FC = () => {
 
               <div className="flex items-center gap-2 self-end md:self-center">
                 <button
-                  onClick={() => canEditPageRules && handleDeleteRule(rule.id)}
+                  onClick={() => {
+                    if (!canEditPageRules) return;
+                    setDeleteRuleTarget(rule);
+                    setIsDeleteModalOpen(true);
+                  }}
                   disabled={!canEditPageRules}
                   className={`p-2 rounded-xl transition-colors ${
                     canEditPageRules
-                      ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'
+                      ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 cursor-pointer'
                       : 'bg-gray-900 text-gray-600 border border-gray-800 cursor-not-allowed opacity-50'
                   }`}
                   title={!canEditPageRules ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
@@ -317,6 +356,29 @@ export const PageRulesView: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Safety Confirmation Modal: Delete Page Rule */}
+      {deleteRuleTarget && (
+        <ActionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setDeleteRuleTarget(null);
+          }}
+          onConfirm={confirmDeleteRule}
+          title={t.pageRulesView.deleteModal.title}
+          description={formatText(t.pageRulesView.deleteModal.desc, {
+            pattern: deleteRuleTarget.targets?.[0]?.constraint?.value || (deleteRuleTarget as any).urlPattern || 'Rule',
+          })}
+          variant="danger"
+          confirmText={t.pageRulesView.deleteModal.btnConfirm}
+          affectedResource={{
+            label: 'Target URL Pattern',
+            value: deleteRuleTarget.targets?.[0]?.constraint?.value || (deleteRuleTarget as any).urlPattern || 'Rule',
+            badge: `${deleteRuleTarget.actions?.length || 0} Actions Configured`,
+          }}
+        />
       )}
     </div>
   );

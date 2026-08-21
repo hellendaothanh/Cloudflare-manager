@@ -11,9 +11,12 @@ import {
   RefreshCw, 
   Shield,
   ExternalLink,
-  AlertTriangle
+  AlertTriangle,
+  Zap,
+  Globe
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
 
 export const SslView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -23,6 +26,10 @@ export const SslView: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [savingSetting, setSavingSetting] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Safety Confirmation Modal state
+  const [targetSslMode, setTargetSslMode] = useState<'off' | 'flexible' | 'full' | 'strict' | null>(null);
+  const [isSslModalOpen, setIsSslModalOpen] = useState(false);
 
   const fetchSslData = async () => {
     if (!selectedZone) return;
@@ -41,13 +48,15 @@ export const SslView: React.FC = () => {
     fetchSslData();
   }, [selectedZone]);
 
-  const handleUpdateSslMode = async (mode: 'off' | 'flexible' | 'full' | 'strict') => {
+  const confirmUpdateSslMode = async () => {
+    if (!targetSslMode || !selectedZone) return;
+    const mode = targetSslMode;
     setSavingSetting('ssl');
     try {
       await authFetch('/api/ssl', {
         method: 'PATCH',
         body: JSON.stringify({
-          zoneId: selectedZone?.id,
+          zoneId: selectedZone.id,
           setting: 'ssl',
           value: mode,
         }),
@@ -61,6 +70,7 @@ export const SslView: React.FC = () => {
       setNotification({ type: 'error', text: err.message || t.common.error });
     } finally {
       setSavingSetting(null);
+      setTargetSslMode(null);
     }
   };
 
@@ -244,9 +254,13 @@ export const SslView: React.FC = () => {
             return (
               <button
                 key={mode.id}
-                onClick={() => canEditSsl && handleUpdateSslMode(mode.id as any)}
+                onClick={() => {
+                  if (!canEditSsl || sslData?.ssl_mode === mode.id) return;
+                  setTargetSslMode(mode.id as any);
+                  setIsSslModalOpen(true);
+                }}
                 disabled={savingSetting === 'ssl' || !canEditSsl}
-                className={`p-4 rounded-2xl text-left border transition-all flex flex-col justify-between relative ${
+                className={`p-4 rounded-2xl text-left border transition-all flex flex-col justify-between relative cursor-pointer ${
                   !canEditSsl
                     ? 'opacity-60 cursor-not-allowed bg-gray-950 border-gray-850'
                     : isCurrent
@@ -441,6 +455,30 @@ export const SslView: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* Safety Confirmation Modal: Change SSL Encryption Mode */}
+      {targetSslMode && (
+        <ActionConfirmModal
+          isOpen={isSslModalOpen}
+          onClose={() => {
+            setIsSslModalOpen(false);
+            setTargetSslMode(null);
+          }}
+          onConfirm={confirmUpdateSslMode}
+          title={t.sslView.sslModeModal.title}
+          description={formatText(t.sslView.sslModeModal.desc, {
+            mode: targetSslMode.toUpperCase(),
+          })}
+          variant={targetSslMode === 'off' || targetSslMode === 'strict' ? 'warning' : 'info'}
+          confirmText={t.sslView.sslModeModal.btnConfirm}
+          affectedResource={{
+            label: 'SSL/TLS Encryption Mode Transition',
+            value: `${(sslData?.ssl_mode || 'Flexible').toUpperCase()} ➔ ${targetSslMode.toUpperCase()}`,
+            badge: selectedZone?.name,
+          }}
+          warningNote={t.sslView.sslModeModal.warningNote}
+        />
+      )}
     </div>
   );
 };

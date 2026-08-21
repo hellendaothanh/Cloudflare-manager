@@ -431,8 +431,33 @@ export const ComplianceView: React.FC = () => {
           </p>
         </div>
 
-        {/* Action Status Indicator */}
+        {/* Action Status Indicator & Refresh */}
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => {
+              try {
+                const savedChannels = localStorage.getItem('cf_alert_channels');
+                if (savedChannels) setChannels(JSON.parse(savedChannels));
+                const savedCron = localStorage.getItem(`cf_cron_${selectedZone?.id}`);
+                if (savedCron) {
+                  const parsed = JSON.parse(savedCron);
+                  setCronEnabled(parsed.enabled ?? false);
+                  setCronIntervalMins(parsed.interval ?? 60);
+                  setLastScanTime(parsed.lastScan || null);
+                  setNextScanTime(parsed.nextScan || null);
+                }
+                setNotification({ type: 'success', text: t.complianceView.refreshBtn || t.common.refresh });
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-850 border border-gray-800 text-gray-300 text-xs font-semibold transition-all cursor-pointer"
+            title={t.complianceView.refreshBtn || t.common.refresh}
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-cyan-400" />
+            <span>{t.complianceView.refreshBtn || t.common.refresh}</span>
+          </button>
+
           <span className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-2 ${
             cronEnabled
               ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'

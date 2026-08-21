@@ -1,6 +1,6 @@
 # Cloudflare DevSecOps Management Platform 🛡️⚡
 
-[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-15%2F15%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-18%2F18%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/)
@@ -42,17 +42,23 @@ The application includes built-in multilingual capabilities with fully synchroni
   - Transparent notifications highlighting origin cache bypass, 3-hour auto-expiration, and origin server load considerations.
 - **I'm Under Attack! Emergency Mode**: Instant JS Challenge deployment for all inbound visitors during active Layer 7 DDoS incidents.
 
-### 2. Advanced DNS Management (DNS Records Manager)
+### 2. Advanced DNS Management & Refresh List (DNS Records Manager & Refresh)
 - Full CRUD operations for DNS record types: `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `SRV`, `CAA`, `PTR`.
-- 1-Click toggle for **Cloudflare Proxy (Orange Cloud / CDN & WAF protection)**.
+- **Proactive Refresh List button**: Instantly sync and reload DNS records directly from the Cloudflare API without page reloads.
+- **Proxy Toggle Safety Confirmation Modal**: Explains risks of exposing Origin IP when disabling Proxy and edge routing benefits when enabling Proxy before dispatching API updates.
+- **DNS Record Deletion Safety Modal**: Protects production environments from unintended record drops and service downtime.
 - Standard **BIND Zone File export (`.zone.txt`)**.
 
-### 3. Web Application Firewall (WAF & Firewall Shield)
+### 3. Web Application Firewall & Rate Limiting (WAF & Rate Limiting Shield)
+- **Proactive Refresh List buttons**: Refresh WAF rules, IP Access Rules, and Rate Limiting configurations on demand.
+- **Safety Confirmation Modals for Deletions**: Prevents accidental deletion of custom WAF filters, IP Access rules, and Rate Limiting policies.
+- **Security Level Transition Safety Modal**: Detailed impact warning when switching to *Under Attack* or *Essentially Off* modes.
 - Manage **Custom Firewall Rules** using Cloudflare `Wirefilter` expressions (IP, URI, Headers, Threat Score).
 - **IP Access Rules**: Whitelist, Block, and Challenge policies for Single IPs, CIDR blocks, ASNs, or Country codes.
 - **Security Level** configuration and **Bot Fight Mode** status.
 
 ### 4. SSL/TLS Encryption & Certificates Center
+- **SSL/TLS Mode Transition Safety Modal**: Informs operators of possible 525/526 origin handshake errors before switching to `Full (Strict)` mode.
 - Seamless switching across 4 encryption modes: `Off`, `Flexible`, `Full`, `Full (Strict)`.
 - Enforce **Minimum TLS Version (TLS 1.2 / TLS 1.3)**.
 - Toggle **Always Use HTTPS** (301 redirection) and **Automatic HTTPS Rewrites**.

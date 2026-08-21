@@ -22,11 +22,11 @@ export async function setupDemoSession(page: Page) {
       }
     ]));
     localStorage.setItem('cf_active_account_id', 'acc-demo-01');
+    localStorage.setItem('cf_active_zone_id', 'mock-zone-1');
     localStorage.setItem('cf_user_role', 'admin');
     localStorage.setItem('cf_app_language', 'vi');
   });
   await page.goto('/');
-  // Wait until selected zone is initialized in Navbar
-  await expect(page.locator('.font-mono').first()).toBeVisible({ timeout: 10000 });
-  await page.waitForTimeout(400);
+  await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+  await page.waitForTimeout(500);
 }

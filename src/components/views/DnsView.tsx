@@ -17,6 +17,7 @@ import {
   AlertCircle, 
   RefreshCw
 } from 'lucide-react';
+import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
 
 export const DnsView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -40,6 +41,13 @@ export const DnsView: React.FC = () => {
     comment: '',
   });
 
+  // Safety Confirmation Modals state
+  const [proxyTargetRecord, setProxyTargetRecord] = useState<DnsRecord | null>(null);
+  const [isProxyModalOpen, setIsProxyModalOpen] = useState(false);
+
+  const [deleteTargetRecord, setDeleteTargetRecord] = useState<DnsRecord | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const fetchRecords = async () => {
@@ -59,8 +67,9 @@ export const DnsView: React.FC = () => {
     fetchRecords();
   }, [selectedZone]);
 
-  const handleToggleProxy = async (record: DnsRecord) => {
-    if (!['A', 'AAAA', 'CNAME'].includes(record.type)) return;
+  const confirmToggleProxy = async () => {
+    if (!proxyTargetRecord || !selectedZone) return;
+    const record = proxyTargetRecord;
     const newProxied = !record.proxied;
 
     // Optimistic UI update
@@ -70,7 +79,7 @@ export const DnsView: React.FC = () => {
       await authFetch('/api/dns', {
         method: 'PATCH',
         body: JSON.stringify({
-          zoneId: selectedZone?.id,
+          zoneId: selectedZone.id,
           recordId: record.id,
           proxied: newProxied,
         }),
@@ -86,14 +95,17 @@ export const DnsView: React.FC = () => {
       // Revert on error
       setRecords(prev => prev.map(r => r.id === record.id ? { ...r, proxied: record.proxied } : r));
       setNotification({ type: 'error', text: err.message || t.common.error });
+    } finally {
+      setProxyTargetRecord(null);
     }
   };
 
-  const handleDeleteRecord = async (record: DnsRecord) => {
-    if (!confirm(formatText(t.dnsView.messages.confirmDelete, { type: record.type, name: record.name }))) return;
+  const confirmDeleteRecord = async () => {
+    if (!deleteTargetRecord || !selectedZone) return;
+    const record = deleteTargetRecord;
 
     try {
-      await authFetch(`/api/dns?zoneId=${selectedZone?.id}&recordId=${record.id}`, {
+      await authFetch(`/api/dns?zoneId=${selectedZone.id}&recordId=${record.id}`, {
         method: 'DELETE',
       });
       setRecords(prev => prev.filter(r => r.id !== record.id));
@@ -103,6 +115,8 @@ export const DnsView: React.FC = () => {
       });
     } catch (err: any) {
       setNotification({ type: 'error', text: err.message || t.common.error });
+    } finally {
+      setDeleteTargetRecord(null);
     }
   };
 
@@ -243,6 +257,16 @@ export const DnsView: React.FC = () => {
 
         <div className="flex flex-wrap items-center gap-2.5">
           <button
+            onClick={fetchRecords}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-750 border border-gray-700 text-gray-300 text-xs font-medium transition-all"
+            title={t.dnsView.refreshBtn || t.common.refresh}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-orange-400' : ''}`} />
+            <span>{t.dnsView.refreshBtn || t.common.refresh}</span>
+          </button>
+
+          <button
             onClick={handleExportBIND}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-750 border border-gray-700 text-gray-300 text-xs font-medium transition-all"
             title="Export BIND"
@@ -362,9 +386,13 @@ export const DnsView: React.FC = () => {
                       <td className="py-3.5 px-4 text-center">
                         {canProxy ? (
                           <button
-                            onClick={() => canEditDns && handleToggleProxy(record)}
+                            onClick={() => {
+                              if (!canEditDns) return;
+                              setProxyTargetRecord(record);
+                              setIsProxyModalOpen(true);
+                            }}
                             disabled={!canEditDns}
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
                               !canEditDns
                                 ? 'opacity-50 cursor-not-allowed bg-gray-900 border-gray-800 text-gray-500'
                                 : record.proxied
@@ -398,17 +426,21 @@ export const DnsView: React.FC = () => {
                             onClick={() => canEditDns && openEditModal(record)}
                             disabled={!canEditDns}
                             className={`p-1.5 rounded-lg transition-colors ${
-                              canEditDns ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50'
+                              canEditDns ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 cursor-pointer' : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50'
                             }`}
                             title={!canEditDns ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.edit}
                           >
                             <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button
-                            onClick={() => canEditDns && handleDeleteRecord(record)}
+                            onClick={() => {
+                              if (!canEditDns) return;
+                              setDeleteTargetRecord(record);
+                              setIsDeleteModalOpen(true);
+                            }}
                             disabled={!canEditDns}
                             className={`p-1.5 rounded-lg transition-colors ${
-                              canEditDns ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20' : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50 border border-gray-800'
+                              canEditDns ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 cursor-pointer' : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50 border border-gray-800'
                             }`}
                             title={!canEditDns ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
                           >
@@ -561,6 +593,68 @@ export const DnsView: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Safety Confirmation Modal: Toggle Proxy */}
+      {proxyTargetRecord && (
+        <ActionConfirmModal
+          isOpen={isProxyModalOpen}
+          onClose={() => {
+            setIsProxyModalOpen(false);
+            setProxyTargetRecord(null);
+          }}
+          onConfirm={confirmToggleProxy}
+          title={
+            !proxyTargetRecord.proxied
+              ? t.dnsView.proxyModal.enableTitle
+              : t.dnsView.proxyModal.disableTitle
+          }
+          description={
+            !proxyTargetRecord.proxied
+              ? formatText(t.dnsView.proxyModal.enableDesc, { name: proxyTargetRecord.name })
+              : formatText(t.dnsView.proxyModal.disableDesc, { 
+                  name: proxyTargetRecord.name, 
+                  content: proxyTargetRecord.content 
+                })
+          }
+          variant={!proxyTargetRecord.proxied ? 'info' : 'warning'}
+          confirmText={
+            !proxyTargetRecord.proxied
+              ? t.dnsView.proxyModal.enableBtn
+              : t.dnsView.proxyModal.disableBtn
+          }
+          affectedResource={{
+            label: 'DNS Record / Target',
+            value: `${proxyTargetRecord.name} ➔ ${proxyTargetRecord.content}`,
+            badge: `${proxyTargetRecord.type} | Current: ${proxyTargetRecord.proxied ? 'Proxied' : 'DNS Only'}`,
+          }}
+          warningNote={t.dnsView.proxyModal.warningNote}
+        />
+      )}
+
+      {/* Safety Confirmation Modal: Delete DNS Record */}
+      {deleteTargetRecord && (
+        <ActionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setDeleteTargetRecord(null);
+          }}
+          onConfirm={confirmDeleteRecord}
+          title={t.dnsView.deleteModal.title}
+          description={formatText(t.dnsView.deleteModal.desc, {
+            type: deleteTargetRecord.type,
+            name: deleteTargetRecord.name,
+            content: deleteTargetRecord.content,
+          })}
+          variant="danger"
+          confirmText={t.dnsView.deleteModal.btnConfirm}
+          affectedResource={{
+            label: 'DNS Record to Delete',
+            value: `${deleteTargetRecord.name} (${deleteTargetRecord.type})`,
+            badge: deleteTargetRecord.content,
+          }}
+        />
       )}
     </div>
   );

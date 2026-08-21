@@ -20,6 +20,7 @@ import {
   Globe,
   Clock
 } from 'lucide-react';
+import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
 
 export const RateLimitView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -31,6 +32,10 @@ export const RateLimitView: React.FC = () => {
   const [rules, setRules] = useState<RateLimitRule[]>([]);
   const [analytics, setAnalytics] = useState<RateLimitAnalytics | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Safety Confirmation Modal state
+  const [deleteRuleTarget, setDeleteRuleTarget] = useState<RateLimitRule | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,16 +84,16 @@ export const RateLimitView: React.FC = () => {
       setFormData({
         description: 'Bảo vệ Cổng thanh toán & Checkout Endpoint',
         url: `*.${selectedZone.name}/api/v1/checkout/*`,
-        methods: ['POST'],
+        methods: ['POST', 'PUT'],
         threshold: 15,
         period: 60,
         action: 'managed_challenge',
-        timeout: 60,
+        timeout: 300,
       });
     } else if (preset === 'scraping') {
       setFormData({
-        description: 'Giới hạn tần suất cào dữ liệu Catalog API',
-        url: `*.${selectedZone.name}/api/v1/catalog/*`,
+        description: 'Chống Cào dữ liệu Danh mục Sản phẩm & API',
+        url: `*.${selectedZone.name}/catalog/*`,
         methods: ['GET'],
         threshold: 120,
         period: 60,
@@ -98,32 +103,18 @@ export const RateLimitView: React.FC = () => {
     }
   };
 
-  const handleCreateRule = async (e: React.FormEvent) => {
+  const handleSaveRule = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canManage || !selectedZone) return;
 
     setLoading(true);
     try {
-      const rulePayload = {
-        description: formData.description.trim(),
-        match: {
-          request: {
-            url: formData.url.trim(),
-            methods: formData.methods,
-            schemes: ['HTTP', 'HTTPS'],
-          },
-        },
-        threshold: Number(formData.threshold),
-        period: Number(formData.period),
-        action: {
-          mode: formData.action,
-          timeout: formData.action === 'ban' ? Number(formData.timeout) : undefined,
-        },
-      };
-
       await authFetch('/api/ratelimit', {
         method: 'POST',
-        body: JSON.stringify({ zoneId: selectedZone.id, rule: rulePayload }),
+        body: JSON.stringify({
+          zoneId: selectedZone.id,
+          ...formData,
+        }),
       });
 
       setNotification({ type: 'success', text: t.rateLimitView.messages.created });
@@ -136,9 +127,9 @@ export const RateLimitView: React.FC = () => {
     }
   };
 
-  const handleDeleteRule = async (ruleId: string) => {
-    if (!canManage || !selectedZone) return;
-    if (!confirm(t.common.confirmDelete)) return;
+  const confirmDeleteRule = async () => {
+    if (!deleteRuleTarget || !canManage || !selectedZone) return;
+    const ruleId = deleteRuleTarget.id;
 
     setLoading(true);
     try {
@@ -151,6 +142,7 @@ export const RateLimitView: React.FC = () => {
       setNotification({ type: 'error', text: err.message || t.common.error });
     } finally {
       setLoading(false);
+      setDeleteRuleTarget(null);
     }
   };
 
@@ -171,6 +163,16 @@ export const RateLimitView: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-750 border border-gray-700 text-gray-300 text-xs font-medium transition-all"
+            title={t.rateLimitView.refreshBtn || t.common.refresh}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-rose-400' : ''}`} />
+            <span>{t.rateLimitView.refreshBtn || t.common.refresh}</span>
+          </button>
+
           <button
             onClick={() => setIsModalOpen(true)}
             disabled={!canManage}
@@ -296,9 +298,13 @@ export const RateLimitView: React.FC = () => {
 
                   <div className="flex items-center gap-2 self-end md:self-center">
                     <button
-                      onClick={() => handleDeleteRule(rule.id)}
+                      onClick={() => {
+                        if (!canManage) return;
+                        setDeleteRuleTarget(rule);
+                        setIsDeleteModalOpen(true);
+                      }}
                       disabled={!canManage}
-                      className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors disabled:opacity-50"
+                      className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors disabled:opacity-50 cursor-pointer"
                       title={!canManage ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -377,7 +383,7 @@ export const RateLimitView: React.FC = () => {
               {t.rateLimitView.rulesSection.modalTitle}
             </h2>
 
-            <form onSubmit={handleCreateRule} className="space-y-3.5">
+            <form onSubmit={handleSaveRule} className="space-y-3.5">
               <div>
                 <label className="block text-[11px] font-semibold text-gray-300 mb-1">{t.rateLimitView.rulesSection.descLabel}</label>
                 <input
@@ -485,6 +491,30 @@ export const RateLimitView: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Safety Confirmation Modal: Delete Rate Limiting Rule */}
+      {deleteRuleTarget && (
+        <ActionConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setDeleteRuleTarget(null);
+          }}
+          onConfirm={confirmDeleteRule}
+          title={t.rateLimitView.deleteModal.title}
+          description={formatText(t.rateLimitView.deleteModal.desc, {
+            desc: deleteRuleTarget.description,
+            url: deleteRuleTarget.match?.request?.url || '*',
+          })}
+          variant="danger"
+          confirmText={t.rateLimitView.deleteModal.btnConfirm}
+          affectedResource={{
+            label: 'Rate Limiting Rule Endpoint',
+            value: deleteRuleTarget.match?.request?.url || '*',
+            badge: `${deleteRuleTarget.threshold} req / ${deleteRuleTarget.period}s ➔ ${deleteRuleTarget.action?.mode?.toUpperCase()}`,
+          }}
+        />
       )}
     </div>
   );

@@ -48,7 +48,7 @@ export const AnalyticsView: React.FC = () => {
     fetchAnalytics();
   }, [selectedZone, timeRange]);
 
-  if (loading || !analytics) {
+  if (!analytics && loading) {
     return (
       <div className="p-20 text-center text-gray-500">
         <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-cyan-400" />
@@ -57,9 +57,16 @@ export const AnalyticsView: React.FC = () => {
     );
   }
 
+  if (!analytics) return null;
+
   const cachedRatio = analytics.requests.total > 0
-    ? Math.round((analytics.requests.cached / analytics.requests.total) * 100)
-    : 0;
+    ? ((analytics.requests.cached / analytics.requests.total) * 100).toFixed(1)
+    : '0';
+
+  const formatPercentage = (val: number, total: number) => {
+    if (total === 0) return '0%';
+    return `${((val / total) * 100).toFixed(1)}%`;
+  };
 
   const bandwidthSavingsRatio = analytics.bandwidth.total > 0
     ? Math.round((analytics.bandwidth.cached / analytics.bandwidth.total) * 100)
@@ -88,26 +95,38 @@ export const AnalyticsView: React.FC = () => {
           </p>
         </div>
 
-        {/* Time range selector */}
-        <div className="flex items-center gap-1.5 bg-gray-950 p-1 rounded-xl border border-gray-800 self-start md:self-center">
-          {[
-            { hours: 6, label: '6h' },
-            { hours: 24, label: '24h' },
-            { hours: 72, label: '72h' },
-            { hours: 168, label: '7d' },
-          ].map((timeOpt) => (
-            <button
-              key={timeOpt.hours}
-              onClick={() => setTimeRange(timeOpt.hours)}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
-                timeRange === timeOpt.hours
-                  ? 'bg-cyan-500 text-white'
-                  : 'text-gray-400 hover:text-gray-200'
-              }`}
-            >
-              {timeOpt.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2.5 self-start md:self-center">
+          <button
+            onClick={fetchAnalytics}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-850 border border-gray-800 text-gray-300 text-xs font-medium transition-all"
+            title={t.analyticsView.refreshBtn || t.common.refresh}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-cyan-400' : ''}`} />
+            <span>{t.analyticsView.refreshBtn || t.common.refresh}</span>
+          </button>
+
+          {/* Time range selector */}
+          <div className="flex items-center gap-1.5 bg-gray-950 p-1 rounded-xl border border-gray-800">
+            {[
+              { hours: 6, label: '6h' },
+              { hours: 24, label: '24h' },
+              { hours: 72, label: '72h' },
+              { hours: 168, label: '7d' },
+            ].map((timeOpt) => (
+              <button
+                key={timeOpt.hours}
+                onClick={() => setTimeRange(timeOpt.hours)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                  timeRange === timeOpt.hours
+                    ? 'bg-cyan-500 text-white'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                {timeOpt.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

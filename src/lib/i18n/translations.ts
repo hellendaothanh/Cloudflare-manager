@@ -284,6 +284,7 @@ export const translations = {
       subtitle: 'Quản lý các bản ghi DNS A, AAAA, CNAME, MX, TXT, SRV với tính năng Proxy CDN Cloudflare.',
       addRecordBtn: 'Thêm bản ghi DNS',
       exportBindBtn: 'Xuất BIND Zone File',
+      refreshBtn: 'Làm mới danh sách',
       searchPlaceholder: 'Tìm kiếm tên miền hoặc IP/Giá trị...',
       allTypes: 'Tất cả loại (ALL)',
       table: {
@@ -299,6 +300,21 @@ export const translations = {
       dnsOnlyTooltip: 'DNS Only (Không qua proxy CDN, lộ IP gốc)',
       autoTtl: 'Tự động (Auto)',
       noRecords: 'Không tìm thấy bản ghi DNS nào phù hợp.',
+      proxyModal: {
+        title: 'Xác nhận Thay đổi Trạng thái Cloudflare Proxy',
+        enableTitle: 'Bật Cloudflare Proxy (Orange Cloud)',
+        disableTitle: 'Tắt Cloudflare Proxy (DNS Only)',
+        enableDesc: 'Lưu lượng truy cập đến {name} sẽ được định tuyến qua hạ tầng Cloudflare Edge, kích hoạt bộ nhớ đệm CDN, ẩn IP máy chủ gốc và áp dụng lá chắn bảo mật WAF/DDoS.',
+        disableDesc: 'CẢNH BÁO NGUY HIỂM: Khi tắt Proxy (chuyển sang DNS Only / Gray Cloud), lưu lượng sẽ trỏ trực tiếp đến máy chủ gốc, làm lộ địa chỉ IP thật ({content}) và vô hiệu hóa hoàn toàn bảo vệ WAF, CDN và giảm tải DDoS.',
+        enableBtn: 'Xác nhận Bật Proxy',
+        disableBtn: 'Xác nhận Tắt Proxy (DNS Only)',
+        warningNote: 'Thay đổi trạng thái Proxy có thể mất vài giây để đồng bộ toàn cầu qua Anycast Edge.',
+      },
+      deleteModal: {
+        title: 'Xác nhận Xóa Bản ghi DNS',
+        desc: 'Bạn có chắc chắn muốn xóa vĩnh viễn bản ghi DNS {type} "{name}" (Trỏ tới: {content})? Hành động này có thể làm gián đoạn lưu lượng truy cập ngay lập tức nếu bản ghi này đang được sử dụng.',
+        btnConfirm: 'Xác nhận Xóa Bản ghi',
+      },
       modal: {
         addTitle: 'Thêm bản ghi DNS mới',
         editTitle: 'Chỉnh sửa bản ghi DNS',
@@ -330,6 +346,7 @@ export const translations = {
     securityView: {
       title: 'Web Application Firewall (WAF) & Access Rules',
       subtitle: 'Bảo vệ tầng ứng dụng: Chặn tấn công SQLi, XSS, DDoS, quản lý IP Access Lists và cài đặt mức độ bảo mật.',
+      refreshBtn: 'Làm mới danh sách',
       tabs: {
         waf: 'WAF Firewall Rules',
         ip: 'IP Access Rules',
@@ -373,6 +390,21 @@ export const translations = {
         medium: 'Trung bình (Medium - Tiêu chuẩn)',
         high: 'Cao (High)',
         under_attack: 'Đang bị tấn công (Under Attack)',
+      },
+      deleteWafModal: {
+        title: 'Xác nhận Xóa Quy tắc WAF Firewall',
+        desc: 'Bạn có chắc chắn muốn xóa quy tắc tường lửa WAF "{desc}"? Lưu lượng khớp biểu thức này sẽ không còn bị kiểm soát bảo mật nữa.',
+        btnConfirm: 'Xác nhận Xóa Quy tắc',
+      },
+      deleteIpModal: {
+        title: 'Xác nhận Xóa Quy tắc IP Access',
+        desc: 'Bạn có chắc chắn muốn xóa quy tắc IP "{value}" ({mode})? Quyền truy cập từ dải IP này sẽ được xử lý theo chính sách mặc định.',
+        btnConfirm: 'Xác nhận Xóa Quy tắc IP',
+      },
+      secLevelModal: {
+        title: 'Xác nhận Đổi Mức độ Bảo mật (Security Level)',
+        desc: 'Bạn có chắc muốn thay đổi Security Level của Zone sang mức "{level}"? Điều này có thể tăng hoặc giảm tần suất thách thức bảo mật đối với khách truy cập.',
+        btnConfirm: 'Xác nhận Đổi Mức Bảo Mật',
       },
       modalWaf: {
         title: 'Tạo quy tắc WAF Firewall mới',
@@ -430,6 +462,12 @@ export const translations = {
           desc: 'Mã hóa đầu cuối hoàn toàn và bắt buộc chứng chỉ SSL Origin phải hợp lệ.',
         },
       },
+      sslModeModal: {
+        title: 'Xác nhận Đổi Chế độ Mã hóa SSL/TLS',
+        desc: 'Bạn có chắc chắn muốn chuyển SSL Mode của domain sang "{mode}"? Lưu ý: Nếu chọn "Full" hoặc "Strict" mà máy chủ gốc chưa cấu hình chứng chỉ SSL hợp lệ, người dùng có thể gặp lỗi 525/526 SSL Handshake Failed.',
+        warningNote: 'Hãy đảm bảo máy chủ gốc đã cài đặt chứng chỉ SSL hợp lệ trước khi áp dụng chế độ Full hoặc Full (Strict).',
+        btnConfirm: 'Xác nhận Áp dụng SSL',
+      },
       currentMode: 'Chế độ hiện tại',
       advancedTitle: 'Cài đặt Bảo mật SSL/TLS Nâng cao',
       minTlsTitle: 'Minimum TLS Version',
@@ -461,6 +499,12 @@ export const translations = {
       title: 'Page Rules & Edge Forwarding Engine',
       subtitle: 'Tùy biến hành vi định tuyến, bộ nhớ đệm và chuyển hướng URL theo từng đường dẫn cụ thể.',
       addRuleBtn: 'Tạo Page Rule mới',
+      refreshBtn: 'Làm mới danh sách',
+      deleteModal: {
+        title: 'Xác nhận Xóa Quy tắc Page Rule',
+        desc: 'Bạn có chắc chắn muốn xóa quy tắc trang "{pattern}"? Các cấu hình chuyển hướng URL (Forwarding) hoặc ghi đè Cache sẽ bị hủy bỏ.',
+        btnConfirm: 'Xác nhận Xóa Quy tắc',
+      },
       table: {
         priority: 'Độ ưu tiên',
         urlPattern: 'Đường dẫn áp dụng (URL Pattern)',
@@ -499,6 +543,7 @@ export const translations = {
     analyticsView: {
       title: 'Lưu lượng & Mối đe dọa Telemetry',
       subtitle: 'Giám sát lưu lượng mạng thời gian thực, tỉ lệ tiết kiệm băng thông Edge cache và các cuộc tấn công bị ngăn chặn cho {zone}.',
+      refreshBtn: 'Làm mới số liệu',
       hours24: '24 Giờ qua',
       hours72: '72 Giờ qua',
       hours168: '7 Ngày qua',
@@ -621,6 +666,7 @@ export const translations = {
     complianceView: {
       title: 'Tự động hóa CI/CD & Giám sát Liên tục (Continuous Compliance)',
       subtitle: 'Tự động quét sai lệch định kỳ (CRON Drift), thông báo qua Slack/Telegram/Discord và xuất mã hạ tầng Terraform (IaC).',
+      refreshBtn: 'Làm mới cấu hình',
       tabs: {
         terraform: 'Terraform (IaC)',
         cron: 'Scheduled Drift CRON',
@@ -743,6 +789,12 @@ export const translations = {
     rateLimitView: {
       title: 'Giới hạn Tần suất & Chống DDoS Layer 7 (Rate Limiting)',
       subtitle: 'Bảo vệ API, trang đăng nhập và cổng thanh toán trước các đợt tấn công Brute Force, Credential Stuffing và Web Scraping.',
+      refreshBtn: 'Làm mới danh sách',
+      deleteModal: {
+        title: 'Xác nhận Xóa Quy tắc Rate Limiting',
+        desc: 'Bạn có chắc chắn muốn xóa quy tắc giới hạn tần suất "{desc}" cho endpoint {url}? Các cuộc tấn công Brute-force hoặc spam API trên đường dẫn này sẽ không còn bị giới hạn tự động.',
+        btnConfirm: 'Xác nhận Xóa Quy tắc',
+      },
       tabs: {
         rules: 'Quy tắc Rate Limiting',
         analytics: 'Giám sát Vi phạm & Telemetry',
@@ -1102,6 +1154,7 @@ export const translations = {
       subtitle: 'Manage A, AAAA, CNAME, MX, TXT, SRV records with Cloudflare CDN Proxy capabilities.',
       addRecordBtn: 'Add DNS Record',
       exportBindBtn: 'Export BIND Zone File',
+      refreshBtn: 'Refresh List',
       searchPlaceholder: 'Search domain name or IP/content...',
       allTypes: 'All Types (ALL)',
       table: {
@@ -1117,6 +1170,21 @@ export const translations = {
       dnsOnlyTooltip: 'DNS Only (Direct to origin, exposes origin IP)',
       autoTtl: 'Auto',
       noRecords: 'No matching DNS records found.',
+      proxyModal: {
+        title: 'Confirm Cloudflare Proxy Status Change',
+        enableTitle: 'Enable Cloudflare Proxy (Orange Cloud)',
+        disableTitle: 'Disable Cloudflare Proxy (DNS Only)',
+        enableDesc: 'Traffic to {name} will be routed through Cloudflare Edge, enabling CDN caching, origin IP masking, and active WAF/DDoS protection.',
+        disableDesc: 'CRITICAL WARNING: Disabling Proxy (DNS Only / Gray Cloud) routes traffic directly to your origin server, exposing your real IP address ({content}) and disabling WAF, CDN caching, and DDoS mitigation.',
+        enableBtn: 'Confirm Enable Proxy',
+        disableBtn: 'Confirm Disable (DNS Only)',
+        warningNote: 'Proxy status toggling propagates across Cloudflare Anycast edge in seconds.',
+      },
+      deleteModal: {
+        title: 'Confirm Delete DNS Record',
+        desc: 'Are you sure you want to permanently delete DNS record {type} "{name}" (Target: {content})? This may disrupt incoming traffic immediately if in active use.',
+        btnConfirm: 'Confirm Delete Record',
+      },
       modal: {
         addTitle: 'Add New DNS Record',
         editTitle: 'Edit DNS Record',
@@ -1148,6 +1216,7 @@ export const translations = {
     securityView: {
       title: 'Web Application Firewall (WAF) & Access Rules',
       subtitle: 'Application layer protection: Block SQLi, XSS, DDoS, manage IP Access Lists, and configure security levels.',
+      refreshBtn: 'Refresh List',
       tabs: {
         waf: 'WAF Firewall Rules',
         ip: 'IP Access Rules',
@@ -1191,6 +1260,21 @@ export const translations = {
         medium: 'Medium (Standard)',
         high: 'High',
         under_attack: 'Under Attack',
+      },
+      deleteWafModal: {
+        title: 'Confirm Delete WAF Firewall Rule',
+        desc: 'Are you sure you want to delete WAF rule "{desc}"? Traffic matching this expression will no longer be filtered.',
+        btnConfirm: 'Confirm Delete Rule',
+      },
+      deleteIpModal: {
+        title: 'Confirm Delete IP Access Rule',
+        desc: 'Are you sure you want to delete IP rule "{value}" ({mode})? Access from this IP/CIDR will revert to default policy.',
+        btnConfirm: 'Confirm Delete IP Rule',
+      },
+      secLevelModal: {
+        title: 'Confirm Security Level Change',
+        desc: 'Are you sure you want to change the Zone Security Level to "{level}"? This will adjust the challenge frequency for incoming visitor traffic.',
+        btnConfirm: 'Confirm Change Security Level',
       },
       modalWaf: {
         title: 'Create New WAF Firewall Rule',
@@ -1247,6 +1331,12 @@ export const translations = {
           title: 'Full (Strict) - DevSecOps Benchmark',
           desc: 'Full end-to-end encryption with valid, trusted origin SSL certificate verification.',
         },
+      },
+      sslModeModal: {
+        title: 'Confirm SSL/TLS Encryption Mode Change',
+        desc: 'Are you sure you want to switch SSL Mode to "{mode}"? Note: If selecting "Full" or "Strict" without a valid origin SSL certificate, visitors may experience 525/526 SSL Handshake errors.',
+        warningNote: 'Ensure your origin server has an active, valid SSL certificate before enforcing Full or Full (Strict).',
+        btnConfirm: 'Confirm Apply SSL',
       },
       currentMode: 'Current Mode',
       advancedTitle: 'Advanced SSL/TLS Security Settings',
@@ -1371,6 +1461,12 @@ export const translations = {
       title: 'Page Rules & Edge Forwarding Engine',
       subtitle: 'Customize routing behaviors, caching policies, and URL redirection for specific URL paths.',
       addRuleBtn: 'Create New Page Rule',
+      refreshBtn: 'Refresh List',
+      deleteModal: {
+        title: 'Confirm Delete Page Rule',
+        desc: 'Are you sure you want to delete Page Rule "{pattern}"? URL forwarding and cache overrides for this pattern will be removed.',
+        btnConfirm: 'Confirm Delete Rule',
+      },
       table: {
         priority: 'Priority',
         urlPattern: 'URL Pattern',
@@ -1409,6 +1505,7 @@ export const translations = {
     analyticsView: {
       title: 'Traffic & Threat Telemetry Analytics',
       subtitle: 'Real-time monitoring of network traffic, edge cache savings ratio, and mitigated cyber attacks for {zone}.',
+      refreshBtn: 'Refresh Analytics',
       hours24: 'Last 24 Hours',
       hours72: 'Last 72 Hours',
       hours168: 'Last 7 Days',
@@ -1439,6 +1536,7 @@ export const translations = {
     complianceView: {
       title: 'CI/CD Automation & Continuous Compliance',
       subtitle: 'Automated periodic drift auditing (CRON), multi-channel webhook alerts (Slack, Telegram, Discord), and Terraform IaC export.',
+      refreshBtn: 'Refresh Compliance',
       tabs: {
         terraform: 'Terraform (IaC)',
         cron: 'Scheduled Drift CRON',
@@ -1561,6 +1659,12 @@ export const translations = {
     rateLimitView: {
       title: 'Rate Limiting & Layer 7 DDoS Shield',
       subtitle: 'Shield authentication APIs, checkout endpoints, and catalog paths from Brute Force, Credential Stuffing, and Scraping.',
+      refreshBtn: 'Refresh List',
+      deleteModal: {
+        title: 'Confirm Delete Rate Limiting Rule',
+        desc: 'Are you sure you want to delete Rate Limiting rule "{desc}" for endpoint {url}? Brute-force and API spam on this path will no longer be automatically throttled.',
+        btnConfirm: 'Confirm Delete Rule',
+      },
       tabs: {
         rules: 'Rate Limit Rules',
         analytics: 'Breach Telemetry & Analytics',

@@ -16,6 +16,7 @@ import {
   Terminal,
   Sliders
 } from 'lucide-react';
+import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
 
 export const SecurityView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -46,6 +47,16 @@ export const SecurityView: React.FC = () => {
     mode: 'block' as IpAccessRule['mode'],
     notes: '',
   });
+
+  // Safety Confirmation Modals state
+  const [deleteWafTarget, setDeleteWafTarget] = useState<FirewallRule | null>(null);
+  const [isDeleteWafModalOpen, setIsDeleteWafModalOpen] = useState(false);
+
+  const [deleteIpTarget, setDeleteIpTarget] = useState<IpAccessRule | null>(null);
+  const [isDeleteIpModalOpen, setIsDeleteIpModalOpen] = useState(false);
+
+  const [secLevelTarget, setSecLevelTarget] = useState<string | null>(null);
+  const [isSecLevelModalOpen, setIsSecLevelModalOpen] = useState(false);
 
   const fetchData = async () => {
     if (!selectedZone) return;
@@ -90,16 +101,19 @@ export const SecurityView: React.FC = () => {
     }
   };
 
-  const handleDeleteWafRule = async (ruleId: string) => {
-    if (!confirm(t.securityView.messages.confirmDeleteWaf)) return;
+  const confirmDeleteWaf = async () => {
+    if (!deleteWafTarget || !selectedZone) return;
+    const ruleId = deleteWafTarget.id;
     try {
-      await authFetch(`/api/security?zoneId=${selectedZone?.id}&ruleId=${ruleId}&ruleType=waf`, {
+      await authFetch(`/api/security?zoneId=${selectedZone.id}&ruleId=${ruleId}&ruleType=waf`, {
         method: 'DELETE',
       });
       setFirewallRules(prev => prev.filter(r => r.id !== ruleId));
       setNotification({ type: 'success', text: t.securityView.messages.wafDeleted });
     } catch (err: any) {
       setNotification({ type: 'error', text: err.message || t.common.error });
+    } finally {
+      setDeleteWafTarget(null);
     }
   };
 
@@ -130,22 +144,27 @@ export const SecurityView: React.FC = () => {
     }
   };
 
-  const handleDeleteIpRule = async (ruleId: string) => {
-    if (!confirm(t.securityView.messages.confirmDeleteIp)) return;
+  const confirmDeleteIp = async () => {
+    if (!deleteIpTarget || !selectedZone) return;
+    const ruleId = deleteIpTarget.id;
     try {
-      await authFetch(`/api/security?zoneId=${selectedZone?.id}&ruleId=${ruleId}&ruleType=ip`, {
+      await authFetch(`/api/security?zoneId=${selectedZone.id}&ruleId=${ruleId}&ruleType=ip`, {
         method: 'DELETE',
       });
       setIpRules(prev => prev.filter(r => r.id !== ruleId));
       setNotification({ type: 'success', text: t.securityView.messages.ipDeleted });
     } catch (err: any) {
       setNotification({ type: 'error', text: err.message || t.common.error });
+    } finally {
+      setDeleteIpTarget(null);
     }
   };
 
-  const handleUpdateSecurityLevel = async (level: string) => {
+  const confirmUpdateSecurityLevel = async () => {
+    if (!secLevelTarget || !selectedZone) return;
+    const level = secLevelTarget;
     try {
-      await authFetch(`/api/zones/${selectedZone?.id}`, {
+      await authFetch(`/api/zones/${selectedZone.id}`, {
         method: 'PATCH',
         body: JSON.stringify({ settingId: 'security_level', value: level }),
       });
@@ -156,6 +175,8 @@ export const SecurityView: React.FC = () => {
       });
     } catch (err: any) {
       setNotification({ type: 'error', text: err.message || t.common.error });
+    } finally {
+      setSecLevelTarget(null);
     }
   };
 
@@ -192,6 +213,16 @@ export const SecurityView: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={fetchData}
+            disabled={loading}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-750 border border-gray-700 text-gray-300 text-xs font-medium transition-all"
+            title={t.securityView.refreshBtn || t.common.refresh}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-rose-400' : ''}`} />
+            <span>{t.securityView.refreshBtn || t.common.refresh}</span>
+          </button>
+
           {activeSubTab === 'waf' && (
             <button
               onClick={() => canEditWaf && setIsWafModalOpen(true)}
@@ -309,11 +340,15 @@ export const SecurityView: React.FC = () => {
 
                 <div className="flex items-center gap-2 self-end md:self-center">
                   <button
-                    onClick={() => canEditWaf && handleDeleteWafRule(rule.id)}
+                    onClick={() => {
+                      if (!canEditWaf) return;
+                      setDeleteWafTarget(rule);
+                      setIsDeleteWafModalOpen(true);
+                    }}
                     disabled={!canEditWaf}
                     className={`p-2 rounded-xl transition-colors ${
                       canEditWaf
-                        ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'
+                        ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 cursor-pointer'
                         : 'bg-gray-900 text-gray-600 border border-gray-800 cursor-not-allowed opacity-50'
                     }`}
                     title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
@@ -356,11 +391,15 @@ export const SecurityView: React.FC = () => {
                     <td className="py-3 px-4 text-gray-400">{r.notes || '—'}</td>
                     <td className="py-3 px-4 text-right">
                       <button
-                        onClick={() => canEditWaf && handleDeleteIpRule(r.id)}
+                        onClick={() => {
+                          if (!canEditWaf) return;
+                          setDeleteIpTarget(r);
+                          setIsDeleteIpModalOpen(true);
+                        }}
                         disabled={!canEditWaf}
                         className={`p-1.5 rounded-lg transition-colors ${
                           canEditWaf
-                            ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'
+                            ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 cursor-pointer'
                             : 'bg-gray-900 text-gray-600 border border-gray-800 cursor-not-allowed opacity-50'
                         }`}
                         title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
@@ -397,9 +436,13 @@ export const SecurityView: React.FC = () => {
               ].map((lvl) => (
                 <button
                   key={lvl.id}
-                  onClick={() => canEditWaf && handleUpdateSecurityLevel(lvl.id)}
+                  onClick={() => {
+                    if (!canEditWaf || lvl.id === securityLevel) return;
+                    setSecLevelTarget(lvl.id);
+                    setIsSecLevelModalOpen(true);
+                  }}
                   disabled={!canEditWaf}
-                  className={`w-full p-3 rounded-xl text-left border transition-all flex items-start justify-between gap-2 ${
+                  className={`w-full p-3 rounded-xl text-left border transition-all flex items-start justify-between gap-2 cursor-pointer ${
                     !canEditWaf
                       ? 'bg-gray-950/60 border-gray-850 text-gray-600 cursor-not-allowed'
                       : securityLevel === lvl.id
@@ -614,6 +657,76 @@ export const SecurityView: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Safety Confirmation Modal: Delete WAF Rule */}
+      {deleteWafTarget && (
+        <ActionConfirmModal
+          isOpen={isDeleteWafModalOpen}
+          onClose={() => {
+            setIsDeleteWafModalOpen(false);
+            setDeleteWafTarget(null);
+          }}
+          onConfirm={confirmDeleteWaf}
+          title={t.securityView.deleteWafModal.title}
+          description={formatText(t.securityView.deleteWafModal.desc, {
+            desc: deleteWafTarget.description,
+          })}
+          variant="danger"
+          confirmText={t.securityView.deleteWafModal.btnConfirm}
+          affectedResource={{
+            label: 'WAF Rule Expression',
+            value: deleteWafTarget.description,
+            badge: `${deleteWafTarget.action?.toUpperCase()} | ${deleteWafTarget.filter?.expression || 'Custom'}`,
+          }}
+        />
+      )}
+
+      {/* Safety Confirmation Modal: Delete IP Access Rule */}
+      {deleteIpTarget && (
+        <ActionConfirmModal
+          isOpen={isDeleteIpModalOpen}
+          onClose={() => {
+            setIsDeleteIpModalOpen(false);
+            setDeleteIpTarget(null);
+          }}
+          onConfirm={confirmDeleteIp}
+          title={t.securityView.deleteIpModal.title}
+          description={formatText(t.securityView.deleteIpModal.desc, {
+            value: deleteIpTarget.configuration?.value || 'Target',
+            mode: deleteIpTarget.mode,
+          })}
+          variant="danger"
+          confirmText={t.securityView.deleteIpModal.btnConfirm}
+          affectedResource={{
+            label: 'IP Access Target',
+            value: `${deleteIpTarget.configuration?.target?.toUpperCase()}: ${deleteIpTarget.configuration?.value}`,
+            badge: `Action: ${deleteIpTarget.mode?.toUpperCase()}`,
+          }}
+        />
+      )}
+
+      {/* Safety Confirmation Modal: Change Security Level */}
+      {secLevelTarget && (
+        <ActionConfirmModal
+          isOpen={isSecLevelModalOpen}
+          onClose={() => {
+            setIsSecLevelModalOpen(false);
+            setSecLevelTarget(null);
+          }}
+          onConfirm={confirmUpdateSecurityLevel}
+          title={t.securityView.secLevelModal.title}
+          description={formatText(t.securityView.secLevelModal.desc, {
+            level: secLevelTarget.toUpperCase(),
+          })}
+          variant={secLevelTarget === 'under_attack' || secLevelTarget === 'essentially_off' ? 'warning' : 'info'}
+          confirmText={t.securityView.secLevelModal.btnConfirm}
+          affectedResource={{
+            label: 'Zone Security Level Transition',
+            value: `${securityLevel.toUpperCase()} ➔ ${secLevelTarget.toUpperCase()}`,
+            badge: selectedZone?.name,
+          }}
+        />
       )}
     </div>
   );
