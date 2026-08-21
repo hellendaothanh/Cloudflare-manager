@@ -17,13 +17,22 @@ import {
 } from 'lucide-react';
 
 export const ZonesView: React.FC = () => {
-  const { zones, selectedZone, setSelectedZone, isLoadingZones, refreshZones, authFetch } = useAuth();
+  const { zones, selectedZone, setSelectedZone, isLoadingZones, refreshZones, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
   const [actionLoading, setActionLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
 
-  const handleToggleDevMode = async (zone: Zone) => {
+  // Dev Mode Confirmation State
+  const [devModeModalZone, setDevModeModalZone] = useState<Zone | null>(null);
+
+  const handleRequestToggleDevMode = (zone: Zone) => {
+    setDevModeModalZone(zone);
+  };
+
+  const handleConfirmToggleDevMode = async () => {
+    if (!devModeModalZone) return;
+    const zone = devModeModalZone;
     setActionLoading(true);
     setStatusMsg(null);
     try {
@@ -42,6 +51,7 @@ export const ZonesView: React.FC = () => {
           name: zone.name,
         }),
       });
+      setDevModeModalZone(null);
       await refreshZones();
     } catch (err: any) {
       setStatusMsg({ type: 'error', text: err.message || t.common.error });
@@ -165,7 +175,7 @@ export const ZonesView: React.FC = () => {
               <div className="flex items-center justify-between gap-2 pt-3">
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => handleToggleDevMode(zone)}
+                    onClick={() => handleRequestToggleDevMode(zone)}
                     disabled={actionLoading}
                     className={`text-xs px-2.5 py-1.5 rounded-lg border font-medium transition-colors flex items-center gap-1.5 ${
                       isDevMode
@@ -205,6 +215,91 @@ export const ZonesView: React.FC = () => {
 
       {/* Granular Purge Center Modal */}
       <QuickActionsModal isOpen={isPurgeModalOpen} onClose={() => setIsPurgeModalOpen(false)} />
+
+      {/* Development Mode Confirmation Modal */}
+      {devModeModalZone && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-md rounded-2xl bg-gray-900 border border-gray-800 p-6 shadow-2xl relative space-y-4">
+            
+            <div className="flex items-center gap-3">
+              <div className={`p-3 rounded-2xl border ${
+                devModeModalZone.development_mode > 0
+                  ? 'bg-gray-800 text-gray-400 border-gray-700'
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+              }`}>
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">
+                  {devModeModalZone.development_mode > 0
+                    ? t.zonesView.devModeModal.disableTitle
+                    : t.zonesView.devModeModal.enableTitle}
+                </h3>
+                <span className="text-xs font-mono text-orange-400 font-bold">
+                  {devModeModalZone.name}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-gray-950 border border-gray-850 text-xs text-gray-300 space-y-2 leading-relaxed">
+              <p>
+                {devModeModalZone.development_mode > 0
+                  ? formatText(t.zonesView.devModeModal.disableDesc, { name: devModeModalZone.name })
+                  : formatText(t.zonesView.devModeModal.enableDesc, { name: devModeModalZone.name })}
+              </p>
+
+              {devModeModalZone.development_mode === 0 && (
+                <div className="pt-2 border-t border-gray-800/80 text-amber-300/90 text-[11px] flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
+                  <div>
+                    <span className="font-bold text-amber-400 block mb-0.5">
+                      {t.zonesView.devModeModal.warningTitle}
+                    </span>
+                    {t.zonesView.devModeModal.warningDesc}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setDevModeModalZone(null)}
+                disabled={actionLoading}
+                className="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-750 text-gray-300 text-xs font-semibold transition-colors"
+              >
+                {t.common.cancel}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmToggleDevMode}
+                disabled={actionLoading}
+                className={`px-4 py-2 rounded-xl text-white text-xs font-semibold shadow-lg transition-all flex items-center gap-1.5 ${
+                  devModeModalZone.development_mode > 0
+                    ? 'bg-gray-700 hover:bg-gray-600'
+                    : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-amber-500/20'
+                }`}
+              >
+                {actionLoading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                <span>
+                  {devModeModalZone.development_mode > 0
+                    ? t.zonesView.devModeModal.btnConfirmDisable
+                    : t.zonesView.devModeModal.btnConfirmEnable}
+                </span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setDevModeModalZone(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-sm p-1"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
