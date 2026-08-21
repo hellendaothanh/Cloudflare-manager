@@ -80,14 +80,33 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
 - 👁️ **Auditor / Viewer (Read-Only)**: Telemetry monitoring, drift inspection, and audit reports; all mutation buttons are disabled with descriptive permission notices.
 
 ### 10. CI/CD Automation & Continuous Compliance
-- **Scheduled Drift Audit (CRON)**: Automated background scanning (5m, 15m, 1h, 6h, 24h) to detect unauthorized configuration changes against stored baseline snapshots.
-- **Multi-Channel Alert Dispatcher**: Immediate notifications sent to **Slack**, **Discord**, **Telegram Bot**, or **Custom SIEM JSON Webhooks** upon detecting drift or CIS security score drops.
-- **1-Click Test Alert**: Verify webhook connectivity and formatting directly from the control plane before enabling.
+- **Scheduled Drift CRON Scanner**:
+  - Automated background scanning at configurable intervals (`5 min`, `15 min`, `1 hour`, `6 hours`, `24 hours`).
+  - Compares live zone state against stored Baseline Snapshots to detect unauthorized configuration drift.
+  - Integrated **"Run Scan Now"** button for on-demand immediate scanning.
+- **Multi-Channel Alert Dispatcher**:
+  - 💬 **Slack**: BlockKit formatted messages with status color, zone name, drift count, and CIS Score.
+  - 🎮 **Discord**: Rich Embed alerts with professional color-coding and timestamp.
+  - ✈️ **Telegram**: HTML notifications via Telegram Bot API (`/sendMessage`) with parameter comparison tables.
+  - 🔗 **Custom JSON Webhook**: DevSecOps-standard payloads to SIEM/SOAR platforms with `X-DevSecOps-Secret` authentication header.
+  - 🧪 **1-Click Test Alert**: Verify connectivity and message formatting per-channel or across all channels before activating.
+- **Drift History Log**:
+  - Chronological audit trail of recent scans (`PASS` vs `DRIFT DETECTED`).
+  - Detailed per-parameter change listing (`oldVal` ➔ `currentVal`).
 
 ### 11. Infrastructure as Code (IaC) Terraform Export
-- Export the entire live zone state into clean Terraform HCL compatible with HashiCorp Cloudflare Provider `~> 4.25`.
-- Generates `cloudflare_zone_settings_override`, `cloudflare_record`, `cloudflare_firewall_rule`, `cloudflare_filter`, and `cloudflare_page_rule`.
-- Complete with 1-Click Copy and Download for both `main.tf` and `terraform.tfvars`.
+- Export entire live zone state into production-ready Terraform HCL compatible with HashiCorp Cloudflare Provider `~> 4.25`.
+- Comprehensive resource coverage:
+  - `cloudflare_zone_settings_override`: SSL mode (Strict), Minimum TLS (1.2/1.3), Always Use HTTPS, Automatic HTTPS Rewrites, Brotli, HTTP/3, 0-RTT, Security Level.
+  - `cloudflare_record`: All DNS records (A, AAAA, CNAME, MX, TXT, comments, TTL, Proxy status).
+  - `cloudflare_filter` & `cloudflare_firewall_rule`: WAF firewall rules with Wirefilter expressions.
+  - `cloudflare_ip_list`: IP Whitelist / Block / Challenge access rules.
+  - `cloudflare_page_rule`: URL Forwarding (301/302), Cache Level overrides.
+- 1-Click utilities:
+  - Flexible component filters (DNS, WAF, SSL, Page Rules).
+  - **1-Click Copy** HCL code to clipboard.
+  - **1-Click Download** `main.tf` and `terraform.tfvars`.
+  - Step-by-step deployment guide (`terraform init` ➔ `terraform plan` ➔ `terraform apply`).
 
 ---
 

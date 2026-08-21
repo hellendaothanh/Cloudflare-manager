@@ -80,14 +80,33 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 - 👁️ **Auditor / Viewer (Chỉ đọc)**: Chỉ xem số liệu telemetry và kiểm tra báo cáo an ninh; toàn bộ các nút thay đổi cấu hình đều bị khóa kèm thông báo quyền hạn.
 
 ### 10. Tự động hóa CI/CD & Giám sát Liên tục (Continuous Compliance)
-- **Scheduled Drift Audit (CRON)**: Tự động chạy nền kiểm tra định kỳ (5m, 15m, 1h, 6h, 24h) phát hiện các thay đổi ngoài ý muốn và so sánh với baseline snapshot.
-- **Multi-Channel Alert Dispatcher**: Gửi cảnh báo tức thời qua **Slack Webhook**, **Discord Webhook**, **Telegram Bot** hoặc **Custom SIEM JSON Webhook** khi xảy ra sai lệch cấu hình hoặc sụt giảm điểm CIS Score.
-- **1-Click Test Alert**: Kiểm tra kết nối kênh cảnh báo ngay trên giao diện trước khi kích hoạt.
+- **Lập lịch Quét Sai lệch Tự động (Scheduled Drift CRON Scanner)**:
+  - Tự động chạy ngầm theo chu kỳ linh hoạt (`5 phút`, `15 phút`, `1 giờ`, `6 giờ`, `24 giờ`).
+  - Đối soát và so sánh trạng thái thực tế của Zone với bản Baseline Snapshot đã lưu để phát hiện thay đổi cấu hình trái phép (Drift Detection).
+  - Tích hợp nút **"Run Scan Now"** cho phép kích hoạt quét và đối soát ngay tức thời.
+- **Hệ thống Cảnh báo Đa kênh Tức thời (Multi-Channel Alert Dispatcher)**:
+  - 💬 **Slack**: Gửi tin nhắn định dạng BlockKit với màu trạng thái, tên Zone, số lượng sai lệch và điểm CIS Score.
+  - 🎮 **Discord**: Gửi tin nhắn Rich Embed chuyên nghiệp với màu sắc cảnh báo và timestamp.
+  - ✈️ **Telegram**: Gửi thông báo HTML qua Telegram Bot API (`/sendMessage`) hiển thị bảng so sánh tham số thay đổi.
+  - 🔗 **Custom JSON Webhook**: Gửi payload chuẩn DevSecOps đến hệ thống SIEM/SOAR kèm header xác thực `X-DevSecOps-Secret`.
+  - 🧪 **1-Click Test Alert**: Kiểm tra kết nối và định dạng tin nhắn cho từng kênh hoặc toàn bộ kênh trước khi kích hoạt.
+- **Nhật ký Lịch sử Quét (Drift History Log)**:
+  - Lưu trữ chi tiết các lần quét gần nhất (`PASS` vs `DRIFT DETECTED`).
+  - Liệt kê chi tiết từng tham số bị thay đổi (`oldVal` ➔ `currentVal`).
 
 ### 11. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
 - Trích xuất toàn bộ trạng thái Zone hiện tại thành mã nguồn Terraform HCL chuẩn HashiCorp Cloudflare Provider `~> 4.25`.
-- Bao gồm đầy đủ `cloudflare_zone_settings_override`, `cloudflare_record`, `cloudflare_firewall_rule`, `cloudflare_filter`, `cloudflare_page_rule`.
-- Hỗ trợ xuất đồng thời file `main.tf` và `terraform.tfvars` với 1-Click Copy và Download.
+- Bao gồm đầy đủ các khối tài nguyên:
+  - `cloudflare_zone_settings_override`: SSL mode (Strict), Minimum TLS (1.2/1.3), Always Use HTTPS, Automatic HTTPS Rewrites, Brotli, HTTP/3, 0-RTT, Security Level.
+  - `cloudflare_record`: Toàn bộ các bản ghi DNS (A, AAAA, CNAME, MX, TXT, comments, TTL, Proxy status).
+  - `cloudflare_filter` & `cloudflare_firewall_rule`: Quy tắc tường lửa WAF với biểu thức Wireshark (Wirefilter syntax).
+  - `cloudflare_ip_list`: Danh sách IP Whitelist / Block / Challenge.
+  - `cloudflare_page_rule`: Các quy tắc URL Forwarding (301/302), Cache Level overrides.
+- Tiện ích thao tác 1-Click:
+  - Lọc linh hoạt các thành phần xuất (DNS, WAF, SSL, Page Rules).
+  - **1-Click Copy** mã HCL vào Clipboard.
+  - **1-Click Download** file `main.tf` và `terraform.tfvars`.
+  - Hướng dẫn triển khai từng bước (`terraform init` ➔ `terraform plan` ➔ `terraform apply`).
 
 ---
 
