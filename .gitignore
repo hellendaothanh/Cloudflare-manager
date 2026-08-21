@@ -56,3 +56,8 @@ Thumbs.db
 .gemini/
 .agents/
 *.log
+
+# Playwright Test Outputs
+/test-results/
+/playwright-report/
+/blob-report/

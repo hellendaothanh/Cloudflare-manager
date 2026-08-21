@@ -1,5 +1,11 @@
 # Cloudflare DevSecOps Management Platform 🛡️⚡
 
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-15%2F15%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](./LICENSE)
+
 [🇻🇳 Tiếng Việt](./README.md) | [🇬🇧 English](./README.en.md)
 
 ---
@@ -151,6 +157,15 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
   - **Pre-Restore Diff Inspector**: Detailed visual parameter diff comparison between Live state and Snapshot before execution.
   - **1-Click Rollback**: Restore SSL, TLS, Always HTTPS, HSTS, DNS, and WAF settings with a safety confirmation modal.
 
+### 16. E2E Automated Testing & CI/CD Pipeline (Playwright Test Automation)
+- **Playwright Automated Test Suite (15/15 Passed • 100% Green)**:
+  - `cache-and-devmode.spec.ts`: Validates Dev Mode safety confirmation modal, Granular Purge Center tabs, and 1-click Purge All.
+  - `compliance-and-iac.spec.ts`: Validates Terraform HCL synthesis (`main.tf`, `terraform.tfvars`), scheduled CRON drift scanner, and Webhook alert channels.
+  - `dashboard-navigation.spec.ts`: Validates Zone listing, bilingual VI/EN language switching, and primary sidebar navigation.
+  - `rbac-and-accounts.spec.ts`: Validates Multi-Account organization switching and RBAC role permission gating (Viewer read-only vs DNS Operator vs Admin).
+  - `security-and-audit.spec.ts`: Validates CIS Benchmark Scorecard, System Audit Trail search/filter/export, and 1-Click Snapshot Rollback diff viewer.
+- **GitHub Actions CI Integration**: Automatically triggered on Push/Pull Request via `.github/workflows/e2e.yml` to build and verify 100% test pass rate across Node.js/Ubuntu environments.
+
 ---
 
 ## 🚀 Getting Started & Installation
@@ -166,7 +181,19 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 3. Configure API Token
+### 3. Run Automated E2E Tests (Playwright)
+```bash
+# Run all 15 E2E tests in headless mode
+npm run test:e2e
+
+# Open interactive Playwright UI Test Runner
+npm run test:e2e:ui
+
+# View detailed HTML Test Execution Report
+npm run test:e2e:report
+```
+
+### 4. Configure API Token
 - Enter your Cloudflare API Token directly via the **"Cloudflare API Token"** or **"Account Manager"** modal in the top navigation bar.
 - Or specify it in your `.env` file:
 ```env

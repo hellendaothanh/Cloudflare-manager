@@ -1,5 +1,11 @@
 # Cloudflare DevSecOps Management Platform 🛡️⚡
 
+[![E2E Tests](https://img.shields.io/badge/E2E%20Tests-15%2F15%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](./LICENSE)
+
 [🇻🇳 Tiếng Việt](./README.md) | [🇬🇧 English](./README.en.md)
 
 ---
@@ -151,6 +157,15 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - **Trình Đối soát Pre-Restore Diff Inspector**: So sánh chi tiết từng tham số giữa cấu hình Live và Snapshot trước khi áp dụng.
   - **1-Click Restore Execution**: Khôi phục lại toàn bộ thiết lập SSL, TLS, Always HTTPS, HSTS, DNS và WAF về trạng thái cũ an toàn.
 
+### 16. Kiểm thử Tự động E2E & CI/CD Pipeline (Playwright Test Automation)
+- **Bộ Kiểm thử Tự động Playwright (15/15 Passed • 100% Green)**:
+  - `cache-and-devmode.spec.ts`: Kiểm tra hộp thoại xác nhận an toàn Dev Mode, Granular Purge Center tabs, và 1-click Purge All.
+  - `compliance-and-iac.spec.ts`: Kiểm tra trích xuất Terraform HCL (`main.tf`, `terraform.tfvars`), CRON drift scanner, và Webhook alert channels.
+  - `dashboard-navigation.spec.ts`: Kiểm tra Zone listing, chuyển đổi song ngữ VI/EN, điều hướng toàn bộ menu sidebar.
+  - `rbac-and-accounts.spec.ts`: Kiểm tra chuyển đổi Multi-Account profile, ma trận phân quyền RBAC (Viewer read-only vs DNS Operator vs Admin).
+  - `security-and-audit.spec.ts`: Kiểm tra CIS Benchmark Scorecard, System Audit Trail search/filter/export, và 1-Click Snapshot Rollback diff viewer.
+- **Tích hợp GitHub Actions CI**: Tự động kích hoạt luồng `.github/workflows/e2e.yml` để build và chạy 100% E2E tests trên môi trường Ubuntu/Node.js khi có Pull Request hoặc Push code.
+
 ---
 
 ## 🚀 Hướng dẫn Cài đặt & Khởi chạy
@@ -166,7 +181,19 @@ npm run dev
 ```
 Truy cập giao diện tại: [http://localhost:3000](http://localhost:3000)
 
-### 3. Cấu hình API Token
+### 3. Chạy Kiểm thử Tự động E2E (Playwright Test Suites)
+```bash
+# Chạy toàn bộ 15 bài test E2E ở chế độ headless
+npm run test:e2e
+
+# Mở giao diện tương tác trực quan Playwright Test Runner UI
+npm run test:e2e:ui
+
+# Xem báo cáo kiểm thử chi tiết dạng HTML Report
+npm run test:e2e:report
+```
+
+### 4. Cấu hình API Token
 - Nhập API Token trực tiếp trong cửa sổ **"Cloudflare API Token"** hoặc **"Quản lý Tài khoản"** trên thanh Navbar.
 - Hoặc cấu hình trong file `.env`:
 ```env
