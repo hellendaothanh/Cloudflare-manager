@@ -10,10 +10,11 @@ import {
   SlidersHorizontal, 
   BarChart3, 
   ActivitySquare,
-  Sparkles
+  Sparkles,
+  GitBranch
 } from 'lucide-react';
 
-export type NavTab = 'overview' | 'dns' | 'security' | 'ssl' | 'page-rules' | 'analytics' | 'audit';
+export type NavTab = 'overview' | 'dns' | 'security' | 'ssl' | 'page-rules' | 'analytics' | 'audit' | 'compliance';
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -73,6 +74,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
       icon: ActivitySquare,
       color: 'text-orange-400',
       badge: t.sidebar.audit.badge,
+    },
+    {
+      id: 'compliance' as NavTab,
+      label: t.sidebar.compliance.title,
+      subtitle: t.sidebar.compliance.subtitle,
+      icon: GitBranch,
+      color: 'text-cyan-400',
+      badge: t.sidebar.compliance.badge,
     },
   ];
 

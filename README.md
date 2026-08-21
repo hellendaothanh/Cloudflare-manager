@@ -72,6 +72,16 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 - 🛡️ **Security & WAF Engineer**: Quản trị WAF Firewall, IP Rules, SSL/TLS, Page Rules và Auto-Fix; không thể thay đổi bản ghi DNS.
 - 👁️ **Auditor / Viewer (Chỉ đọc)**: Chỉ xem số liệu telemetry và kiểm tra báo cáo an ninh; toàn bộ các nút thay đổi cấu hình đều bị khóa kèm thông báo quyền hạn.
 
+### 10. Tự động hóa CI/CD & Giám sát Liên tục (Continuous Compliance)
+- **Scheduled Drift Audit (CRON)**: Tự động chạy nền kiểm tra định kỳ (5m, 15m, 1h, 6h, 24h) phát hiện các thay đổi ngoài ý muốn và so sánh với baseline snapshot.
+- **Multi-Channel Alert Dispatcher**: Gửi cảnh báo tức thời qua **Slack Webhook**, **Discord Webhook**, **Telegram Bot** hoặc **Custom SIEM JSON Webhook** khi xảy ra sai lệch cấu hình hoặc sụt giảm điểm CIS Score.
+- **1-Click Test Alert**: Kiểm tra kết nối kênh cảnh báo ngay trên giao diện trước khi kích hoạt.
+
+### 11. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
+- Trích xuất toàn bộ trạng thái Zone hiện tại thành mã nguồn Terraform HCL chuẩn HashiCorp Cloudflare Provider `~> 4.25`.
+- Bao gồm đầy đủ `cloudflare_zone_settings_override`, `cloudflare_record`, `cloudflare_firewall_rule`, `cloudflare_filter`, `cloudflare_page_rule`.
+- Hỗ trợ xuất đồng thời file `main.tf` và `terraform.tfvars` với 1-Click Copy và Download.
+
 ---
 
 ## 🚀 Hướng dẫn Cài đặt & Khởi chạy

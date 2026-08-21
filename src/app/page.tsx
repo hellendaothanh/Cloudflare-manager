@@ -10,6 +10,7 @@ import { SslView } from '@/components/views/SslView';
 import { PageRulesView } from '@/components/views/PageRulesView';
 import { AnalyticsView } from '@/components/views/AnalyticsView';
 import { AuditView } from '@/components/views/AuditView';
+import { ComplianceView } from '@/components/views/ComplianceView';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe, Key, Sparkles, ShieldCheck } from 'lucide-react';
@@ -42,6 +43,7 @@ export default function DashboardPage() {
           {activeTab === 'page-rules' && <PageRulesView />}
           {activeTab === 'analytics' && <AnalyticsView />}
           {activeTab === 'audit' && <AuditView />}
+          {activeTab === 'compliance' && <ComplianceView />}
         </main>
       </div>
 

@@ -78,6 +78,10 @@ export class CloudflareClient {
     });
   }
 
+  async getZoneSetting(zoneId: string, settingId: string): Promise<any> {
+    return this.request<any>(`/zones/${zoneId}/settings/${settingId}`);
+  }
+
   async getZoneSettings(zoneId: string): Promise<any[]> {
     return this.request<any[]>(`/zones/${zoneId}/settings`);
   }

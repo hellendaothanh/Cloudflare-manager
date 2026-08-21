@@ -72,6 +72,16 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
 - 🛡️ **Security & WAF Engineer**: Full management of WAF Firewall rules, IP Access lists, SSL/TLS settings, Page Rules, and Auto-Fix; DNS record mutations are locked.
 - 👁️ **Auditor / Viewer (Read-Only)**: Telemetry monitoring, drift inspection, and audit reports; all mutation buttons are disabled with descriptive permission notices.
 
+### 10. CI/CD Automation & Continuous Compliance
+- **Scheduled Drift Audit (CRON)**: Automated background scanning (5m, 15m, 1h, 6h, 24h) to detect unauthorized configuration changes against stored baseline snapshots.
+- **Multi-Channel Alert Dispatcher**: Immediate notifications sent to **Slack**, **Discord**, **Telegram Bot**, or **Custom SIEM JSON Webhooks** upon detecting drift or CIS security score drops.
+- **1-Click Test Alert**: Verify webhook connectivity and formatting directly from the control plane before enabling.
+
+### 11. Infrastructure as Code (IaC) Terraform Export
+- Export the entire live zone state into clean Terraform HCL compatible with HashiCorp Cloudflare Provider `~> 4.25`.
+- Generates `cloudflare_zone_settings_override`, `cloudflare_record`, `cloudflare_firewall_rule`, `cloudflare_filter`, and `cloudflare_page_rule`.
+- Complete with 1-Click Copy and Download for both `main.tf` and `terraform.tfvars`.
+
 ---
 
 ## 🚀 Getting Started & Installation
