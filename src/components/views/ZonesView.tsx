@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { QuickActionsModal } from '@/components/common/QuickActionsModal';
 import { Zone } from '@/types/cloudflare';
 import { 
   Globe, 
@@ -10,7 +11,9 @@ import {
   ExternalLink,
   Sparkles,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Zap,
+  Trash2
 } from 'lucide-react';
 
 export const ZonesView: React.FC = () => {
@@ -18,6 +21,7 @@ export const ZonesView: React.FC = () => {
   const { t, formatText } = useLanguage();
   const [actionLoading, setActionLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false);
 
   const handleToggleDevMode = async (zone: Zone) => {
     setActionLoading(true);
@@ -46,23 +50,9 @@ export const ZonesView: React.FC = () => {
     }
   };
 
-  const handlePurgeEverything = async (zone: Zone) => {
-    setActionLoading(true);
-    setStatusMsg(null);
-    try {
-      await authFetch(`/api/zones/${zone.id}`, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'purge_cache', purge_everything: true }),
-      });
-      setStatusMsg({
-        type: 'success',
-        text: formatText(t.zonesView.purgeSent, { name: zone.name }),
-      });
-    } catch (err: any) {
-      setStatusMsg({ type: 'error', text: err.message || t.common.error });
-    } finally {
-      setActionLoading(false);
-    }
+  const handleOpenGranularPurge = (zone: Zone) => {
+    setSelectedZone(zone);
+    setIsPurgeModalOpen(true);
   };
 
   return (
@@ -189,11 +179,12 @@ export const ZonesView: React.FC = () => {
                   </button>
 
                   <button
-                    onClick={() => handlePurgeEverything(zone)}
-                    disabled={actionLoading}
-                    className="text-xs px-2.5 py-1.5 rounded-lg bg-gray-800/60 hover:bg-gray-800 text-gray-300 border border-gray-700 font-medium transition-colors"
+                    onClick={() => handleOpenGranularPurge(zone)}
+                    className="text-xs px-2.5 py-1.5 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 font-semibold transition-all flex items-center gap-1.5"
+                    title={t.quickActions.title}
                   >
-                    {t.zonesView.purgeCacheBtn}
+                    <Zap className="w-3 h-3 fill-current" />
+                    <span>{t.zonesView.purgeCacheBtn}</span>
                   </button>
                 </div>
 
@@ -211,6 +202,10 @@ export const ZonesView: React.FC = () => {
           );
         })}
       </div>
+
+      {/* Granular Purge Center Modal */}
+      <QuickActionsModal isOpen={isPurgeModalOpen} onClose={() => setIsPurgeModalOpen(false)} />
     </div>
   );
 };
+
