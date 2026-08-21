@@ -2,6 +2,66 @@ export interface CloudflareAuthContext {
   apiToken: string;
 }
 
+export type UserRole = 'admin' | 'dns_operator' | 'security_engineer' | 'viewer';
+
+export interface RolePermissions {
+  canEditDns: boolean;
+  canEditWaf: boolean;
+  canEditSsl: boolean;
+  canEditPageRules: boolean;
+  canPurgeCache: boolean;
+  canAutoFix: boolean;
+  canManageAccounts: boolean;
+}
+
+export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
+  admin: {
+    canEditDns: true,
+    canEditWaf: true,
+    canEditSsl: true,
+    canEditPageRules: true,
+    canPurgeCache: true,
+    canAutoFix: true,
+    canManageAccounts: true,
+  },
+  dns_operator: {
+    canEditDns: true,
+    canEditWaf: false,
+    canEditSsl: false,
+    canEditPageRules: false,
+    canPurgeCache: true,
+    canAutoFix: false,
+    canManageAccounts: false,
+  },
+  security_engineer: {
+    canEditDns: false,
+    canEditWaf: true,
+    canEditSsl: true,
+    canEditPageRules: true,
+    canPurgeCache: true,
+    canAutoFix: true,
+    canManageAccounts: false,
+  },
+  viewer: {
+    canEditDns: false,
+    canEditWaf: false,
+    canEditSsl: false,
+    canEditPageRules: false,
+    canPurgeCache: false,
+    canAutoFix: false,
+    canManageAccounts: false,
+  },
+};
+
+export interface CloudflareAccountProfile {
+  id: string;
+  name: string;
+  token: string;
+  organization?: string;
+  addedAt: string;
+  isDemo?: boolean;
+}
+
 export interface Zone {
   id: string;
   name: string;

@@ -22,8 +22,9 @@ import {
 import { formatDate } from '@/lib/utils';
 
 export const AuditView: React.FC = () => {
-  const { selectedZone, authFetch } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { language, t, formatText } = useLanguage();
+  const canAutoFix = hasPermission('canAutoFix');
   const [auditResult, setAuditResult] = useState<SecurityAuditResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [remediatingId, setRemediatingId] = useState<string | null>(null);
@@ -421,9 +422,14 @@ export const AuditView: React.FC = () => {
               {!check.passed && check.remediation_action && (
                 <div className="self-end md:self-center">
                   <button
-                    onClick={() => handleAutoRemediate(check.id)}
-                    disabled={remediatingId === check.id}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 border border-orange-500/40 text-xs font-semibold transition-all"
+                    onClick={() => canAutoFix && handleAutoRemediate(check.id)}
+                    disabled={remediatingId === check.id || !canAutoFix}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                      !canAutoFix
+                        ? 'opacity-50 cursor-not-allowed bg-gray-900 border border-gray-800 text-gray-500'
+                        : 'bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 border border-orange-500/40'
+                    }`}
+                    title={!canAutoFix ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
                   >
                     <Zap className="w-3.5 h-3.5 fill-current" />
                     <span>{remediatingId === check.id ? t.auditView.fixingBtn : `${t.auditView.autoFixBtn} (1-Click)`}</span>

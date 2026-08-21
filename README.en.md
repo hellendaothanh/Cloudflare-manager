@@ -60,6 +60,18 @@ The application includes built-in multilingual capabilities with fully synchroni
 - **1-Click Auto-Fix**: Automatically remediate high-risk security misconfigurations with one click.
 - **Config Backup & Drift Diff**: Export live zone configuration snapshots to JSON and detect configuration drift against baseline snapshots.
 
+### 8. Multi-Account & Organization Management
+- Securely store multiple **Cloudflare API Tokens** mapped to distinct accounts or organizations (e.g. *Production Web*, *Staging Security*, *Sandbox Demo*).
+- 1-Click quick account switcher right from the top navigation bar (instantly reloads the associated zone inventory).
+- Custom account aliases, organization labels, and safe account removal.
+
+### 9. Internal Role-Based Access Control (RBAC)
+Four built-in operational roles to prevent misconfigurations and enforce least-privilege principles:
+- 👑 **Admin (Full Access)**: Full privileges across DNS, WAF, SSL/TLS, Page Rules, Account management, and 1-Click Auto-Fix.
+- 🌐 **DNS Operator**: Full access to DNS records, Proxy CDN toggling, and BIND export; WAF, SSL, and Auto-Fix actions remain Read-Only.
+- 🛡️ **Security & WAF Engineer**: Full management of WAF Firewall rules, IP Access lists, SSL/TLS settings, Page Rules, and Auto-Fix; DNS record mutations are locked.
+- 👁️ **Auditor / Viewer (Read-Only)**: Telemetry monitoring, drift inspection, and audit reports; all mutation buttons are disabled with descriptive permission notices.
+
 ---
 
 ## 🚀 Getting Started & Installation

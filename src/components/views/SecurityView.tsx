@@ -18,8 +18,9 @@ import {
 } from 'lucide-react';
 
 export const SecurityView: React.FC = () => {
-  const { selectedZone, authFetch } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
+  const canEditWaf = hasPermission('canEditWaf');
   const [firewallRules, setFirewallRules] = useState<FirewallRule[]>([]);
   const [ipRules, setIpRules] = useState<IpAccessRule[]>([]);
   const [securityLevel, setSecurityLevel] = useState<string>('medium');
@@ -193,8 +194,14 @@ export const SecurityView: React.FC = () => {
         <div className="flex items-center gap-2.5">
           {activeSubTab === 'waf' && (
             <button
-              onClick={() => setIsWafModalOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-semibold shadow-lg shadow-rose-500/20 transition-all"
+              onClick={() => canEditWaf && setIsWafModalOpen(true)}
+              disabled={!canEditWaf}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-lg transition-all ${
+                canEditWaf
+                  ? 'bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white shadow-rose-500/20'
+                  : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+              }`}
+              title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
             >
               <Plus className="w-4 h-4" />
               <span>{t.securityView.addWafBtn}</span>
@@ -202,8 +209,14 @@ export const SecurityView: React.FC = () => {
           )}
           {activeSubTab === 'ip' && (
             <button
-              onClick={() => setIsIpModalOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white text-xs font-semibold shadow-lg shadow-blue-500/20 transition-all"
+              onClick={() => canEditWaf && setIsIpModalOpen(true)}
+              disabled={!canEditWaf}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-lg transition-all ${
+                canEditWaf
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-blue-500/20'
+                  : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+              }`}
+              title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
             >
               <Plus className="w-4 h-4" />
               <span>{t.securityView.addIpBtn}</span>
@@ -296,9 +309,14 @@ export const SecurityView: React.FC = () => {
 
                 <div className="flex items-center gap-2 self-end md:self-center">
                   <button
-                    onClick={() => handleDeleteWafRule(rule.id)}
-                    className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors"
-                    title={t.common.delete}
+                    onClick={() => canEditWaf && handleDeleteWafRule(rule.id)}
+                    disabled={!canEditWaf}
+                    className={`p-2 rounded-xl transition-colors ${
+                      canEditWaf
+                        ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'
+                        : 'bg-gray-900 text-gray-600 border border-gray-800 cursor-not-allowed opacity-50'
+                    }`}
+                    title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -338,9 +356,14 @@ export const SecurityView: React.FC = () => {
                     <td className="py-3 px-4 text-gray-400">{r.notes || '—'}</td>
                     <td className="py-3 px-4 text-right">
                       <button
-                        onClick={() => handleDeleteIpRule(r.id)}
-                        className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors"
-                        title={t.common.delete}
+                        onClick={() => canEditWaf && handleDeleteIpRule(r.id)}
+                        disabled={!canEditWaf}
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          canEditWaf
+                            ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'
+                            : 'bg-gray-900 text-gray-600 border border-gray-800 cursor-not-allowed opacity-50'
+                        }`}
+                        title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -374,12 +397,16 @@ export const SecurityView: React.FC = () => {
               ].map((lvl) => (
                 <button
                   key={lvl.id}
-                  onClick={() => handleUpdateSecurityLevel(lvl.id)}
+                  onClick={() => canEditWaf && handleUpdateSecurityLevel(lvl.id)}
+                  disabled={!canEditWaf}
                   className={`w-full p-3 rounded-xl text-left border transition-all flex items-start justify-between gap-2 ${
-                    securityLevel === lvl.id
-                      ? 'bg-rose-500/15 border-rose-500/40 text-white'
-                      : 'bg-gray-950 border-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-900'
+                    !canEditWaf
+                      ? 'bg-gray-950/60 border-gray-850 text-gray-600 cursor-not-allowed'
+                      : securityLevel === lvl.id
+                        ? 'bg-rose-500/15 border-rose-500/40 text-white'
+                        : 'bg-gray-950 border-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-900'
                   }`}
+                  title={!canEditWaf ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
                 >
                   <div>
                     <span className="font-semibold text-xs block">{lvl.label}</span>

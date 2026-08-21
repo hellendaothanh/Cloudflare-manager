@@ -19,8 +19,9 @@ import {
 } from 'lucide-react';
 
 export const DnsView: React.FC = () => {
-  const { selectedZone, authFetch } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
+  const canEditDns = hasPermission('canEditDns');
   const [records, setRecords] = useState<DnsRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -252,7 +253,13 @@ export const DnsView: React.FC = () => {
           
           <button
             onClick={openAddModal}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-semibold shadow-lg shadow-orange-500/20 transition-all"
+            disabled={!canEditDns}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-lg transition-all ${
+              canEditDns
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/20'
+                : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+            }`}
+            title={!canEditDns ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
           >
             <Plus className="w-4 h-4" />
             <span>{t.dnsView.addRecordBtn}</span>
@@ -355,13 +362,16 @@ export const DnsView: React.FC = () => {
                       <td className="py-3.5 px-4 text-center">
                         {canProxy ? (
                           <button
-                            onClick={() => handleToggleProxy(record)}
+                            onClick={() => canEditDns && handleToggleProxy(record)}
+                            disabled={!canEditDns}
                             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all ${
-                              record.proxied
-                                ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40 hover:bg-orange-500/30'
-                                : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-gray-200'
+                              !canEditDns
+                                ? 'opacity-50 cursor-not-allowed bg-gray-900 border-gray-800 text-gray-500'
+                                : record.proxied
+                                  ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40 hover:bg-orange-500/30'
+                                  : 'bg-gray-800 text-gray-400 border border-gray-700 hover:text-gray-200'
                             }`}
-                            title={record.proxied ? t.dnsView.proxiedTooltip : t.dnsView.dnsOnlyTooltip}
+                            title={!canEditDns ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : (record.proxied ? t.dnsView.proxiedTooltip : t.dnsView.dnsOnlyTooltip)}
                           >
                             {record.proxied ? (
                               <>
@@ -385,16 +395,22 @@ export const DnsView: React.FC = () => {
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5 opacity-80 group-hover:opacity-100">
                           <button
-                            onClick={() => openEditModal(record)}
-                            className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition-colors"
-                            title={t.common.edit}
+                            onClick={() => canEditDns && openEditModal(record)}
+                            disabled={!canEditDns}
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              canEditDns ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50'
+                            }`}
+                            title={!canEditDns ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.edit}
                           >
                             <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button
-                            onClick={() => handleDeleteRecord(record)}
-                            className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors"
-                            title={t.common.delete}
+                            onClick={() => canEditDns && handleDeleteRecord(record)}
+                            disabled={!canEditDns}
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              canEditDns ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20' : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50 border border-gray-800'
+                            }`}
+                            title={!canEditDns ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

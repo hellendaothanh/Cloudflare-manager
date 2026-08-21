@@ -4,23 +4,33 @@ import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { TokenModal } from '@/components/auth/TokenModal';
+import { AccountManagerModal } from '@/components/auth/AccountManagerModal';
 import { QuickActionsModal } from '@/components/common/QuickActionsModal';
+import { UserRole } from '@/types/cloudflare';
 import { 
   Cloud, 
   ShieldCheck, 
-  Key, 
   Zap, 
   ChevronDown, 
   Globe, 
   Check, 
   RefreshCw,
   Sparkles,
-  Languages
+  Languages,
+  Building2,
+  Shield,
+  UserCheck,
+  Plus
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { 
     isDemo, 
+    accounts,
+    activeAccount,
+    switchAccount,
+    role,
+    setRole,
     zones, 
     selectedZone, 
     setSelectedZone, 
@@ -31,16 +41,26 @@ export const Navbar: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
 
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
   const [isZoneDropdownOpen, setIsZoneDropdownOpen] = useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+
+  const roleConfigs: Record<UserRole, { badgeColor: string; icon: string }> = {
+    admin: { badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30', icon: '👑' },
+    dns_operator: { badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30', icon: '🌐' },
+    security_engineer: { badgeColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30', icon: '🛡️' },
+    viewer: { badgeColor: 'text-gray-400 bg-gray-500/10 border-gray-500/30', icon: '👁️' },
+  };
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-gray-800 bg-gray-950/80 backdrop-blur-md px-4 lg:px-8 py-3">
-        <div className="flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 w-full border-b border-gray-800 bg-gray-950/85 backdrop-blur-md px-3 lg:px-6 py-2.5">
+        <div className="flex items-center justify-between gap-3">
           
-          {/* Brand & DevSecOps Platform Tag */}
+          {/* Left: Brand & DevSecOps Platform Tag */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/20">
@@ -51,34 +71,121 @@ export const Navbar: React.FC = () => {
                   <span className="font-extrabold text-base tracking-tight text-white">
                     {t.navbar.brand}<span className="text-orange-500">{t.navbar.brandSuffix}</span>
                   </span>
-                  <span className="hidden sm:inline-flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                  <span className="hidden xl:inline-flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
                     <ShieldCheck className="w-3 h-3" /> {t.navbar.tag}
                   </span>
                 </div>
-                <p className="text-[10px] text-gray-400 hidden sm:block">{t.navbar.tagSubtitle}</p>
+                <p className="text-[10px] text-gray-400 hidden xl:block">{t.navbar.tagSubtitle}</p>
               </div>
             </div>
           </div>
 
-          {/* Center: Zone Selector Dropdown */}
-          <div className="flex items-center gap-2">
+          {/* Center: Account Switcher & Zone Selector */}
+          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            
+            {/* Account Switcher Dropdown */}
             <div className="relative">
               <button
-                onClick={() => setIsZoneDropdownOpen(!isZoneDropdownOpen)}
+                onClick={() => {
+                  setIsAccountDropdownOpen(!isAccountDropdownOpen);
+                  setIsZoneDropdownOpen(false);
+                  setIsRoleDropdownOpen(false);
+                  setIsLangDropdownOpen(false);
+                }}
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-white text-xs font-medium transition-all shadow-inner"
+                title={t.navbar.accounts}
+              >
+                <Building2 className="w-3.5 h-3.5 text-amber-400" />
+                <div className="text-left hidden sm:block max-w-[130px]">
+                  <span className="truncate block font-bold text-gray-200 text-[11px] leading-tight">
+                    {activeAccount?.name || 'Account'}
+                  </span>
+                </div>
+                {activeAccount?.isDemo && (
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
+                    DEMO
+                  </span>
+                )}
+                <ChevronDown className="w-3 h-3 text-gray-400" />
+              </button>
+
+              {isAccountDropdownOpen && (
+                <div className="absolute top-full mt-2 w-64 left-0 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="flex items-center justify-between px-2 py-1 text-[10px] uppercase font-bold text-gray-400 border-b border-gray-800 pb-1.5 mb-1">
+                    <span>{t.navbar.accounts} ({accounts.length})</span>
+                    <button
+                      onClick={() => {
+                        setIsAccountModalOpen(true);
+                        setIsAccountDropdownOpen(false);
+                      }}
+                      className="text-orange-400 hover:text-orange-300 text-[11px] font-semibold flex items-center gap-0.5"
+                    >
+                      <Plus className="w-3 h-3" /> {t.navbar.manageAccounts}
+                    </button>
+                  </div>
+
+                  <div className="max-h-56 overflow-y-auto space-y-1 py-0.5">
+                    {accounts.map((acc) => {
+                      const isCurr = activeAccount?.id === acc.id;
+                      return (
+                        <button
+                          key={acc.id}
+                          onClick={() => {
+                            switchAccount(acc.id);
+                            setIsAccountDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs text-left transition-colors ${
+                            isCurr ? 'bg-orange-500/15 text-orange-400 font-bold' : 'text-gray-300 hover:bg-gray-800'
+                          }`}
+                        >
+                          <div className="truncate">
+                            <span className="block truncate text-[11px]">{acc.name}</span>
+                            <span className="text-[10px] text-gray-500 block truncate">{acc.organization || 'Cloudflare'}</span>
+                          </div>
+                          {isCurr && <Check className="w-3.5 h-3.5 text-orange-400 shrink-0 ml-1" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="pt-1.5 mt-1 border-t border-gray-800">
+                    <button
+                      onClick={() => {
+                        setIsAccountModalOpen(true);
+                        setIsAccountDropdownOpen(false);
+                      }}
+                      className="w-full py-1.5 px-2 rounded-lg bg-gray-950 hover:bg-gray-800 text-orange-400 text-xs font-semibold text-center transition-colors border border-gray-800"
+                    >
+                      ⚙️ {t.navbar.manageAccounts}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Zone Selector Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setIsZoneDropdownOpen(!isZoneDropdownOpen);
+                  setIsAccountDropdownOpen(false);
+                  setIsRoleDropdownOpen(false);
+                  setIsLangDropdownOpen(false);
+                }}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-white text-xs font-medium transition-all shadow-inner"
               >
-                <Globe className="w-3.5 h-3.5 text-orange-400" />
-                <span className="max-w-[160px] truncate font-mono text-gray-200">
+                <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="max-w-[140px] truncate font-mono text-gray-200 text-xs">
                   {selectedZone ? selectedZone.name : (isLoadingZones ? t.navbar.loadingZones : t.navbar.selectZone)}
                 </span>
                 {selectedZone && (
                   <span className={`w-2 h-2 rounded-full ${selectedZone.status === 'active' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                 )}
-                <ChevronDown className="w-3.5 h-3.5 text-gray-400 ml-1" />
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
               </button>
 
               {isZoneDropdownOpen && (
-                <div className="absolute top-full mt-2 w-72 left-0 sm:left-auto sm:right-0 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-2 z-50">
+                <div className="absolute top-full mt-2 w-72 left-0 sm:left-auto sm:right-0 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
                   <div className="flex items-center justify-between px-2 py-1.5 text-[11px] text-gray-400 font-semibold border-b border-gray-800">
                     <span>{t.navbar.zonesList} ({zones.length})</span>
                     <button
@@ -125,7 +232,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsQuickActionsOpen(true)}
               disabled={!selectedZone}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/10 border border-orange-500/30 hover:bg-orange-500/20 text-orange-400 text-xs font-semibold transition-all disabled:opacity-40"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-orange-500/10 border border-orange-500/30 hover:bg-orange-500/20 text-orange-400 text-xs font-semibold transition-all disabled:opacity-40"
               title={t.navbar.quickActionsTooltip}
             >
               <Zap className="w-3.5 h-3.5 fill-current" />
@@ -133,12 +240,80 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
 
-          {/* Right: Language Selector & API Token Status */}
+          {/* Right: RBAC Role Selector + Language + Token Status */}
           <div className="flex items-center gap-2">
+            
+            {/* RBAC Role Switcher */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setIsRoleDropdownOpen(!isRoleDropdownOpen);
+                  setIsAccountDropdownOpen(false);
+                  setIsZoneDropdownOpen(false);
+                  setIsLangDropdownOpen(false);
+                }}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all ${roleConfigs[role].badgeColor}`}
+                title={t.rbac.subtitle}
+              >
+                <span>{roleConfigs[role].icon}</span>
+                <span className="hidden sm:inline font-mono uppercase text-[10px] tracking-wider">
+                  {t.rbac.roles[role]?.badge || role}
+                </span>
+                <ChevronDown className="w-3 h-3 opacity-70" />
+              </button>
+
+              {isRoleDropdownOpen && (
+                <div className="absolute top-full mt-2 right-0 w-72 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-800 pb-1 mb-1">
+                    {t.rbac.title}
+                  </div>
+                  
+                  <div className="space-y-1 py-1">
+                    {(['admin', 'dns_operator', 'security_engineer', 'viewer'] as UserRole[]).map((r) => {
+                      const cfg = roleConfigs[r];
+                      const roleData = t.rbac.roles[r];
+                      const isCurr = role === r;
+
+                      return (
+                        <button
+                          key={r}
+                          onClick={() => {
+                            setRole(r);
+                            setIsRoleDropdownOpen(false);
+                          }}
+                          className={`w-full p-2 rounded-lg text-left transition-colors flex items-start gap-2.5 ${
+                            isCurr ? 'bg-orange-500/15 border border-orange-500/30' : 'hover:bg-gray-800'
+                          }`}
+                        >
+                          <span className="text-base mt-0.5">{cfg.icon}</span>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-bold ${isCurr ? 'text-orange-400' : 'text-white'}`}>
+                                {roleData?.name || r}
+                              </span>
+                              {isCurr && <Check className="w-3.5 h-3.5 text-orange-400" />}
+                            </div>
+                            <p className="text-[10px] text-gray-400 leading-tight mt-0.5">
+                              {roleData?.desc}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Language Switcher Dropdown */}
             <div className="relative">
               <button
-                onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                onClick={() => {
+                  setIsLangDropdownOpen(!isLangDropdownOpen);
+                  setIsAccountDropdownOpen(false);
+                  setIsZoneDropdownOpen(false);
+                  setIsRoleDropdownOpen(false);
+                }}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-200 text-xs font-medium transition-all"
                 title={t.navbar.language}
               >
@@ -150,7 +325,7 @@ export const Navbar: React.FC = () => {
               </button>
 
               {isLangDropdownOpen && (
-                <div className="absolute top-full mt-2 right-0 w-36 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-1 z-50">
+                <div className="absolute top-full mt-2 right-0 w-36 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl p-1 z-50 animate-in fade-in zoom-in-95 duration-100">
                   <button
                     onClick={() => {
                       setLanguage('vi');
@@ -185,18 +360,19 @@ export const Navbar: React.FC = () => {
               )}
             </div>
 
-            {/* API Token / Demo Status Button */}
+            {/* Account / Token Manager Modal Trigger */}
             <button
-              onClick={() => setIsTokenModalOpen(true)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+              onClick={() => setIsAccountModalOpen(true)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
                 isDemo
                   ? 'bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20'
                   : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20'
               }`}
+              title="Cloudflare API Accounts & Tokens"
             >
-              <Key className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">
-                {isDemo ? t.navbar.demoMode : t.navbar.connectedToken}
+              <Building2 className="w-3.5 h-3.5" />
+              <span className="hidden lg:inline">
+                {isDemo ? t.navbar.demoMode : activeAccount?.name || t.navbar.connectedToken}
               </span>
               {isDemo && (
                 <span className="flex items-center gap-1 text-[10px] bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-200">
@@ -210,6 +386,7 @@ export const Navbar: React.FC = () => {
       </header>
 
       {/* Modals */}
+      <AccountManagerModal isOpen={isAccountModalOpen} onClose={() => setIsAccountModalOpen(false)} />
       <TokenModal isOpen={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)} />
       <QuickActionsModal isOpen={isQuickActionsOpen} onClose={() => setIsQuickActionsOpen(false)} />
     </>

@@ -11,8 +11,9 @@ interface QuickActionsModalProps {
 }
 
 export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, onClose }) => {
-  const { selectedZone, authFetch } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
+  const canPurge = hasPermission('canPurgeCache');
   const [loading, setLoading] = useState(false);
   const [purgeType, setPurgeType] = useState<'everything' | 'custom'>('everything');
   const [customUrls, setCustomUrls] = useState('');
@@ -155,9 +156,14 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
             )}
 
             <button
-              onClick={handlePurgeCache}
-              disabled={loading}
-              className="w-full bg-orange-600/80 hover:bg-orange-600 text-white text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all disabled:opacity-50"
+              onClick={() => canPurge && handlePurgeCache()}
+              disabled={loading || !canPurge}
+              className={`w-full text-white text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
+                !canPurge
+                  ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+                  : 'bg-orange-600/80 hover:bg-orange-600 shadow-md shadow-orange-500/10'
+              }`}
+              title={!canPurge ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
             >
               {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
               {t.quickActions.purgeBtn}
@@ -178,16 +184,22 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleToggleUnderAttack(true)}
-                  disabled={loading}
-                  className="flex-1 py-1.5 px-2 rounded-lg bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-semibold"
+                  onClick={() => canPurge && handleToggleUnderAttack(true)}
+                  disabled={loading || !canPurge}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold ${
+                    !canPurge ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-50' : 'bg-rose-600/80 hover:bg-rose-600 text-white'
+                  }`}
+                  title={!canPurge ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
                 >
                   {t.quickActions.btnEnableEmergency}
                 </button>
                 <button
-                  onClick={() => handleToggleUnderAttack(false)}
-                  disabled={loading}
-                  className="flex-1 py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs"
+                  onClick={() => canPurge && handleToggleUnderAttack(false)}
+                  disabled={loading || !canPurge}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs ${
+                    !canPurge ? 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50' : 'bg-gray-800 hover:bg-gray-750 text-gray-300'
+                  }`}
+                  title={!canPurge ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
                 >
                   {t.quickActions.btnTurnOff}
                 </button>
@@ -206,16 +218,22 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => handleToggleDevMode(true)}
-                  disabled={loading}
-                  className="flex-1 py-1.5 px-2 rounded-lg bg-amber-600/80 hover:bg-amber-600 text-white text-xs font-semibold"
+                  onClick={() => canPurge && handleToggleDevMode(true)}
+                  disabled={loading || !canPurge}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold ${
+                    !canPurge ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-50' : 'bg-amber-600/80 hover:bg-amber-600 text-white'
+                  }`}
+                  title={!canPurge ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
                 >
                   {t.quickActions.btnEnable3h}
                 </button>
                 <button
-                  onClick={() => handleToggleDevMode(false)}
-                  disabled={loading}
-                  className="flex-1 py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs"
+                  onClick={() => canPurge && handleToggleDevMode(false)}
+                  disabled={loading || !canPurge}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs ${
+                    !canPurge ? 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50' : 'bg-gray-800 hover:bg-gray-750 text-gray-300'
+                  }`}
+                  title={!canPurge ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
                 >
                   {t.quickActions.btnTurnOff}
                 </button>

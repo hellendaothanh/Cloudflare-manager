@@ -60,6 +60,18 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - **1-Click Auto-Fix**: Tự động khắc phục các lỗ hổng cấu hình nguy hiểm chỉ với 1 nút bấm.
 - **Config Backup & Drift Diff**: Xuất Snapshot toàn bộ cấu hình Zone ra file JSON và so sánh sai lệch cấu hình (Configuration Drift) giữa các mốc thời gian.
 
+### 8. Quản lý Đa tài khoản & Tổ chức (Multi-Account Manager)
+- Lưu trữ danh sách nhiều **Cloudflare API Token** tương ứng với các tài khoản hoặc tổ chức khác nhau (e.g. *Production Web*, *Staging Security*, *Sandbox Demo*).
+- Chuyển đổi tài khoản tức thì trực tiếp trên thanh Navbar với 1 cú nhấp chuột (tự động nạp lại danh sách Zone tương ứng).
+- Quản lý Alias gợi nhớ, tên Tổ chức và xóa tài khoản an toàn.
+
+### 9. Phân quyền Vận hành Nội bộ (Internal RBAC Matrix)
+Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ngừa rủi ro thao tác nhầm:
+- 👑 **Admin (Toàn quyền)**: Có đầy đủ quyền cấu hình DNS, WAF, SSL, Page Rules, quản lý tài khoản và Auto-Fix.
+- 🌐 **DNS Operator**: Quản lý toàn diện bản ghi DNS, Proxy CDN và BIND export; các tính năng WAF/SSL/Auto-Fix ở chế độ chỉ đọc (Read-only).
+- 🛡️ **Security & WAF Engineer**: Quản trị WAF Firewall, IP Rules, SSL/TLS, Page Rules và Auto-Fix; không thể thay đổi bản ghi DNS.
+- 👁️ **Auditor / Viewer (Chỉ đọc)**: Chỉ xem số liệu telemetry và kiểm tra báo cáo an ninh; toàn bộ các nút thay đổi cấu hình đều bị khóa kèm thông báo quyền hạn.
+
 ---
 
 ## 🚀 Hướng dẫn Cài đặt & Khởi chạy

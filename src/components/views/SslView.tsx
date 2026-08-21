@@ -16,8 +16,9 @@ import {
 import { formatDate } from '@/lib/utils';
 
 export const SslView: React.FC = () => {
-  const { selectedZone, authFetch } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
+  const canEditSsl = hasPermission('canEditSsl');
   const [sslData, setSslData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [savingSetting, setSavingSetting] = useState<string | null>(null);
@@ -243,13 +244,16 @@ export const SslView: React.FC = () => {
             return (
               <button
                 key={mode.id}
-                onClick={() => handleUpdateSslMode(mode.id as any)}
-                disabled={savingSetting === 'ssl'}
+                onClick={() => canEditSsl && handleUpdateSslMode(mode.id as any)}
+                disabled={savingSetting === 'ssl' || !canEditSsl}
                 className={`p-4 rounded-2xl text-left border transition-all flex flex-col justify-between relative ${
-                  isCurrent
-                    ? 'bg-gray-900 border-emerald-500/50 shadow-xl shadow-emerald-500/5 ring-1 ring-emerald-500/30'
-                    : 'bg-gray-900/60 border-gray-800 hover:border-gray-700 hover:bg-gray-900'
+                  !canEditSsl
+                    ? 'opacity-60 cursor-not-allowed bg-gray-950 border-gray-850'
+                    : isCurrent
+                      ? 'bg-gray-900 border-emerald-500/50 shadow-xl shadow-emerald-500/5 ring-1 ring-emerald-500/30'
+                      : 'bg-gray-900/60 border-gray-800 hover:border-gray-700 hover:bg-gray-900'
                 }`}
+                title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
               >
                 {isCurrent && (
                   <div className="absolute top-3 right-3 p-1 rounded-full bg-emerald-500 text-white shadow-sm">
@@ -296,13 +300,16 @@ export const SslView: React.FC = () => {
             {['1.0', '1.1', '1.2', '1.3'].map((v) => (
               <button
                 key={v}
-                onClick={() => handleUpdateMinTls(v)}
-                disabled={savingSetting === 'min_tls_version'}
+                onClick={() => canEditSsl && handleUpdateMinTls(v)}
+                disabled={savingSetting === 'min_tls_version' || !canEditSsl}
                 className={`py-2 px-3 rounded-xl text-xs font-mono font-semibold border transition-all ${
-                  sslData?.min_tls_version === v
-                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
-                    : 'bg-gray-950 text-gray-400 border-gray-850 hover:text-white'
+                  !canEditSsl
+                    ? 'opacity-50 cursor-not-allowed bg-gray-950 text-gray-600 border-gray-850'
+                    : sslData?.min_tls_version === v
+                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                      : 'bg-gray-950 text-gray-400 border-gray-850 hover:text-white'
                 }`}
+                title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
               >
                 TLS {v}
               </button>
@@ -318,11 +325,12 @@ export const SslView: React.FC = () => {
               <span className="text-[11px] text-gray-400">{t.sslView.alwaysHttpsDesc}</span>
             </div>
             <button
-              onClick={handleToggleAlwaysHttps}
-              disabled={savingSetting === 'always_use_https'}
+              onClick={() => canEditSsl && handleToggleAlwaysHttps()}
+              disabled={savingSetting === 'always_use_https' || !canEditSsl}
               className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                sslData?.always_use_https ? 'bg-emerald-500' : 'bg-gray-800'
+                !canEditSsl ? 'opacity-50 cursor-not-allowed bg-gray-850' : sslData?.always_use_https ? 'bg-emerald-500' : 'bg-gray-800'
               }`}
+              title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
             >
               <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
                 sslData?.always_use_https ? 'translate-x-5' : 'translate-x-0'
@@ -336,11 +344,12 @@ export const SslView: React.FC = () => {
               <span className="text-[11px] text-gray-400">{t.sslView.autoHttpsDesc}</span>
             </div>
             <button
-              onClick={handleToggleAutoHttps}
-              disabled={savingSetting === 'automatic_https_rewrites'}
+              onClick={() => canEditSsl && handleToggleAutoHttps()}
+              disabled={savingSetting === 'automatic_https_rewrites' || !canEditSsl}
               className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                sslData?.automatic_https_rewrites ? 'bg-emerald-500' : 'bg-gray-800'
+                !canEditSsl ? 'opacity-50 cursor-not-allowed bg-gray-850' : sslData?.automatic_https_rewrites ? 'bg-emerald-500' : 'bg-gray-800'
               }`}
+              title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
             >
               <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
                 sslData?.automatic_https_rewrites ? 'translate-x-5' : 'translate-x-0'

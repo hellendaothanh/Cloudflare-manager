@@ -1,13 +1,29 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Zone } from '@/types/cloudflare';
+import { 
+  Zone, 
+  CloudflareAccountProfile, 
+  UserRole, 
+  RolePermissions, 
+  ROLE_PERMISSIONS_MAP 
+} from '@/types/cloudflare';
 
 interface AuthContextType {
   token: string;
   setToken: (token: string) => void;
   isAuthenticated: boolean;
   isDemo: boolean;
+  accounts: CloudflareAccountProfile[];
+  activeAccount: CloudflareAccountProfile | null;
+  addAccount: (account: { name: string; token: string; organization?: string; isDemo?: boolean }) => string;
+  switchAccount: (accountId: string) => void;
+  removeAccount: (accountId: string) => void;
+  updateAccount: (accountId: string, updates: Partial<CloudflareAccountProfile>) => void;
+  role: UserRole;
+  setRole: (role: UserRole) => void;
+  permissions: RolePermissions;
+  hasPermission: (permission: keyof RolePermissions) => boolean;
   zones: Zone[];
   selectedZone: Zone | null;
   setSelectedZone: (zone: Zone | null) => void;
@@ -18,63 +34,182 @@ interface AuthContextType {
   setDemoMode: () => void;
 }
 
+const DEFAULT_DEMO_ACCOUNT: CloudflareAccountProfile = {
+  id: 'demo-account',
+  name: 'Sandbox Demo Lab',
+  token: 'demo-token',
+  organization: 'DevSecOps Mock Enterprise',
+  addedAt: new Date().toISOString(),
+  isDemo: true,
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setTokenState] = useState<string>('');
-  const [isDemo, setIsDemo] = useState<boolean>(false);
+  const [accounts, setAccounts] = useState<CloudflareAccountProfile[]>([]);
+  const [activeAccount, setActiveAccount] = useState<CloudflareAccountProfile | null>(null);
+  const [role, setRoleState] = useState<UserRole>('admin');
   const [zones, setZones] = useState<Zone[]>([]);
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
   const [isLoadingZones, setIsLoadingZones] = useState<boolean>(false);
 
+  // Initialize accounts & role from localStorage
   useEffect(() => {
-    // Check saved token or demo preference
-    const savedToken = localStorage.getItem('cf_api_token');
-    const demoPref = localStorage.getItem('cf_is_demo') === 'true';
+    // 1. Role
+    const savedRole = localStorage.getItem('cf_user_role') as UserRole;
+    if (savedRole && ROLE_PERMISSIONS_MAP[savedRole]) {
+      setRoleState(savedRole);
+    }
 
-    if (savedToken) {
-      setTokenState(savedToken);
-      setIsDemo(false);
-    } else if (demoPref) {
-      setTokenState('demo-token');
-      setIsDemo(true);
+    // 2. Accounts
+    let loadedAccounts: CloudflareAccountProfile[] = [];
+    const savedAccountsJson = localStorage.getItem('cf_accounts');
+    if (savedAccountsJson) {
+      try {
+        loadedAccounts = JSON.parse(savedAccountsJson);
+      } catch (e) {
+        loadedAccounts = [];
+      }
+    }
+
+    // Migrate single token if present from previous sessions
+    const legacyToken = localStorage.getItem('cf_api_token');
+    if (legacyToken && legacyToken !== 'demo-token') {
+      const exists = loadedAccounts.some(a => a.token === legacyToken);
+      if (!exists) {
+        loadedAccounts.push({
+          id: `acc-${Date.now()}`,
+          name: 'Primary Account',
+          token: legacyToken,
+          organization: 'Cloudflare Org',
+          addedAt: new Date().toISOString(),
+          isDemo: false,
+        });
+      }
+    }
+
+    // Ensure Demo account is present if list is empty
+    if (loadedAccounts.length === 0) {
+      loadedAccounts = [DEFAULT_DEMO_ACCOUNT];
+    }
+
+    setAccounts(loadedAccounts);
+    localStorage.setItem('cf_accounts', JSON.stringify(loadedAccounts));
+
+    // 3. Active account
+    const savedActiveId = localStorage.getItem('cf_active_account_id');
+    const matched = loadedAccounts.find(a => a.id === savedActiveId);
+    if (matched) {
+      setActiveAccount(matched);
     } else {
-      // Default to demo mode on initial launch so user can explore right away
-      setTokenState('demo-token');
-      setIsDemo(true);
+      setActiveAccount(loadedAccounts[0]);
+      localStorage.setItem('cf_active_account_id', loadedAccounts[0].id);
     }
   }, []);
 
-  const setToken = (newToken: string) => {
-    setTokenState(newToken);
-    if (newToken === 'demo-token') {
-      setIsDemo(true);
-      localStorage.setItem('cf_is_demo', 'true');
-      localStorage.removeItem('cf_api_token');
-    } else {
-      setIsDemo(false);
-      localStorage.removeItem('cf_is_demo');
-      localStorage.setItem('cf_api_token', newToken);
+  const saveAccounts = (newAccounts: CloudflareAccountProfile[]) => {
+    setAccounts(newAccounts);
+    localStorage.setItem('cf_accounts', JSON.stringify(newAccounts));
+  };
+
+  const addAccount = (data: { name: string; token: string; organization?: string; isDemo?: boolean }) => {
+    const newId = `acc-${Date.now()}`;
+    const newAcc: CloudflareAccountProfile = {
+      id: newId,
+      name: data.name.trim() || 'Cloudflare Account',
+      token: data.token.trim(),
+      organization: data.organization?.trim() || 'Default Org',
+      addedAt: new Date().toISOString(),
+      isDemo: Boolean(data.isDemo || data.token === 'demo-token'),
+    };
+
+    const updated = [...accounts.filter(a => a.id !== newId), newAcc];
+    saveAccounts(updated);
+    switchAccount(newId);
+    return newId;
+  };
+
+  const switchAccount = (accountId: string) => {
+    const target = accounts.find(a => a.id === accountId);
+    if (target) {
+      setActiveAccount(target);
+      localStorage.setItem('cf_active_account_id', target.id);
+      if (target.isDemo) {
+        localStorage.setItem('cf_is_demo', 'true');
+        localStorage.removeItem('cf_api_token');
+      } else {
+        localStorage.removeItem('cf_is_demo');
+        localStorage.setItem('cf_api_token', target.token);
+      }
+      setSelectedZone(null);
     }
   };
 
-  const logout = () => {
-    setTokenState('');
-    setIsDemo(false);
-    setZones([]);
-    setSelectedZone(null);
-    localStorage.removeItem('cf_api_token');
-    localStorage.removeItem('cf_is_demo');
+  const removeAccount = (accountId: string) => {
+    const updated = accounts.filter(a => a.id !== accountId);
+    const finalAccounts = updated.length > 0 ? updated : [DEFAULT_DEMO_ACCOUNT];
+    saveAccounts(finalAccounts);
+
+    if (activeAccount?.id === accountId) {
+      switchAccount(finalAccounts[0].id);
+    }
+  };
+
+  const updateAccount = (accountId: string, updates: Partial<CloudflareAccountProfile>) => {
+    const updated = accounts.map(a => (a.id === accountId ? { ...a, ...updates } : a));
+    saveAccounts(updated);
+    if (activeAccount?.id === accountId) {
+      setActiveAccount(prev => (prev ? { ...prev, ...updates } : null));
+    }
+  };
+
+  const setToken = (newToken: string) => {
+    if (!newToken || newToken === 'demo-token') {
+      switchAccount('demo-account');
+      return;
+    }
+
+    const existing = accounts.find(a => a.token === newToken);
+    if (existing) {
+      switchAccount(existing.id);
+    } else {
+      addAccount({
+        name: 'My Cloudflare Token',
+        token: newToken,
+        organization: 'Main Org',
+      });
+    }
+  };
+
+  const setRole = (newRole: UserRole) => {
+    setRoleState(newRole);
+    localStorage.setItem('cf_user_role', newRole);
   };
 
   const setDemoMode = () => {
-    setToken('demo-token');
+    const demo = accounts.find(a => a.isDemo) || DEFAULT_DEMO_ACCOUNT;
+    if (!accounts.some(a => a.id === demo.id)) {
+      saveAccounts([...accounts, demo]);
+    }
+    switchAccount(demo.id);
+  };
+
+  const logout = () => {
+    removeAccount(activeAccount?.id || '');
+  };
+
+  const currentToken = activeAccount?.token || 'demo-token';
+  const isDemo = Boolean(activeAccount?.isDemo || currentToken === 'demo-token');
+  const permissions = ROLE_PERMISSIONS_MAP[role] || ROLE_PERMISSIONS_MAP.viewer;
+
+  const hasPermission = (perm: keyof RolePermissions): boolean => {
+    return Boolean(permissions[perm]);
   };
 
   const authFetch = async (url: string, options: RequestInit = {}) => {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token || 'demo-token'}`,
+      'Authorization': `Bearer ${currentToken}`,
       ...(options.headers as Record<string, string> || {}),
     };
 
@@ -87,7 +222,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const refreshZones = async () => {
-    if (!token) return;
+    if (!currentToken) return;
     setIsLoadingZones(true);
     try {
       const data = await authFetch('/api/zones');
@@ -101,25 +236,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSelectedZone(null);
       }
     } catch (err) {
-      console.error('Failed to load zones:', err);
+      console.error('Failed to load zones for active account:', err);
     } finally {
       setIsLoadingZones(false);
     }
   };
 
   useEffect(() => {
-    if (token) {
+    if (activeAccount) {
       refreshZones();
     }
-  }, [token]);
+  }, [activeAccount?.id, activeAccount?.token]);
 
   return (
     <AuthContext.Provider
       value={{
-        token,
+        token: currentToken,
         setToken,
-        isAuthenticated: !!token,
+        isAuthenticated: !!currentToken,
         isDemo,
+        accounts,
+        activeAccount,
+        addAccount,
+        switchAccount,
+        removeAccount,
+        updateAccount,
+        role,
+        setRole,
+        permissions,
+        hasPermission,
         zones,
         selectedZone,
         setSelectedZone,

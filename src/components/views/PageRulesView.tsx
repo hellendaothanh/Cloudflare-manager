@@ -15,8 +15,9 @@ import {
 } from 'lucide-react';
 
 export const PageRulesView: React.FC = () => {
-  const { selectedZone, authFetch } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
+  const canEditPageRules = hasPermission('canEditPageRules');
   const [rules, setRules] = useState<PageRule[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -124,8 +125,14 @@ export const PageRulesView: React.FC = () => {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white text-xs font-semibold shadow-lg shadow-purple-500/20 transition-all self-start md:self-center"
+          onClick={() => canEditPageRules && setIsModalOpen(true)}
+          disabled={!canEditPageRules}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold shadow-lg transition-all self-start md:self-center ${
+            canEditPageRules
+              ? 'bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white shadow-purple-500/20'
+              : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+          }`}
+          title={!canEditPageRules ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
         >
           <Plus className="w-4 h-4" />
           <span>{t.pageRulesView.addRuleBtn}</span>
@@ -190,9 +197,14 @@ export const PageRulesView: React.FC = () => {
 
               <div className="flex items-center gap-2 self-end md:self-center">
                 <button
-                  onClick={() => handleDeleteRule(rule.id)}
-                  className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-colors"
-                  title={t.common.delete}
+                  onClick={() => canEditPageRules && handleDeleteRule(rule.id)}
+                  disabled={!canEditPageRules}
+                  className={`p-2 rounded-xl transition-colors ${
+                    canEditPageRules
+                      ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20'
+                      : 'bg-gray-900 text-gray-600 border border-gray-800 cursor-not-allowed opacity-50'
+                  }`}
+                  title={!canEditPageRules ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : t.common.delete}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
