@@ -15,6 +15,7 @@ export interface RolePermissions {
   canManageWorkers: boolean;
   canManageRateLimit: boolean;
   canManageZeroTrust: boolean;
+  canRollbackSnapshot: boolean;
 }
 
 export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
@@ -29,6 +30,7 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canManageWorkers: true,
     canManageRateLimit: true,
     canManageZeroTrust: true,
+    canRollbackSnapshot: true,
   },
   dns_operator: {
     canEditDns: true,
@@ -41,6 +43,7 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canManageWorkers: false,
     canManageRateLimit: false,
     canManageZeroTrust: false,
+    canRollbackSnapshot: false,
   },
   security_engineer: {
     canEditDns: false,
@@ -53,6 +56,7 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canManageWorkers: true,
     canManageRateLimit: true,
     canManageZeroTrust: true,
+    canRollbackSnapshot: true,
   },
   viewer: {
     canEditDns: false,
@@ -65,6 +69,7 @@ export const ROLE_PERMISSIONS_MAP: Record<UserRole, RolePermissions> = {
     canManageWorkers: false,
     canManageRateLimit: false,
     canManageZeroTrust: false,
+    canRollbackSnapshot: false,
   },
 };
 
@@ -412,3 +417,55 @@ export interface CloudflareTunnel {
     path?: string;
   }>;
 }
+
+// --- System Audit Trail & Rollback ---
+export type AuditActionType =
+  | 'TOGGLE_DEV_MODE'
+  | 'PURGE_CACHE'
+  | 'TOGGLE_UNDER_ATTACK'
+  | 'UPDATE_SSL'
+  | 'CREATE_DNS'
+  | 'UPDATE_DNS'
+  | 'DELETE_DNS'
+  | 'CREATE_WAF'
+  | 'DELETE_WAF'
+  | 'UPDATE_RATE_LIMIT'
+  | 'RESTORE_SNAPSHOT'
+  | 'EXPORT_SNAPSHOT'
+  | 'AUTO_FIX_APPLIED'
+  | 'EXPORT_TERRAFORM'
+  | 'SWITCH_ACCOUNT';
+
+export interface SystemAuditLogEntry {
+  id: string;
+  timestamp: string;
+  actorName: string;
+  actorRole: UserRole;
+  actionType: AuditActionType;
+  zoneName: string;
+  zoneId?: string;
+  resource: string;
+  status: 'SUCCESS' | 'FAILED' | 'WARNING';
+  details: string;
+  ipAddress?: string;
+}
+
+export interface SavedSnapshot {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  createdBy: string;
+  zoneName: string;
+  zoneId: string;
+  data: ZoneConfigSnapshot;
+}
+
+export interface SnapshotDiffItem {
+  category: 'SSL' | 'DNS' | 'WAF' | 'Network' | 'Headers' | 'General';
+  key: string;
+  oldVal: string;
+  currentVal: string;
+  status: 'IDENTICAL' | 'DIFF_DETECTED';
+}
+

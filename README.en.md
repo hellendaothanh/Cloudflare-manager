@@ -139,6 +139,18 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
   - Monitor tunnel health, active connectors, and public ingress routing.
   - **1-Click Launch Command**: Quick connector launch script `cloudflared tunnel run --token <TOKEN>`.
 
+### 15. System Audit Trail & 1-Click Rollback Engine
+- **System & Operator Action Audit Trail**:
+  - Automatically records all mutation actions performed across the control plane (*Actor, RBAC Role, Action Type, Timestamp, Target Zone, Status*).
+  - Categorized tracking: Dev Mode toggles, Granular Cache Purge, SSL/TLS changes, DNS record modifications, WAF rules, Snapshot restores.
+  - Smart search and multi-criteria filters by keyword, user, role, and action category.
+  - **Compliance Export**: 1-Click export to `audit-trail.csv` or `audit-trail.json` for SOC2 and ISO 27001 compliance reviews.
+- **Snapshot Repository & 1-Click Rollback Engine**:
+  - **Create Snapshot**: 1-Click capture of live zone configuration with custom naming and description notes.
+  - **Import JSON Snapshot**: Drag-and-drop JSON backup files from your local workstation.
+  - **Pre-Restore Diff Inspector**: Detailed visual parameter diff comparison between Live state and Snapshot before execution.
+  - **1-Click Rollback**: Restore SSL, TLS, Always HTTPS, HSTS, DNS, and WAF settings with a safety confirmation modal.
+
 ---
 
 ## 🚀 Getting Started & Installation

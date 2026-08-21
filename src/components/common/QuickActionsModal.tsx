@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { auditLogger } from '@/lib/audit/audit-logger';
 import { 
   Zap, 
   Trash2, 
@@ -40,7 +41,7 @@ interface PurgeHistoryItem {
 }
 
 export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, onClose }) => {
-  const { selectedZone, authFetch, hasPermission, role } = useAuth();
+  const { selectedZone, authFetch, hasPermission, role, activeAccount } = useAuth();
   const { t, formatText } = useLanguage();
   const canPurge = hasPermission('canPurgeCache');
 
@@ -119,6 +120,17 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
           status: 'success',
         });
 
+        auditLogger.recordLog({
+          actorName: activeAccount?.name || 'Operator',
+          actorRole: role,
+          actionType: 'PURGE_CACHE',
+          zoneName: selectedZone.name,
+          zoneId: selectedZone.id,
+          resource: 'Purge Everything (Entire Domain Cache)',
+          status: 'SUCCESS',
+          details: `Xóa toàn bộ Cache trên Cloudflare Edge cho domain ${selectedZone.name}.`,
+        });
+
         setMessage({ type: 'success', text: t.quickActions.purgeSuccessAll });
       } else if (purgeMode === 'custom') {
         const urls = customUrls.split('\n').map(u => u.trim()).filter(Boolean);
@@ -142,6 +154,17 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
           status: 'success',
         });
 
+        auditLogger.recordLog({
+          actorName: activeAccount?.name || 'Operator',
+          actorRole: role,
+          actionType: 'PURGE_CACHE',
+          zoneName: selectedZone.name,
+          zoneId: selectedZone.id,
+          resource: `Granular Purge: ${urls.length} URLs`,
+          status: 'SUCCESS',
+          details: `Đã xóa Cache chi tiết cho ${urls.length} đường dẫn URLs trên domain ${selectedZone.name}.`,
+        });
+
         setMessage({ type: 'success', text: formatText(t.quickActions.purgeSuccessUrls, { count: urls.length }) });
       } else if (purgeMode === 'hosts') {
         const hostsList = customHosts.split('\n').map(h => h.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '')).filter(Boolean);
@@ -163,6 +186,17 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
           targetCount: hostsList.length,
           details: hostsList,
           status: 'success',
+        });
+
+        auditLogger.recordLog({
+          actorName: activeAccount?.name || 'Operator',
+          actorRole: role,
+          actionType: 'PURGE_CACHE',
+          zoneName: selectedZone.name,
+          zoneId: selectedZone.id,
+          resource: `Granular Purge: Hosts (${hostsList.join(', ')})`,
+          status: 'SUCCESS',
+          details: `Đã xóa Cache cho Hostnames ${hostsList.join(', ')} trên domain ${selectedZone.name}.`,
         });
 
         setMessage({ type: 'success', text: formatText(t.quickActions.purgeSuccessHosts, { count: hostsList.length }) });
@@ -192,6 +226,17 @@ export const QuickActionsModal: React.FC<QuickActionsModalProps> = ({ isOpen, on
           targetCount: tagsList.length + prefixesList.length,
           details: [...tagsList.map(t => `tag:${t}`), ...prefixesList.map(p => `prefix:${p}`)],
           status: 'success',
+        });
+
+        auditLogger.recordLog({
+          actorName: activeAccount?.name || 'Operator',
+          actorRole: role,
+          actionType: 'PURGE_CACHE',
+          zoneName: selectedZone.name,
+          zoneId: selectedZone.id,
+          resource: `Granular Purge: Tags/Prefixes (${tagsList.length} tags, ${prefixesList.length} prefixes)`,
+          status: 'SUCCESS',
+          details: `Đã xóa Cache theo Tags/Prefixes trên domain ${selectedZone.name}.`,
         });
 
         setMessage({ type: 'success', text: t.quickActions.purgeSuccessTags });

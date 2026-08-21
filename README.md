@@ -139,6 +139,18 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - Giám sát trạng thái Tunnel (Healthy / Down), Active Edge Connectors, và Public Ingress Routing.
   - **1-Click Launch Command**: Lệnh khởi chạy connector nhanh `cloudflared tunnel run --token <TOKEN>`.
 
+### 15. Nhật ký Thao tác & Khôi phục (System Audit Trail & Rollback Engine)
+- **Nhật ký Thao tác Hệ thống (System Audit Trail)**:
+  - Tự động ghi lại lịch sử mọi hành động mutation trên hạ tầng (*Ai, Vai trò RBAC, Làm gì, Thời gian, Domain mục tiêu, Trạng thái*).
+  - Phân loại rõ ràng: Bật/Tắt Dev Mode, Purge Cache chi tiết, Đổi SSL Mode, Thêm/Sửa/Xóa DNS, Tạo WAF rule, Khôi phục Snapshot.
+  - Bộ lọc tìm kiếm thông minh theo từ khóa, User, Vai trò, và Phân loại hành động.
+  - **Xuất Báo cáo**: 1-Click xuất toàn bộ lịch sử thành file `audit-trail.csv` hoặc `audit-trail.json` phục vụ đánh giá tuân thủ an ninh (SOC2, ISO 27001).
+- **Trình Quản lý Snapshot & 1-Click Rollback Engine**:
+  - **Tạo Snapshot**: 1-Click chụp lại toàn bộ cấu hình Zone hiện tại kèm ghi chú lý do sao lưu.
+  - **Import JSON Snapshot**: Kéo thả file JSON backup từ máy tính.
+  - **Trình Đối soát Pre-Restore Diff Inspector**: So sánh chi tiết từng tham số giữa cấu hình Live và Snapshot trước khi áp dụng.
+  - **1-Click Restore Execution**: Khôi phục lại toàn bộ thiết lập SSL, TLS, Always HTTPS, HSTS, DNS và WAF về trạng thái cũ an toàn.
+
 ---
 
 ## 🚀 Hướng dẫn Cài đặt & Khởi chạy

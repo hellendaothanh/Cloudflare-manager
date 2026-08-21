@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { QuickActionsModal } from '@/components/common/QuickActionsModal';
 import { Zone } from '@/types/cloudflare';
+import { auditLogger } from '@/lib/audit/audit-logger';
 import { 
   Globe, 
   RefreshCw,
@@ -17,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export const ZonesView: React.FC = () => {
-  const { zones, selectedZone, setSelectedZone, isLoadingZones, refreshZones, authFetch, hasPermission, role } = useAuth();
+  const { zones, selectedZone, setSelectedZone, isLoadingZones, refreshZones, authFetch, hasPermission, role, activeAccount } = useAuth();
   const { t, formatText } = useLanguage();
   const [actionLoading, setActionLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -44,6 +45,18 @@ export const ZonesView: React.FC = () => {
           value: isCurrentlyDev ? 'off' : 'on',
         }),
       });
+
+      auditLogger.recordLog({
+        actorName: activeAccount?.name || 'Operator',
+        actorRole: role,
+        actionType: 'TOGGLE_DEV_MODE',
+        zoneName: zone.name,
+        zoneId: zone.id,
+        resource: `Development Mode: ${isCurrentlyDev ? 'OFF' : 'ON (3h auto-expire)'}`,
+        status: 'SUCCESS',
+        details: `Người dùng ${activeAccount?.name || 'Operator'} đã ${isCurrentlyDev ? 'TẮT' : 'BẬT'} Development Mode cho domain ${zone.name}.`,
+      });
+
       setStatusMsg({
         type: 'success',
         text: formatText(t.zonesView.devModeUpdated, {

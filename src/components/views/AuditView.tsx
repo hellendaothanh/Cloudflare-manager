@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { SecurityAuditResult, ZoneConfigSnapshot } from '@/types/cloudflare';
+import { formatDate } from '@/lib/utils';
+import { AuditTrailTab } from '@/components/audit/AuditTrailTab';
+import { SnapshotRollbackTab } from '@/components/audit/SnapshotRollbackTab';
 import { 
   ActivitySquare, 
   ShieldCheck, 
@@ -17,14 +20,16 @@ import {
   ArrowRight,
   GitCompare,
   Check,
-  X
+  X,
+  Clock,
+  RotateCcw
 } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
 
 export const AuditView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { language, t, formatText } = useLanguage();
   const canAutoFix = hasPermission('canAutoFix');
+  const [activeSubTab, setActiveSubTab] = useState<'securityAudit' | 'auditTrail' | 'snapshotRollback'>('securityAudit');
   const [auditResult, setAuditResult] = useState<SecurityAuditResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [remediatingId, setRemediatingId] = useState<string | null>(null);
@@ -261,6 +266,45 @@ export const AuditView: React.FC = () => {
         </div>
       </div>
 
+      {/* Sub-tabs Navigation */}
+      <div className="flex items-center gap-2 border-b border-gray-800 pb-2">
+        <button
+          onClick={() => setActiveSubTab('securityAudit')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+            activeSubTab === 'securityAudit'
+              ? 'bg-orange-500/15 text-orange-400 border border-orange-500/30'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4" />
+          <span>{t.auditView.tabs.securityAudit}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('auditTrail')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+            activeSubTab === 'auditTrail'
+              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
+          }`}
+        >
+          <Clock className="w-4 h-4" />
+          <span>{t.auditView.tabs.auditTrail}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('snapshotRollback')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+            activeSubTab === 'snapshotRollback'
+              ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
+          }`}
+        >
+          <RotateCcw className="w-4 h-4" />
+          <span>{t.auditView.tabs.snapshotRollback}</span>
+        </button>
+      </div>
+
       {notification && (
         <div className={`p-4 rounded-xl text-xs flex items-center gap-2.5 ${
           notification.type === 'success' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/30 text-rose-400'
@@ -270,9 +314,18 @@ export const AuditView: React.FC = () => {
         </div>
       )}
 
-      {/* Top Scorecard Summary */}
-      {auditResult && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* SUBTAB: System Audit Trail */}
+      {activeSubTab === 'auditTrail' && <AuditTrailTab />}
+
+      {/* SUBTAB: Snapshot & 1-Click Rollback */}
+      {activeSubTab === 'snapshotRollback' && <SnapshotRollbackTab />}
+
+      {/* SUBTAB: Security & CIS Audit */}
+      {activeSubTab === 'securityAudit' && (
+        <div className="space-y-6">
+          {/* Top Scorecard Summary */}
+          {auditResult && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Security Score Gauge Card */}
           <div className="p-6 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 flex items-center justify-between">
             <div className="space-y-1">
@@ -441,5 +494,7 @@ export const AuditView: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+  )}
+</div>
+);
 };
