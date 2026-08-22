@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { AlertChannelConfig, AlertPlatform, DriftAlertPayload } from '@/lib/alerts/dispatcher';
+import { GitOpsSyncTab } from '@/components/compliance/GitOpsSyncTab';
+import { EmergencyBreakGlassTab } from '@/components/compliance/EmergencyBreakGlassTab';
 import { 
   GitBranch, 
   Terminal, 
@@ -32,7 +34,7 @@ export const ComplianceView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
   const { t, formatText } = useLanguage();
 
-  const [activeSubTab, setActiveSubTab] = useState<'terraform' | 'cron' | 'alerts'>('terraform');
+  const [activeSubTab, setActiveSubTab] = useState<'gitops' | 'emergency' | 'terraform' | 'cron' | 'alerts'>('gitops');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // --- 1. Terraform State ---
@@ -479,12 +481,36 @@ export const ComplianceView: React.FC = () => {
       )}
 
       {/* Sub-tabs Navigation */}
-      <div className="flex items-center gap-2 border-b border-gray-800 pb-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-gray-800 pb-2">
+        <button
+          onClick={() => setActiveSubTab('gitops')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+            activeSubTab === 'gitops'
+              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 font-bold'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
+          }`}
+        >
+          <GitBranch className="w-4 h-4" />
+          <span>{t.complianceView.tabs.gitops}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('emergency')}
+          className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
+            activeSubTab === 'emergency'
+              ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold'
+              : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
+          }`}
+        >
+          <Flame className="w-4 h-4 text-rose-400" />
+          <span>{t.complianceView.tabs.emergency}</span>
+        </button>
+
         <button
           onClick={() => setActiveSubTab('terraform')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
             activeSubTab === 'terraform'
-              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+              ? 'bg-orange-500/15 text-orange-400 border border-orange-500/30 font-bold'
               : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
           }`}
         >
@@ -496,7 +522,7 @@ export const ComplianceView: React.FC = () => {
           onClick={() => setActiveSubTab('cron')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
             activeSubTab === 'cron'
-              ? 'bg-orange-500/15 text-orange-400 border border-orange-500/30'
+              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold'
               : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
           }`}
         >
@@ -508,7 +534,7 @@ export const ComplianceView: React.FC = () => {
           onClick={() => setActiveSubTab('alerts')}
           className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
             activeSubTab === 'alerts'
-              ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30'
+              ? 'bg-purple-500/15 text-purple-400 border border-purple-500/30 font-bold'
               : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
           }`}
         >
@@ -519,6 +545,16 @@ export const ComplianceView: React.FC = () => {
           </span>
         </button>
       </div>
+
+      {/* ========================================================================= */}
+      {/* SUBTAB 0A: GITOPS TWO-WAY SYNC                                            */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'gitops' && <GitOpsSyncTab />}
+
+      {/* ========================================================================= */}
+      {/* SUBTAB 0B: EMERGENCY BREAK-GLASS FAILOVER                                 */}
+      {/* ========================================================================= */}
+      {activeSubTab === 'emergency' && <EmergencyBreakGlassTab />}
 
       {/* ========================================================================= */}
       {/* SUBTAB 1: TERRAFORM (IAC) EXPORT                                          */}

@@ -91,20 +91,20 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 - 🛡️ **Security & WAF Engineer**: Quản trị WAF Firewall, IP Rules, SSL/TLS, Page Rules và Auto-Fix; không thể thay đổi bản ghi DNS.
 - 👁️ **Auditor / Viewer (Chỉ đọc)**: Chỉ xem số liệu telemetry và kiểm tra báo cáo an ninh; toàn bộ các nút thay đổi cấu hình đều bị khóa kèm thông báo quyền hạn.
 
-### 10. Tự động hóa CI/CD & Giám sát Liên tục (Continuous Compliance)
+### 11. Tự động hóa CI/CD, Giám sát Liên tục & Đồng bộ GitOps (Continuous Compliance & GitOps)
+- **Đồng bộ Hai Chiều với Git (Git-to-Cloudflare Two-Way Sync)**:
+  - **Tự động Commit lên Git**: Khi có thay đổi cấu hình (DNS, WAF, SSL, Page Rules), hệ thống tự động đẩy commit chứa mã Terraform HCL (`main.tf`, `terraform.tfvars`) và JSON Snapshot lên Git repository (GitHub, GitLab, Gitea).
+  - **Cơ chế PR-Based Review (DevSecOps Governance)**: Cho phép tạo Pull Request để review sai lệch (Diff) trước khi áp dụng (Apply) vào Cloudflare.
+  - **Lịch sử Commit & Đồng bộ**: Theo dõi trực quan trạng thái đồng bộ, commit hash và liên kết trực tiếp đến PR/Commit trên GitHub/GitLab.
+- **Chế độ Khẩn cấp 1-Click (Emergency Break-Glass Failover Shield)**:
+  - **Emergency War Room**: Nút kích hoạt khẩn cấp 1-Click chuyển toàn bộ lưu lượng hoặc các route trọng yếu sang Trang Bảo trì Tĩnh (Static Maintenance Page) trên Cloudflare Edge / Waiting Room khi máy chủ Origin gặp sự cố thảm họa.
+  - **Mô phỏng Luồng Định tuyến Trực quan**: Trực quan hóa đường truyền `Inbound Visitors ➔ [Edge Maintenance Shield (HTTP 503)] ➔ Origin (Isolated)`.
+  - **Trình Soạn thảo & Xem trước Live Preview**: Tùy chỉnh thông điệp bảo trì, thời gian dự kiến phục hồi và email hỗ trợ kỹ thuật NOC.
+  - **1-Click Restore**: Khôi phục lưu lượng truy cập bình thường về Origin an toàn kèm modal xác nhận chống thao tác nhầm.
 - **Lập lịch Quét Sai lệch Tự động (Scheduled Drift CRON Scanner)**:
-  - Tự động chạy ngầm theo chu kỳ linh hoạt (`5 phút`, `15 phút`, `1 giờ`, `6 giờ`, `24 giờ`).
-  - Đối soát và so sánh trạng thái thực tế của Zone với bản Baseline Snapshot đã lưu để phát hiện thay đổi cấu hình trái phép (Drift Detection).
-  - Tích hợp nút **"Run Scan Now"** cho phép kích hoạt quét và đối soát ngay tức thời.
+  - Tự động chạy ngầm theo chu kỳ linh hoạt (`5 phút`, `15 phút`, `1 giờ`, `6 giờ`, `24 giờ`) để phát hiện thay đổi cấu hình ngoài ý muốn.
 - **Hệ thống Cảnh báo Đa kênh Tức thời (Multi-Channel Alert Dispatcher)**:
-  - 💬 **Slack**: Gửi tin nhắn định dạng BlockKit với màu trạng thái, tên Zone, số lượng sai lệch và điểm CIS Score.
-  - 🎮 **Discord**: Gửi tin nhắn Rich Embed chuyên nghiệp với màu sắc cảnh báo và timestamp.
-  - ✈️ **Telegram**: Gửi thông báo HTML qua Telegram Bot API (`/sendMessage`) hiển thị bảng so sánh tham số thay đổi.
-  - 🔗 **Custom JSON Webhook**: Gửi payload chuẩn DevSecOps đến hệ thống SIEM/SOAR kèm header xác thực `X-DevSecOps-Secret`.
-  - 🧪 **1-Click Test Alert**: Kiểm tra kết nối và định dạng tin nhắn cho từng kênh hoặc toàn bộ kênh trước khi kích hoạt.
-- **Nhật ký Lịch sử Quét (Drift History Log)**:
-  - Lưu trữ chi tiết các lần quét gần nhất (`PASS` vs `DRIFT DETECTED`).
-  - Liệt kê chi tiết từng tham số bị thay đổi (`oldVal` ➔ `currentVal`).
+  - Gửi thông báo đến Slack (BlockKit), Discord (Embed), Telegram (HTML) và Custom Webhook SIEM/SOAR.
 
 ### 11. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
 - Trích xuất toàn bộ trạng thái Zone hiện tại thành mã nguồn Terraform HCL chuẩn HashiCorp Cloudflare Provider `~> 4.25`.

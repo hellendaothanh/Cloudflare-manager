@@ -91,20 +91,20 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
 - 🛡️ **Security & WAF Engineer**: Full management of WAF Firewall rules, IP Access lists, SSL/TLS settings, Page Rules, and Auto-Fix; DNS record mutations are locked.
 - 👁️ **Auditor / Viewer (Read-Only)**: Telemetry monitoring, drift inspection, and audit reports; all mutation buttons are disabled with descriptive permission notices.
 
-### 10. CI/CD Automation & Continuous Compliance
+### 11. CI/CD Automation, Continuous Compliance & GitOps Two-Way Sync
+- **Bidirectional GitOps Two-Way Sync (Git-to-Cloudflare)**:
+  - **Automated Git Commits**: When configuration changes are made (DNS, WAF, SSL, Page Rules), the system automatically pushes commits containing Terraform HCL (`main.tf`, `terraform.tfvars`) and JSON Snapshots to your specified Git repository (GitHub, GitLab, Gitea).
+  - **PR-Based Review Gate (DevSecOps Governance)**: Option to open Pull Requests for peer review before applying live edge updates to Cloudflare.
+  - **Audit & Commit History**: Interactive telemetry tracking commit hashes, PR URLs, and live synchronization status.
+- **Emergency 1-Click Break-Glass Failover Shield**:
+  - **Emergency War Room**: 1-Click activation redirecting all inbound visitors or critical subdomains to a static Edge Maintenance Shield / Cloudflare Waiting Room during complete origin datacenter/database outages.
+  - **Traffic Flow Visualization**: Interactive pipeline diagram `Inbound Visitors ➔ [Edge Maintenance Shield (HTTP 503)] ➔ Origin (Isolated)`.
+  - **Live Preview & Template Customization**: Customize maintenance messages, expected recovery timelines, and NOC emergency support emails.
+  - **1-Click Restore**: Seamless traffic restoration to live origin with safety confirmation safeguards.
 - **Scheduled Drift CRON Scanner**:
-  - Automated background scanning at configurable intervals (`5 min`, `15 min`, `1 hour`, `6 hours`, `24 hours`).
-  - Compares live zone state against stored Baseline Snapshots to detect unauthorized configuration drift.
-  - Integrated **"Run Scan Now"** button for on-demand immediate scanning.
+  - Automated background scanning at configurable intervals (`5 min`, `15 min`, `1 hour`, `6 hours`, `24 hours`) to detect unauthorized configuration drift.
 - **Multi-Channel Alert Dispatcher**:
-  - 💬 **Slack**: BlockKit formatted messages with status color, zone name, drift count, and CIS Score.
-  - 🎮 **Discord**: Rich Embed alerts with professional color-coding and timestamp.
-  - ✈️ **Telegram**: HTML notifications via Telegram Bot API (`/sendMessage`) with parameter comparison tables.
-  - 🔗 **Custom JSON Webhook**: DevSecOps-standard payloads to SIEM/SOAR platforms with `X-DevSecOps-Secret` authentication header.
-  - 🧪 **1-Click Test Alert**: Verify connectivity and message formatting per-channel or across all channels before activating.
-- **Drift History Log**:
-  - Chronological audit trail of recent scans (`PASS` vs `DRIFT DETECTED`).
-  - Detailed per-parameter change listing (`oldVal` ➔ `currentVal`).
+  - Dispatch alerts to Slack (BlockKit), Discord (Embed), Telegram (HTML), and Custom SIEM/SOAR Webhooks.
 
 ### 11. Infrastructure as Code (IaC) Terraform Export
 - Export entire live zone state into production-ready Terraform HCL compatible with HashiCorp Cloudflare Provider `~> 4.25`.
