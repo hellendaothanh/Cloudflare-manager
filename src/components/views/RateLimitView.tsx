@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { RateLimitRule, RateLimitAnalytics } from '@/types/cloudflare';
 import { 
   ShieldAlert, 
+  Shield,
   Plus, 
   Trash2, 
   RefreshCw, 
@@ -197,7 +198,7 @@ export const RateLimitView: React.FC = () => {
       {/* 1-Click DevSecOps Presets */}
       <div className="p-4 rounded-2xl bg-gray-900/70 border border-gray-800 space-y-2.5">
         <span className="text-xs font-bold text-white flex items-center gap-1.5">
-          <Zap className="w-3.5 h-3.5 text-amber-400 fill-current" />
+          <Shield className="w-3.5 h-3.5 text-rose-400" />
           {t.rateLimitView.presets.title}
         </span>
         <div className="flex flex-wrap gap-2.5">
