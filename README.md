@@ -49,10 +49,14 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - **Modal Xác nhận Xóa DNS Record**: Hộp thoại an toàn cảnh báo rủi ro downtime dịch vụ trước khi xóa.
 - Xuất file cấu hình chuẩn **BIND Zone File (`.zone.txt`)**.
 
-### 3. Quản lý Origin Pools, Health Checks & Origin Shield (Origin & Failover Hub)
-- **Origin Server Pools & Automated DNS Failover**:
-  - Quản lý các cụm Origin Server Nodes (Primary, Secondary Standby, Disaster Recovery Backup).
-  - Giám sát sức khỏe định kỳ (HTTP/HTTPS/TCP Probes, Interval, Timeout, Status Code) và đo độ trễ RTT & Uptime thời gian thực.
+### 3. Native Load Balancing, Geo-Steering & Quản lý Máy chủ Gốc (Origin & Traffic Director Hub)
+- **Cân Bằng Tải Toàn Cầu (Cloudflare Native Load Balancers)**:
+  - **Thuật toán Điều phối Linh hoạt (Traffic Steering Policies)**: Hỗ trợ *Geo-Steering* (định tuyến theo Lục địa/Quốc gia), *Dynamic Steering* (tự động chọn Origin có RTT độ trễ mạng thấp nhất), *Random Weighted* (chia tải theo tỷ lệ trọng số %), và *Standard Priority Failover*.
+  - **Ma trận Định tuyến Địa lý (Geo-Steering Matrix)**: Bản đồ điều phối lưu lượng theo vùng lãnh thổ (Bắc Mỹ -> US-East Pool, Châu Âu -> EU-Central Pool, Châu Á/Thái Bình Dương -> APAC Pool).
+  - **Session Affinity (Sticky Session)**: Duy trì phiên làm việc của người dùng vào cùng một Origin Server thông qua HTTP Cookie (`cf-affinity`) hoặc IP Hash để chống mất session đăng nhập/giỏ hàng.
+- **Origin Server Pools & Proactive Health Probes**:
+  - Quản lý các cụm Origin Server Nodes (Primary, Secondary Standby, Disaster Recovery Backup) với tỷ lệ trọng số (Weight 0-100%).
+  - Giám sát sức khỏe định kỳ (HTTP/HTTPS/TCP Probes, Interval, Timeout, Expected Status Codes) và đo độ trễ RTT & Uptime thời gian thực.
   - **Tự động kích hoạt DNS Failover**: Tự động phát hiện khi Primary Origin sập (Unhealthy) và lập tức điều phối lưu lượng sang Standby Origin để chống downtime.
   - **Lịch sử Sự cố Failover (Failover Audit Log)**: Ghi nhận chi tiết lịch sử các lần chuyển đổi failover tự động kèm lý do lỗi.
 - **Origin Shield & Header Validation (X-Origin-Verify-Secret)**:

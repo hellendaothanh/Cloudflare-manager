@@ -49,9 +49,13 @@ The application natively supports real-time bilingual switching with synchronize
 - **Delete Confirmation Modal**: Impact modal highlighting potential service outages before record deletion.
 - **BIND Zone File Export (`.zone.txt`)**: Export standard zone configuration files.
 
-### 3. Origin Pools, Health Probing & Origin Shield (Origin & Failover Hub)
-- **Origin Server Pools & Automated DNS Failover**:
-  - Manage origin server nodes (Primary, Secondary Standby, Disaster Recovery Backup).
+### 3. Native Load Balancing, Geo-Steering & Origin Traffic Director (Origin Hub)
+- **Cloudflare Global Native Load Balancers**:
+  - **Flexible Traffic Steering Policies**: Support for *Geo-Steering* (routing by Continent/Country), *Dynamic Steering* (auto-selecting origin with the lowest RTT network latency), *Random Proportional Weighted* (% load distribution), and *Standard Priority Failover*.
+  - **Geo-Steering Regional Matrix**: Geographic traffic mapping (North America -> US-East Cluster, Europe -> EU-Central Cluster, Asia-Pacific -> APAC Cluster).
+  - **Session Affinity (Sticky Session)**: Maintain visitor sessions to the same backend origin via HTTP Cookie (`cf-affinity`) or IP Hash to prevent authentication/cart drops.
+- **Origin Server Pools & Proactive Health Probes**:
+  - Manage origin server nodes (Primary, Secondary Standby, Disaster Recovery Backup) with custom weights (0-100%).
   - Periodic health monitoring (HTTP/HTTPS/TCP Probes, Interval, Timeout, Expected Status Codes) with real-time RTT latency and uptime metrics.
   - **Automated DNS Failover**: Automatically detect primary origin degradation and reroute traffic to standby nodes to eliminate downtime.
   - **Failover Audit Log**: Comprehensive incident timeline detailing automated failover events and root causes.
