@@ -81,9 +81,12 @@ The application natively supports real-time bilingual switching with synchronize
 - Inspect **HSTS (HTTP Strict Transport Security)** parameters and Universal SSL Edge Certificates.
 - **Graceful Permission Handling**: Informative alerts and 1-click links if the API Token lacks specific `Zone Settings` or `SSL Certificates` permissions.
 
-### 6. Page Rules & Edge URL Forwarding
-- Configure 301/302 URL redirects, Cache Level overrides, and custom security settings.
-- Wildcard `*` matching and strict priority order execution.
+### 6. Modern Ruleset Engine & Transform Rules (Page Rules Replacement)
+- **Full Deprecation of Legacy Page Rules**: Fully aligned with Cloudflare's roadmap deprecating Page Rules, replaced by the modern Ruleset Engine with unlimited parallel execution.
+- **Dynamic Redirect Rules**: Configure HTTP redirects (301, 302, 307, 308) with Wirefilter expressions and query string preservation (`?param=value`).
+- **HTTP Request / Response Header Modifiers**: Inject, override, or remove HTTP headers directly at the Edge (e.g. `Content-Security-Policy`, `X-Frame-Options: DENY`, `Strict-Transport-Security`, `X-Origin-Shield-Token`).
+- **URL Rewrites & Query String Sanitization**: Dynamically rewrite request paths and strip unwanted tracking query parameters (`fbclid`, `gclid`, `utm_*`) before routing to origin.
+- **1-Click Migration Engine**: Migrate all legacy Page Rules to modern Dynamic Redirects and Transform Rules with a single click.
 
 ### 7. Telemetry & Analytics
 - Real-time timeseries charts for request volume (Cached vs Uncached) and Bandwidth.

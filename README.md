@@ -81,9 +81,12 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - Giám sát trạng thái chính sách **HSTS (HTTP Strict Transport Security)** và chứng chỉ Universal SSL Edge.
 - **Xử lý Graceful Fallback**: Tự động thông báo và hướng dẫn bổ sung quyền nếu API Token thiếu quyền hạn `Zone Settings` hoặc `SSL Certificates`.
 
-### 6. Quy tắc Trang (Page Rules & Edge Forwarding)
-- Cấu hình chuyển hướng URL (301/302 Redirect), ghi đè Cache Level, và tùy chỉnh mức độ bảo mật.
-- Hỗ trợ ký tự đại diện Wildcard `*` và sắp xếp thứ tự ưu tiên (Priority Ordering) của quy tắc.
+### 6. Quy tắc Định tuyến & Biến đổi Header (Modern Ruleset Engine & Transform Rules)
+- **Thay thế Hoàn toàn Page Rules Cũ**: Tương thích với lộ trình deprecate Page Rules của Cloudflare bằng hệ thống Ruleset Engine thế hệ mới chạy song song không giới hạn.
+- **Dynamic Redirect Rules**: Cấu hình chuyển hướng HTTP (301, 302, 307, 308) bằng biểu thức Wirefilter và tùy chọn bảo lưu query string (`?param=value`).
+- **HTTP Request / Response Header Modifiers**: Thêm/Sửa/Xóa HTTP Headers trực tiếp tại Edge (ví dụ: `Content-Security-Policy`, `X-Frame-Options: DENY`, `Strict-Transport-Security`, `X-Origin-Shield-Token`).
+- **URL Rewrites & Query String Sanitization**: Viết lại đường dẫn động và loại bỏ các tham số tracking rác (`fbclid`, `gclid`, `utm_*`) trước khi chuyển tiếp về Origin.
+- **1-Click Migration Engine**: Tự động chuyển đổi toàn bộ Page Rules cũ sang Modern Ruleset Engine chỉ với 1 cú nhấp chuột.
 
 ### 7. Giám sát & Phân tích Mối đe dọa (Telemetry & Analytics)
 - Biểu đồ thời gian thực về lưu lượng Requests (Total vs Cached) và Băng thông (Bandwidth).
