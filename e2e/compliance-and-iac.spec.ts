@@ -14,11 +14,14 @@ test.describe('CI/CD Continuous Compliance & Terraform IaC Suite', () => {
   test('should synthesize Terraform HCL code for the current zone', async ({ page }) => {
     await expect(page.locator('h1, h2').filter({ hasText: /Continuous Compliance|CI\/CD/i }).first()).toBeVisible({ timeout: 10000 });
 
-    // Verify Terraform section is active
-    await expect(page.getByText(/Terraform/i).first()).toBeVisible();
+    // Click Terraform subtab
+    const terraformTabBtn = page.locator('button').filter({ hasText: /Terraform/i }).first();
+    await expect(terraformTabBtn).toBeVisible({ timeout: 5000 });
+    await terraformTabBtn.click();
+    await page.waitForTimeout(500);
 
     // Check code viewer is rendered
-    await expect(page.locator('button:has-text("main.tf")').first()).toBeVisible();
+    await expect(page.locator('button:has-text("main.tf")').first()).toBeVisible({ timeout: 8000 });
 
     // Verify Download & Copy buttons are present
     await expect(page.locator('button').filter({ hasText: /Sao chép|Copy/i }).first()).toBeVisible();
