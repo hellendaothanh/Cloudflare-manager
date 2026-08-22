@@ -163,14 +163,19 @@ Four built-in operator roles designed for least-privilege security:
   - `cloudflare_record`: Complete DNS records with comments, TTL, and proxy status.
   - `cloudflare_filter` & `cloudflare_firewall_rule`: Custom firewall rules with Wireshark syntax.
   - `cloudflare_ip_list`: Whitelist, Block, and Challenge IP lists.
-  - `cloudflare_page_rule`: URL forwarding and cache overrides.
-- Utilities:
-  - Filter components for export (DNS, WAF, SSL, Page Rules).
-  - **1-Click Copy** HCL code to clipboard.
-  - **1-Click Download** `main.tf` and `terraform.tfvars`.
-  - Step-by-step deployment guide (`terraform init` -> `terraform plan` -> `terraform apply`).
+  - `cloudflare_ruleset`: Transform Rules, URL Rewrites, Dynamic Redirects & Custom HTTP Headers.
+  - `cloudflare_load_balancer` & `cloudflare_load_balancer_pool`: Weighted Traffic Steering, Geo-Steering Matrix, and Cookie Session Affinity.
 
-### 15. Cloudflare Workers & Pages Hub
+### 15. Interactive Bilingual Knowledge Guide & Contextual HelpTooltips
+- **Interactive Knowledge Base & Docs Hub (Navbar Modal)**:
+  - Embedded directly into the main navigation bar.
+  - Clear architectural categorization across *Connectivity & Routing*, *Security Shield*, and *FinOps & Governance*.
+  - Live instant keyword search and embedded DevSecOps Best Practices.
+- **Contextual HelpTooltips across 100% of Features**:
+  - Refined circular `(?)` micro-badges with neon cyan hover glows and precise directional pointer arrows.
+  - Instant hover popups delivering plain-language operational summaries and security impact warnings in both **English** and **Vietnamese**.
+
+### 16. Cloudflare Workers & Pages Hub
 - **Serverless Worker Scripts**:
   - Manage Worker scripts, route bindings (e.g., `api.example.com/*`), usage models (`standard` / `bundled`), and compatibility dates.
   - **Environment Variables & Secrets**: Plaintext variables and encrypted secrets (`JWT_SECRET_KEY`, `UPSTREAM_GATEWAY_URL`).

@@ -163,6 +163,17 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - `cloudflare_record`: Toàn bộ các bản ghi DNS (A, AAAA, CNAME, MX, TXT, comments, TTL, Proxy status).
   - `cloudflare_filter` & `cloudflare_firewall_rule`: Quy tắc tường lửa WAF với biểu thức Wireshark (Wirefilter syntax).
   - `cloudflare_ip_list`: Danh sách IP Whitelist / Block / Challenge.
+  - `cloudflare_ruleset`: Transform Rules, URL Rewrites, Dynamic Redirects & Custom HTTP Headers.
+  - `cloudflare_load_balancer` & `cloudflare_load_balancer_pool`: Weighted Traffic Steering, Geo-Steering Matrix và Cookie Session Affinity.
+
+### 15. Sổ tay Hướng dẫn Tương tác & Hệ thống HelpTooltip Song ngữ (Interactive Knowledge Base & Tooltips)
+- **Sổ tay Cẩm nang DevSecOps Tương tác (Docs & Guide Modal)**:
+  - Tích hợp trực tiếp trên thanh điều hướng Navbar trên cùng.
+  - Phân loại rõ ràng 3 nhóm: *Hạ tầng & Định tuyến*, *Lá chắn Bảo mật* và *Giám sát & FinOps*.
+  - Hỗ trợ công cụ tìm kiếm trực tiếp và các khuyến nghị thực hành tốt nhất (DevSecOps Best Practices).
+- **Hệ thống HelpTooltip theo ngữ cảnh trên 100% phân hệ**:
+  - Biểu tượng nút tròn `(?)` micro-badge tinh tế với hiệu ứng ánh sáng Neon Cyan.
+  - Tự động hiển thị giải thích nguyên lý hoạt động và lưu ý bảo mật ngay khi rê chuột (Hover) bằng cả **Tiếng Việt** và **Tiếng Anh**.
   - `cloudflare_page_rule`: Các quy tắc URL Forwarding (301/302), Cache Level overrides.
 - Tiện ích thao tác 1-Click:
   - Lọc linh hoạt các thành phần xuất (DNS, WAF, SSL, Page Rules).

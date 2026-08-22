@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v1.3.0] - 2026-08-22
+
+### Added
+- **Interactive Bilingual Knowledge Guide & Documentation Hub**:
+  - Embedded **Interactive DevSecOps Knowledge Base Modal** accessible directly from the top navigation bar.
+  - Comprehensive architectural breakdowns, operational mechanisms, and DevSecOps best-practice guidelines categorized into *Connectivity & Routing*, *Security Shield*, and *FinOps & Governance*.
+  - Instant live keyword search and multi-category filtering for rapid onboarding.
+- **Contextual HelpTooltip System Across 100% of Views & Modules**:
+  - Contextual question-mark `(?)` micro-badges integrated across all 16 platform modules (DNS, WAF, SSL, Rate Limiting, API Shield, Load Balancing, FinOps, GitOps, Zero Trust, Workers, Audit, Analytics, Diagnostics, AI Copilot).
+  - Hover-activated backdrop-blur glassmorphism popups providing immediate, plain-language operational summaries and security impact warnings in both Vietnamese and English.
+
+### Changed
+- **Refined UI & Micro-interactions**:
+  - Upgraded HelpTooltip trigger to a circular dark-mode micro-badge with neon cyan hover glows and precise directional pointer arrows.
+  - Optimized popup typography, backdrop-blur intensity, and responsive positioning.
+
+---
+
 ## [v1.2.0] - 2026-08-22
 
 ### Added
