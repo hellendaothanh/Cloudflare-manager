@@ -68,11 +68,16 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - **IP Access List**: Danh sách trắng (Whitelist) và danh sách chặn (Blocklist) cho IP đơn, dải CIDR, ASN, hoặc Quốc gia.
 - Cấu hình **Mức độ Bảo mật (Security Level)** và **Bot Fight Mode**.
 
-### 4. Trung tâm Mã hóa SSL/TLS & Modal Cảnh báo Đổi Chế độ (SSL/TLS Encryption Center)
+### 5. Trung tâm Mã hóa SSL/TLS & Giám sát Hạn dùng Chứng chỉ Gốc (SSL/TLS & Origin Lifecycle Hub)
 - **Modal Xác nhận Đổi Chế độ SSL/TLS Mode**: Cảnh báo nguy cơ lỗi 525/526 khi chuyển sang chế độ `Full (Strict)` nếu Origin Server chưa có chứng chỉ hợp lệ.
 - Chuyển đổi linh hoạt giữa 4 chế độ: `Off`, `Flexible`, `Full`, `Full (Strict)`.
 - Ép buộc phiên bản mã hóa tối thiểu **Minimum TLS Version (TLS 1.2 / TLS 1.3)**.
 - Kích hoạt **Always Use HTTPS** và **Automatic HTTPS Rewrites**.
+- **Origin SSL Expiry Scanner & Error 526 Prevention**:
+  - Tự động thăm dò kết nối TLS Handshake tới từng IP máy chủ gốc (Origin IP/Domain) để giải mã x509 expiration.
+  - Phân loại trực quan mức độ rủi ro: *An toàn (>30 ngày)*, *Cảnh báo (15-30 ngày)*, *Nguy cấp (<7 ngày / Error 526 risk)*.
+  - **Lập lịch Quét Tự động & Bắn Alert Đa kênh**: Tự động gửi cảnh báo định kỳ đến **Telegram Bot** và **Slack/Discord Webhook** trước 30/15/7 ngày.
+  - **Hướng dẫn Cloudflare Origin CA**: Hướng dẫn cài đặt chứng chỉ 15 năm miễn phí từ Cloudflare để triệt tiêu hoàn toàn rủi ro hết hạn SSL gốc.
 - Giám sát trạng thái chính sách **HSTS (HTTP Strict Transport Security)** và chứng chỉ Universal SSL Edge.
 - **Xử lý Graceful Fallback**: Tự động thông báo và hướng dẫn bổ sung quyền nếu API Token thiếu quyền hạn `Zone Settings` hoặc `SSL Certificates`.
 

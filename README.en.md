@@ -68,11 +68,16 @@ The application includes built-in multilingual capabilities with fully synchroni
 - **IP Access Rules**: Whitelist, Block, and Challenge policies for Single IPs, CIDR blocks, ASNs, or Country codes.
 - **Security Level** configuration and **Bot Fight Mode** status.
 
-### 4. SSL/TLS Encryption & Certificates Center
-- **SSL/TLS Mode Transition Safety Modal**: Informs operators of possible 525/526 origin handshake errors before switching to `Full (Strict)` mode.
-- Seamless switching across 4 encryption modes: `Off`, `Flexible`, `Full`, `Full (Strict)`.
+### 5. SSL/TLS Encryption & Origin Certificate Lifecycle (SSL & Origin Expiry Hub)
+- **SSL/TLS Mode Transition Safety Modal**: Clear impact warning for 525/526 SSL Handshake Failed errors when switching to `Full (Strict)` mode before origin certs are configured.
+- Flexible switching across 4 modes: `Off`, `Flexible`, `Full`, `Full (Strict)`.
 - Enforce **Minimum TLS Version (TLS 1.2 / TLS 1.3)**.
-- Toggle **Always Use HTTPS** (301 redirection) and **Automatic HTTPS Rewrites**.
+- Activate **Always Use HTTPS** and **Automatic HTTPS Rewrites**.
+- **Origin SSL Expiry Scanner & Error 526 Prevention**:
+  - Automated TLS handshake probing against backend origin IPs/domains to inspect x509 expiration metrics.
+  - Visual risk scoring: *Safe (>30 days)*, *Expiring Soon (15-30 days)*, *Critical (<7 days / Error 526 outage risk)*.
+  - **Automated CRON Scheduling & Multi-Channel Dispatcher**: Proactively trigger expiration warnings to **Telegram Bots** and **Slack/Discord Webhooks** at 30, 15, and 7-day milestones.
+  - **Cloudflare Origin CA 15-Year Guide**: Step-by-step guidance on issuing 15-year free Origin CA certificates to permanently resolve origin certificate expiration.
 - Inspect **HSTS (HTTP Strict Transport Security)** parameters and Universal SSL Edge Certificates.
 - **Graceful Permission Handling**: Informative alerts and 1-click links if the API Token lacks specific `Zone Settings` or `SSL Certificates` permissions.
 
