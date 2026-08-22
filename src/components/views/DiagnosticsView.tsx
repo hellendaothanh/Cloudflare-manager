@@ -25,6 +25,7 @@ import {
   Wifi,
   Cloud
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 type DiagTab = 'dns' | 'ping' | 'tcp' | 'ip' | 'ssl' | 'traceroute';
 
@@ -89,8 +90,12 @@ export const DiagnosticsView: React.FC = () => {
               <Radio className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">
-                {t.diagnosticsView.title}
+              <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                <span>{t.diagnosticsView.title}</span>
+                <HelpTooltip 
+                  title={t.diagnosticsView.title}
+                  content={t.diagnosticsView.subtitle}
+                />
               </h1>
               <p className="text-xs text-gray-400 mt-0.5">
                 {t.diagnosticsView.subtitle}

@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 import { OriginSslCertInfo, OriginScannerConfig } from '@/app/api/ssl/origin-scanner/route';
 
 export const SslView: React.FC = () => {
@@ -300,7 +301,13 @@ export const SslView: React.FC = () => {
             <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <Lock className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.sslView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.sslView.title}</span>
+              <HelpTooltip 
+                title={t.sslView.title}
+                content={t.sslView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.sslView.subtitle}

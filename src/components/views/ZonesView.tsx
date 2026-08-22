@@ -16,6 +16,7 @@ import {
   Zap,
   Trash2
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const ZonesView: React.FC = () => {
   const { zones, selectedZone, setSelectedZone, isLoadingZones, refreshZones, authFetch, hasPermission, role, activeAccount } = useAuth();
@@ -87,7 +88,13 @@ export const ZonesView: React.FC = () => {
             <span className="p-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <Globe className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.zonesView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.zonesView.title}</span>
+              <HelpTooltip 
+                title={t.zonesView.title}
+                content={t.zonesView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.zonesView.subtitle}

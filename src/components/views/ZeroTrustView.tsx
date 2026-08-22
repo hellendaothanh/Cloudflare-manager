@@ -22,6 +22,7 @@ import {
   Plus,
   Users
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const ZeroTrustView: React.FC = () => {
   const { activeAccount, authFetch, hasPermission, role } = useAuth();
@@ -67,7 +68,13 @@ export const ZeroTrustView: React.FC = () => {
             <span className="p-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
               <Network className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.zeroTrustView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.zeroTrustView.title}</span>
+              <HelpTooltip 
+                title={t.zeroTrustView.title}
+                content={t.zeroTrustView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.zeroTrustView.subtitle}

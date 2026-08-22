@@ -24,6 +24,7 @@ import {
   Clock,
   RotateCcw
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const AuditView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -232,7 +233,13 @@ export const AuditView: React.FC = () => {
             <span className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
               <ActivitySquare className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.auditView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.auditView.title}</span>
+              <HelpTooltip 
+                title={t.auditView.title}
+                content={t.auditView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.auditView.subtitle}

@@ -17,6 +17,7 @@ import {
   Sliders
 } from 'lucide-react';
 import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const SecurityView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -205,7 +206,13 @@ export const SecurityView: React.FC = () => {
             <span className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
               <ShieldAlert className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.securityView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.securityView.title}</span>
+              <HelpTooltip 
+                title={t.securityView.title}
+                content={t.securityView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.securityView.subtitle}

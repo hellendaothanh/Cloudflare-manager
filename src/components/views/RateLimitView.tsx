@@ -22,6 +22,7 @@ import {
   Clock
 } from 'lucide-react';
 import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const RateLimitView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -156,7 +157,13 @@ export const RateLimitView: React.FC = () => {
             <span className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
               <ShieldAlert className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.rateLimitView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.rateLimitView.title}</span>
+              <HelpTooltip 
+                title={t.rateLimitView.title}
+                content={t.rateLimitView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.rateLimitView.subtitle}

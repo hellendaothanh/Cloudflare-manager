@@ -24,6 +24,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const PageRulesView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -185,7 +186,13 @@ export const PageRulesView: React.FC = () => {
             <span className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
               <SlidersHorizontal className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.pageRulesView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.pageRulesView.title}</span>
+              <HelpTooltip 
+                title={t.pageRulesView.title}
+                content={t.pageRulesView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.pageRulesView.subtitle}

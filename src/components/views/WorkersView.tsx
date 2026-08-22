@@ -21,6 +21,7 @@ import {
   FileCode,
   Shield
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const WorkersView: React.FC = () => {
   const { activeAccount, authFetch, hasPermission, role } = useAuth();
@@ -115,7 +116,13 @@ export const WorkersView: React.FC = () => {
             <span className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
               <Cpu className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.workersView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.workersView.title}</span>
+              <HelpTooltip 
+                title={t.workersView.title}
+                content={t.workersView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.workersView.subtitle}

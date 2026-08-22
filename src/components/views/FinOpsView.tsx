@@ -28,6 +28,7 @@ import {
   Activity,
   Workflow
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const FinOpsView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission } = useAuth();
@@ -122,7 +123,13 @@ export const FinOpsView: React.FC = () => {
             <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <DollarSign className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.finopsView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.finopsView.title}</span>
+              <HelpTooltip 
+                title={t.finopsView.title}
+                content={t.finopsView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.finopsView.subtitle}

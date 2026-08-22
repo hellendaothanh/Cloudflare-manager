@@ -29,6 +29,7 @@ import {
   Sliders,
   ExternalLink
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const ComplianceView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -426,7 +427,13 @@ export const ComplianceView: React.FC = () => {
             <span className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               <GitBranch className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.complianceView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.complianceView.title}</span>
+              <HelpTooltip 
+                title={t.complianceView.title}
+                content={t.complianceView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.complianceView.subtitle}

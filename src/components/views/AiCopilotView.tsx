@@ -27,6 +27,7 @@ import {
   AlertTriangle,
   Lightbulb
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const AiCopilotView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission } = useAuth();
@@ -144,7 +145,13 @@ export const AiCopilotView: React.FC = () => {
             <span className="p-2 rounded-xl bg-purple-500/15 text-purple-400 border border-purple-500/30">
               <Sparkles className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.aiCopilotView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.aiCopilotView.title}</span>
+              <HelpTooltip 
+                title={t.aiCopilotView.title}
+                content={t.aiCopilotView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.aiCopilotView.subtitle}

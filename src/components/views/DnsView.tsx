@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
 import { DnsRecordTesterModal } from '@/components/dns/DnsRecordTesterModal';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const DnsView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -254,7 +255,13 @@ export const DnsView: React.FC = () => {
             <span className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
               <Layers className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.dnsView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.dnsView.title}</span>
+              <HelpTooltip
+                title={t.dnsView.title}
+                content={t.dnsView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.dnsView.subtitle}
