@@ -1,4 +1,4 @@
-name: Release Management
+name: Release Management & Quality Gate
 
 on:
   push:
@@ -9,8 +9,44 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  e2e-quality-gate:
+    name: Run E2E Test Suite (Gatekeeper)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Run Playwright E2E Tests
+        run: npx playwright test
+
+      - name: Upload E2E Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  create-github-release:
     name: Create GitHub Release
+    needs: e2e-quality-gate
     runs-on: ubuntu-latest
 
     steps:
@@ -19,20 +55,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Build & Validate Project
-        run: |
-          npm run build
-
-      - name: Generate Changelog & Release Notes
+      - name: Generate Changelog & Publish Release
         id: release_notes
         uses: softprops/action-gh-release@v2
         with:
