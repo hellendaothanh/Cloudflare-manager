@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { TokenModal } from '@/components/auth/TokenModal';
 import { AccountManagerModal } from '@/components/auth/AccountManagerModal';
 import { QuickActionsModal } from '@/components/common/QuickActionsModal';
+import { DocumentationModal } from '@/components/common/DocumentationModal';
 import { UserRole } from '@/types/cloudflare';
 import { 
   Cloud, 
@@ -23,7 +24,8 @@ import {
   Plus,
   ShieldAlert,
   Eye,
-  ServerCog
+  ServerCog,
+  BookOpen
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -46,6 +48,7 @@ export const Navbar: React.FC = () => {
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+  const [isDocsModalOpen, setIsDocsModalOpen] = useState(false);
   const [isZoneDropdownOpen, setIsZoneDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
@@ -311,6 +314,18 @@ export const Navbar: React.FC = () => {
               )}
             </div>
 
+            {/* Interactive Documentation & Guide Modal Trigger */}
+            <button
+              onClick={() => setIsDocsModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition-all shadow-sm shadow-cyan-500/10"
+              title={language === 'vi' ? 'Sổ tay Hướng dẫn & Cẩm nang DevSecOps' : 'Interactive Guide & Docs'}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">
+                {language === 'vi' ? 'Sổ tay HDSD' : 'Docs & Guide'}
+              </span>
+            </button>
+
             {/* Language Switcher Dropdown */}
             <div className="relative">
               <button
@@ -392,6 +407,7 @@ export const Navbar: React.FC = () => {
       </header>
 
       {/* Modals */}
+      <DocumentationModal isOpen={isDocsModalOpen} onClose={() => setIsDocsModalOpen(false)} />
       <AccountManagerModal isOpen={isAccountModalOpen} onClose={() => setIsAccountModalOpen(false)} />
       <TokenModal isOpen={isTokenModalOpen} onClose={() => setIsTokenModalOpen(false)} />
       <QuickActionsModal isOpen={isQuickActionsOpen} onClose={() => setIsQuickActionsOpen(false)} />

@@ -30,6 +30,7 @@ import {
   Cookie,
   Plus
 } from 'lucide-react';
+import { HelpTooltip } from '@/components/common/HelpTooltip';
 
 export const OriginView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission } = useAuth();
@@ -297,7 +298,13 @@ frontend https_front
             <span className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               <Compass className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t.originView.title}</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <span>{t.originView.title}</span>
+              <HelpTooltip 
+                title={t.originView.title}
+                content={t.originView.subtitle}
+              />
+            </h1>
           </div>
           <p className="text-xs text-gray-400">
             {t.originView.subtitle}
