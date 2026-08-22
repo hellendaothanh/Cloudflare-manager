@@ -126,7 +126,17 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
   - **Workers Compute Telemetry**: Total invocations, average CPU wall-time, p95 execution latency, and monthly projected compute cost per worker script.
   - **R2 Object Storage & Zero Egress Savings**: Total stored GBs, Class A/B request metrics, and direct cost savings compared against standard AWS S3 pricing ($0 Egress Fee).
 
-### 13. Infrastructure as Code (IaC) Terraform Export
+### 13. AI DevSecOps Copilot & Threat Explainer
+- **Natural Language to WAF Wirefilter Synthesizer**:
+  - Convert plain English or Vietnamese security intents (e.g. *"Block all POST requests to /api/login from outside VN"* or *"Managed Challenge bots with Threat Score > 20 on /checkout"*) into standard **Cloudflare Wirefilter Expressions**.
+  - **1-Click Deploy to WAF**: Direct one-click rule publishing to edge firewall policies.
+  - Built-in DevSecOps presets: Anti-Brute-Force Login, Bot Mitigation, SQLi/XSS Shield, and Scraping Blocker.
+- **Ray ID Log Analyzer & Threat Explainer**:
+  - Detailed telemetry inspection on any **Cloudflare Ray ID** (Client IP, Geo, ASN, HTTP status, Threat score, Bot score).
+  - AI-driven Root Cause Analysis explaining attack vectors (Tor exit nodes, Credential Stuffing, L7 DDoS).
+  - Actionable remediation advice and 1-click preventive WAF rule synthesis.
+
+### 14. Infrastructure as Code (IaC) Terraform Export
 - Export entire live zone state into production-ready Terraform HCL compatible with HashiCorp Cloudflare Provider `~> 4.25`.
 - Comprehensive resource coverage:
   - `cloudflare_zone_settings_override`: SSL mode (Strict), Minimum TLS (1.2/1.3), Always Use HTTPS, Automatic HTTPS Rewrites, Brotli, HTTP/3, 0-RTT, Security Level.

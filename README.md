@@ -126,7 +126,17 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - **Workers Compute Telemetry**: Thống kê số lượng Invocations, thời gian thực thi CPU trung bình / p95 Wall-time latency, và ước tính chi phí theo từng Worker Script.
   - **R2 Object Storage & Zero Egress Fee Comparison**: Thống kê dung lượng lưu trữ (GB Stored), số lượng Class A (Write) & Class B (Read) operations, và so sánh chi phí tiết kiệm không mất phí tải xuống ($0 Egress Fee) so với AWS S3.
 
-### 13. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
+### 13. Trợ lý AI Phân tích DevSecOps (AI Security Copilot & Threat Explainer)
+- **Tự động sinh WAF Rule bằng Ngôn ngữ Tự nhiên**:
+  - Nhập mô tả bảo mật bằng tiếng Việt hoặc tiếng Anh (vd: *"Chặn tất cả request POST vào /api/login ngoài giờ làm việc từ IP nước ngoài"* hoặc *"Managed Challenge các bot có Threat Score > 20 vào /checkout"*).
+  - Tự động biên dịch chính xác thành biểu thức **Cloudflare Wirefilter Expression** chuẩn Wireshark kèm nút **1-Click Deploy to WAF**.
+  - Tích hợp sẵn bộ Presets câu lệnh mẫu: Anti-Brute-Force Login, Bot Mitigation, SQLi/XSS Shield, Crawler Scraping Blocker.
+- **Log Analyzer & Threat Explainer (Điều tra Sự cố Ray ID)**:
+  - Phân tích chi tiết mã sự cố **Cloudflare Ray ID** (Client IP, Geo, ASN, HTTP Status, Threat Score, Bot Score).
+  - AI giải thích nguyên nhân gốc rễ (Root Cause Analysis), phân loại véc-tơ tấn công (Credential Stuffing, Tor Exit Nodes, DDoS Layer 7).
+  - Đề xuất phương án xử lý tức thời và sinh rule phòng ngừa 1-Click.
+
+### 14. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
 - Trích xuất toàn bộ trạng thái Zone hiện tại thành mã nguồn Terraform HCL chuẩn HashiCorp Cloudflare Provider `~> 4.25`.
 - Bao gồm đầy đủ các khối tài nguyên:
   - `cloudflare_zone_settings_override`: SSL mode (Strict), Minimum TLS (1.2/1.3), Always Use HTTPS, Automatic HTTPS Rewrites, Brotli, HTTP/3, 0-RTT, Security Level.
