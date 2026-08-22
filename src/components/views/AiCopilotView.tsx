@@ -30,7 +30,7 @@ import {
 
 export const AiCopilotView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission } = useAuth();
-  const { t, formatText } = useLanguage();
+  const { t, formatText, language } = useLanguage();
   const canDeploy = hasPermission('canAutoFix');
 
   const [activeTab, setActiveTab] = useState<'wafSynthesizer' | 'rayIdAnalyzer'>('wafSynthesizer');
@@ -42,26 +42,6 @@ export const AiCopilotView: React.FC = () => {
   const [generatedRule, setGeneratedRule] = useState<GeneratedWafRule | null>(null);
   const [copiedExpr, setCopiedExpr] = useState(false);
   const [deploying, setDeploying] = useState(false);
-
-  // Presets
-  const quickPresets = [
-    {
-      title: 'Chặn POST /api/login ngoài Việt Nam',
-      text: 'Chặn tất cả request POST vào /api/login có xuất xứ ngoài Việt Nam',
-    },
-    {
-      title: 'Thách thức Bots vào /checkout',
-      text: 'Managed Challenge các bot hoặc request có Threat Score > 20 truy cập vào /checkout/*',
-    },
-    {
-      title: 'Chặn SQLi & Script Injections',
-      text: 'Chặn hoàn toàn các request chứa payload SQL Injection (union select) hoặc XSS (<script>) trong query URL',
-    },
-    {
-      title: 'Chặn Crawler Bots (curl / python)',
-      text: 'Chặn các User-Agent tự động như curl, python-requests vào toàn bộ API',
-    },
-  ];
 
   // --- Sub-Tab 2: Ray ID & Threat Explainer State ---
   const [rayIdInput, setRayIdInput] = useState('8a7b9c1d2e3f4001');
@@ -82,6 +62,7 @@ export const AiCopilotView: React.FC = () => {
           action: 'generate_waf_rule',
           prompt: targetPrompt,
           zoneName: selectedZone?.name || 'security-enterprise.io',
+          lang: language,
         }),
       });
       const data = await res.json();
@@ -134,6 +115,7 @@ export const AiCopilotView: React.FC = () => {
         body: JSON.stringify({
           action: 'analyze_ray_id',
           rayId: rayIdInput.trim(),
+          lang: language,
         }),
       });
       const data = await res.json();
@@ -245,7 +227,7 @@ export const AiCopilotView: React.FC = () => {
                   {t.aiCopilotView.wafSection.quickPromptsTitle}
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {quickPresets.map((preset, idx) => (
+                  {(t.aiCopilotView.wafSection.presets || []).map((preset: any, idx: number) => (
                     <button
                       key={idx}
                       type="button"
@@ -321,14 +303,20 @@ export const AiCopilotView: React.FC = () => {
                 <span className="text-xs font-bold text-gray-400">
                   {formatText(t.aiCopilotView.wafSection.matchedConditionsTitle, { count: generatedRule.matchedConditions.length })}
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {generatedRule.matchedConditions.map((cond, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-gray-950 border border-gray-850 space-y-1 text-xs">
+                    <div key={idx} className="p-3.5 rounded-xl bg-gray-950 border border-gray-850 space-y-1.5 text-xs">
                       <div className="flex items-center justify-between font-mono">
                         <span className="text-cyan-400 font-bold">{cond.field}</span>
-                        <span className="text-purple-400 uppercase text-[10px]">{cond.operator}</span>
+                        <span className="px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 uppercase font-bold text-[10px] border border-purple-500/30">
+                          {cond.operator}
+                        </span>
                       </div>
-                      <p className="text-gray-300 text-[11px]">{cond.desc}</p>
+                      <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-300/90 bg-gray-900/80 px-2 py-1 rounded-lg border border-gray-800">
+                        <span className="text-gray-500 text-[10px]">VALUE:</span>
+                        <span className="truncate">{cond.value}</span>
+                      </div>
+                      <p className="text-gray-300 text-[11px] leading-relaxed pt-0.5">{cond.desc}</p>
                     </div>
                   ))}
                 </div>

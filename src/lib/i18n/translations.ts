@@ -1092,6 +1092,24 @@ export const translations = {
         btnGenerate: 'Sinh Biểu thức WAF Wirefilter',
         btnGenerating: 'AI đang phân tích & biên dịch...',
         quickPromptsTitle: 'Câu lệnh Mẫu Thông dụng (DevSecOps Presets):',
+        presets: [
+          {
+            title: 'Chặn POST /api/login ngoài Việt Nam',
+            text: 'Chặn tất cả request POST vào /api/login có xuất xứ ngoài Việt Nam',
+          },
+          {
+            title: 'Thách thức Bots vào /checkout',
+            text: 'Managed Challenge các bot hoặc request có Threat Score > 20 truy cập vào /checkout/*',
+          },
+          {
+            title: 'Chặn SQLi & Script Injections',
+            text: 'Chặn hoàn toàn các request chứa payload SQL Injection (union select) hoặc XSS (<script>) trong query URL',
+          },
+          {
+            title: 'Chặn Crawler Bots (curl / python)',
+            text: 'Chặn các User-Agent tự động như curl, python-requests vào toàn bộ API',
+          },
+        ],
         generatedResultTitle: 'Biểu thức Wirefilter Được Sinh (Generated Expression):',
         explanationTitle: 'Giải thích Ngữ nghĩa & Logic:',
         matchedConditionsTitle: 'Các Điều kiện Logic Đã Khớp ({count}):',
@@ -2255,6 +2273,24 @@ export const translations = {
         btnGenerate: 'Synthesize WAF Wirefilter',
         btnGenerating: 'AI is analyzing & compiling...',
         quickPromptsTitle: 'Common DevSecOps Presets:',
+        presets: [
+          {
+            title: 'Block POST /api/login outside Vietnam',
+            text: 'Block all POST requests to /api/login originating outside Vietnam',
+          },
+          {
+            title: 'Challenge Bots on /checkout',
+            text: 'Managed Challenge bots or requests with Threat Score > 20 accessing /checkout/*',
+          },
+          {
+            title: 'Block SQLi & Script Injections',
+            text: 'Block requests containing SQL Injection (union select) or XSS (<script>) payloads in query parameters',
+          },
+          {
+            title: 'Block Scraper Bots (curl / python)',
+            text: 'Block automated User-Agents like curl or python-requests across all APIs',
+          },
+        ],
         generatedResultTitle: 'Generated Wirefilter Expression:',
         explanationTitle: 'Semantic & Logic Explanation:',
         matchedConditionsTitle: 'Matched Logic Conditions ({count}):',

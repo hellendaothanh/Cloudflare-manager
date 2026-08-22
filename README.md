@@ -1,4 +1,4 @@
-# Cloudflare DevSecOps Management Platform 🛡️⚡
+# Cloudflare DevSecOps Management Platform
 
 [![E2E Tests](https://img.shields.io/badge/E2E%20Tests-18%2F18%20Passed-emerald?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -6,7 +6,7 @@
 [![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](./LICENSE)
 
-[🇻🇳 Tiếng Việt](./README.md) | [🇬🇧 English](./README.en.md)
+[Tiếng Việt](./README.md) | [English](./README.en.md)
 
 ---
 
@@ -16,23 +16,23 @@ Hệ thống hỗ trợ đầy đủ **Đa ngôn ngữ (Tiếng Việt & English
 
 ---
 
-## 🌐 Chuyển đổi Ngôn ngữ (Language Switcher)
+## Chuyển đổi Ngôn ngữ (Language Switcher)
 
 Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ điển đồng bộ:
-- **🇻🇳 Tiếng Việt**: Ngôn ngữ mặc định, tối ưu hóa thuật ngữ DevSecOps cho người dùng Việt Nam.
-- **🇬🇧 English**: Chế độ tiếng Anh 100% không bị lẫn lộn văn bản tiếng Việt.
+- **Tiếng Việt**: Ngôn ngữ mặc định, tối ưu hóa thuật ngữ DevSecOps cho người dùng Việt Nam.
+- **English**: Chế độ tiếng Anh 100% không bị lẫn lộn văn bản tiếng Việt.
 - **Tự động lưu trạng thái**: Lựa chọn ngôn ngữ được lưu tại `localStorage` và tự động áp dụng cho các phiên làm việc tiếp theo.
 - **Đánh giá An ninh Song ngữ**: Engine chấm điểm và khuyến nghị khắc phục bảo mật (Security Audit) tự động dịch theo ngôn ngữ đang chọn.
 
 ---
 
-## 🌟 Danh sách Tính năng Đã triển khai
+## Danh sách Tính năng Đã triển khai
 
 ### 1. Quản lý Zone & Trung tâm Xóa Cache Chi tiết (Zones & Granular Purge Center)
-- Danh sách vùng (Zones), trạng thái kích hoạt, tên miền, nameservers và plan.
+- Danh sách vùng (Zones), trạng thái kích hoạt, tên miền, nameservers và gói dịch vụ.
 - **Trung tâm Xóa Cache Chi tiết (Granular Purge Center)**:
   - **Theo URLs / Files cụ thể**: Nhập danh sách URL tĩnh cần xóa (hỗ trợ tối đa 30 URLs mỗi lượt gửi).
-  - **Phím tắt 1-Click Presets**: Tự động điền nhanh các loại tài nguyên phổ biến (⚡ CSS & JS Bundles, 🖼️ Hình ảnh & Media, 🏠 Trang chủ & Apex Domain).
+  - **Phím tắt Presets**: Tự động điền nhanh các loại tài nguyên phổ biến (CSS & JS Bundles, Hình ảnh & Media, Trang chủ & Apex Domain).
   - **Theo Hostnames / Subdomains**: Xóa toàn bộ cache của các subdomain riêng biệt (ví dụ: `static.example.com`, `cdn.example.com`).
   - **Theo Cache-Tags & Thư mục Prefixes**: Xóa theo header `Cache-Tag` hoặc đường dẫn tiền tố thư mục (`example.com/assets/`).
   - **Xóa toàn bộ (Purge Everything)**: Xóa sạch toàn bộ cache cho toàn Zone kèm hộp thoại cảnh báo an toàn.
@@ -40,7 +40,7 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - **Bảng Xác nhận An toàn Development Mode (Dev Mode Safety Modal)**:
   - Hộp thoại cảnh báo và xác nhận trước khi Bật/Tắt Development Mode nhằm chống thao tác nhầm.
   - Nêu rõ cơ chế bypass Edge Cache trong 3 giờ và cảnh báo tải máy chủ gốc (Origin Load).
-- **Chế độ Bị tấn công (I'm Under Attack! Mode)**: Kích hoạt khẩn cấp JS Challenge cho 100% người dùng khi phát hiện DDoS Layer 7.
+- **Chế độ Bị tấn công (Under Attack Mode)**: Kích hoạt khẩn cấp JS Challenge cho 100% người dùng khi phát hiện DDoS Layer 7.
 
 ### 2. Quản trị DNS Nâng cao & Nút Làm mới Danh sách (DNS Records Manager & Refresh)
 - CRUD đầy đủ các loại bản ghi: `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `SRV`, `CAA`, `PTR`.
@@ -81,40 +81,40 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - Giám sát trạng thái chính sách **HSTS (HTTP Strict Transport Security)** và chứng chỉ Universal SSL Edge.
 - **Xử lý Graceful Fallback**: Tự động thông báo và hướng dẫn bổ sung quyền nếu API Token thiếu quyền hạn `Zone Settings` hoặc `SSL Certificates`.
 
-### 5. Quy tắc Trang (Page Rules & Edge Forwarding)
+### 6. Quy tắc Trang (Page Rules & Edge Forwarding)
 - Cấu hình chuyển hướng URL (301/302 Redirect), ghi đè Cache Level, và tùy chỉnh mức độ bảo mật.
 - Hỗ trợ ký tự đại diện Wildcard `*` và sắp xếp thứ tự ưu tiên (Priority Ordering) của quy tắc.
 
-### 6. Giám sát & Phân tích Mối đe dọa (Telemetry & Analytics)
+### 7. Giám sát & Phân tích Mối đe dọa (Telemetry & Analytics)
 - Biểu đồ thời gian thực về lưu lượng Requests (Total vs Cached) và Băng thông (Bandwidth).
 - Thống kê các cuộc tấn công bị ngăn chặn (**Threats Mitigated**), phân bổ theo quốc gia nguồn và phương thức tấn công.
 - Phân tích mã phản hồi HTTP (`2xx`, `3xx`, `4xx`, `5xx`).
 
-### 7. Đánh giá An ninh & Sao lưu Cấu hình (DevSecOps Audit & Drift Detection)
+### 8. Đánh giá An ninh & Sao lưu Cấu hình (DevSecOps Audit & Drift Detection)
 - **Security Scorecard**: Chấm điểm an ninh (0 - 100 điểm, xếp loại A+, A, B, C, D, F) dựa trên chuẩn CIS Benchmark.
 - **1-Click Auto-Fix**: Tự động khắc phục các lỗ hổng cấu hình nguy hiểm chỉ với 1 nút bấm.
 - **Config Backup & Drift Diff**: Xuất Snapshot toàn bộ cấu hình Zone ra file JSON và so sánh sai lệch cấu hình (Configuration Drift) giữa các mốc thời gian.
 
-### 8. Quản lý Đa tài khoản & Tổ chức (Multi-Account Manager)
+### 9. Quản lý Đa tài khoản & Tổ chức (Multi-Account Manager)
 - Lưu trữ danh sách nhiều **Cloudflare API Token** tương ứng với các tài khoản hoặc tổ chức khác nhau (e.g. *Production Web*, *Staging Security*, *Sandbox Demo*).
 - Chuyển đổi tài khoản tức thì trực tiếp trên thanh Navbar với 1 cú nhấp chuột (tự động nạp lại danh sách Zone tương ứng).
 - Quản lý Alias gợi nhớ, tên Tổ chức và xóa tài khoản an toàn.
 
-### 9. Phân quyền Vận hành Nội bộ (Internal RBAC Matrix)
+### 10. Phân quyền Vận hành Nội bộ (Internal RBAC Matrix)
 Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ngừa rủi ro thao tác nhầm:
-- 👑 **Admin (Toàn quyền)**: Có đầy đủ quyền cấu hình DNS, WAF, SSL, Page Rules, quản lý tài khoản và Auto-Fix.
-- 🌐 **DNS Operator**: Quản lý toàn diện bản ghi DNS, Proxy CDN và BIND export; các tính năng WAF/SSL/Auto-Fix ở chế độ chỉ đọc (Read-only).
-- 🛡️ **Security & WAF Engineer**: Quản trị WAF Firewall, IP Rules, SSL/TLS, Page Rules và Auto-Fix; không thể thay đổi bản ghi DNS.
-- 👁️ **Auditor / Viewer (Chỉ đọc)**: Chỉ xem số liệu telemetry và kiểm tra báo cáo an ninh; toàn bộ các nút thay đổi cấu hình đều bị khóa kèm thông báo quyền hạn.
+- **Admin (Toàn quyền)**: Có đầy đủ quyền cấu hình DNS, WAF, SSL, Page Rules, quản lý tài khoản và Auto-Fix.
+- **DNS Operator**: Quản lý toàn diện bản ghi DNS, Proxy CDN và BIND export; các tính năng WAF/SSL/Auto-Fix ở chế độ chỉ đọc (Read-only).
+- **Security & WAF Engineer**: Quản trị WAF Firewall, IP Rules, SSL/TLS, Page Rules và Auto-Fix; không thể thay đổi bản ghi DNS.
+- **Auditor / Viewer (Chỉ đọc)**: Chỉ xem số liệu telemetry và kiểm tra báo cáo an ninh; toàn bộ các nút thay đổi cấu hình đều bị khóa kèm thông báo quyền hạn.
 
 ### 11. Tự động hóa CI/CD, Giám sát Liên tục & Đồng bộ GitOps (Continuous Compliance & GitOps)
 - **Đồng bộ Hai Chiều với Git (Git-to-Cloudflare Two-Way Sync)**:
   - **Tự động Commit lên Git**: Khi có thay đổi cấu hình (DNS, WAF, SSL, Page Rules), hệ thống tự động đẩy commit chứa mã Terraform HCL (`main.tf`, `terraform.tfvars`) và JSON Snapshot lên Git repository (GitHub, GitLab, Gitea).
   - **Cơ chế PR-Based Review (DevSecOps Governance)**: Cho phép tạo Pull Request để review sai lệch (Diff) trước khi áp dụng (Apply) vào Cloudflare.
   - **Lịch sử Commit & Đồng bộ**: Theo dõi trực quan trạng thái đồng bộ, commit hash và liên kết trực tiếp đến PR/Commit trên GitHub/GitLab.
-- **Chế độ Khẩn cấp 1-Click (Emergency Break-Glass Failover Shield)**:
-  - **Emergency War Room**: Nút kích hoạt khẩn cấp 1-Click chuyển toàn bộ lưu lượng hoặc các route trọng yếu sang Trang Bảo trì Tĩnh (Static Maintenance Page) trên Cloudflare Edge / Waiting Room khi máy chủ Origin gặp sự cố thảm họa.
-  - **Mô phỏng Luồng Định tuyến Trực quan**: Trực quan hóa đường truyền `Inbound Visitors ➔ [Edge Maintenance Shield (HTTP 503)] ➔ Origin (Isolated)`.
+- **Chế độ Khẩn cấp (Emergency Break-Glass Failover Shield)**:
+  - **Emergency War Room**: Nút kích hoạt khẩn cấp chuyển toàn bộ lưu lượng hoặc các route trọng yếu sang Trang Bảo trì Tĩnh (Static Maintenance Page) trên Cloudflare Edge / Waiting Room khi máy chủ Origin gặp sự cố thảm họa.
+  - **Mô phỏng Luồng Định tuyến Trực quan**: Trực quan hóa đường truyền `Inbound Visitors -> [Edge Maintenance Shield (HTTP 503)] -> Origin (Isolated)`.
   - **Trình Soạn thảo & Xem trước Live Preview**: Tùy chỉnh thông điệp bảo trì, thời gian dự kiến phục hồi và email hỗ trợ kỹ thuật NOC.
   - **1-Click Restore**: Khôi phục lưu lượng truy cập bình thường về Origin an toàn kèm modal xác nhận chống thao tác nhầm.
 - **Lập lịch Quét Sai lệch Tự động (Scheduled Drift CRON Scanner)**:
@@ -131,14 +131,14 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - **Workers Compute Telemetry**: Thống kê số lượng Invocations, thời gian thực thi CPU trung bình / p95 Wall-time latency, và ước tính chi phí theo từng Worker Script.
   - **R2 Object Storage & Zero Egress Fee Comparison**: Thống kê dung lượng lưu trữ (GB Stored), số lượng Class A (Write) & Class B (Read) operations, và so sánh chi phí tiết kiệm không mất phí tải xuống ($0 Egress Fee) so với AWS S3.
 
-### 13. Trợ lý AI Phân tích DevSecOps (AI Security Copilot & Threat Explainer)
+### 13. Trợ lý Phân tích DevSecOps (AI Security Copilot & Threat Explainer)
 - **Tự động sinh WAF Rule bằng Ngôn ngữ Tự nhiên**:
-  - Nhập mô tả bảo mật bằng tiếng Việt hoặc tiếng Anh (vd: *"Chặn tất cả request POST vào /api/login ngoài giờ làm việc từ IP nước ngoài"* hoặc *"Managed Challenge các bot có Threat Score > 20 vào /checkout"*).
+  - Nhập mô tả bảo mật bằng tiếng Việt hoặc tiếng Anh (vd: *"Chặn tất cả request POST vào /api/login ngoài giờ làm việc từ IP nước ngoài"* hoặc *"Thách thức các bot có Threat Score > 20 vào /checkout"*).
   - Tự động biên dịch chính xác thành biểu thức **Cloudflare Wirefilter Expression** chuẩn Wireshark kèm nút **1-Click Deploy to WAF**.
   - Tích hợp sẵn bộ Presets câu lệnh mẫu: Anti-Brute-Force Login, Bot Mitigation, SQLi/XSS Shield, Crawler Scraping Blocker.
 - **Log Analyzer & Threat Explainer (Điều tra Sự cố Ray ID)**:
   - Phân tích chi tiết mã sự cố **Cloudflare Ray ID** (Client IP, Geo, ASN, HTTP Status, Threat Score, Bot Score).
-  - AI giải thích nguyên nhân gốc rễ (Root Cause Analysis), phân loại véc-tơ tấn công (Credential Stuffing, Tor Exit Nodes, DDoS Layer 7).
+  - Giải thích nguyên nhân gốc rễ (Root Cause Analysis), phân loại véc-tơ tấn công (Credential Stuffing, Tor Exit Nodes, DDoS Layer 7).
   - Đề xuất phương án xử lý tức thời và sinh rule phòng ngừa 1-Click.
 
 ### 14. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
@@ -153,9 +153,9 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - Lọc linh hoạt các thành phần xuất (DNS, WAF, SSL, Page Rules).
   - **1-Click Copy** mã HCL vào Clipboard.
   - **1-Click Download** file `main.tf` và `terraform.tfvars`.
-  - Hướng dẫn triển khai từng bước (`terraform init` ➔ `terraform plan` ➔ `terraform apply`).
+  - Hướng dẫn triển khai từng bước (`terraform init` -> `terraform plan` -> `terraform apply`).
 
-### 12. Quản lý Cloudflare Workers & Pages (Edge Compute Hub)
+### 15. Quản lý Cloudflare Workers & Pages (Edge Compute Hub)
 - **Workers Serverless Scripts**:
   - Quản lý danh sách Worker Scripts, đường dẫn liên kết Routes (vd: `api.example.com/*`), Usage model (`standard` / `bundled`), và Compatibility Date.
   - **Biến Môi Trường & Secrets**: Lưu trữ và quản lý Plaintext Variables cũng như Encrypted Secrets (`JWT_SECRET_KEY`, `UPSTREAM_GATEWAY_URL`).
@@ -165,19 +165,19 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 - **Cloudflare Pages Fullstack Apps**:
   - Quản trị dự án Pages, Production Branch, Custom Domains, và trạng thái build deployment mới nhất.
 
-### 13. Giới hạn Tần suất & Chống DDoS Layer 7 (Rate Limiting)
+### 16. Giới hạn Tần suất & Chống DDoS Layer 7 (Rate Limiting)
 - **Quản lý Quy tắc Rate Limiting**:
   - Cấu hình ngưỡng Request (Threshold count) và chu kỳ thời gian (Period seconds: 10s, 60s, 10m, 1h).
   - Hành động thực thi khi vượt ngưỡng: `Ban (Block HTTP 429 kèm thời gian Timeout)`, `Managed Challenge`, `JS Challenge`.
 - **1-Click DevSecOps Presets**:
-  - ⚡ *Anti-Brute-Force Login*: 10 req / 1m ➔ Ban 5m cho endpoint `/api/v1/auth/login`.
-  - 💳 *Payment Gateway Shield*: 15 req / 1m ➔ Managed Challenge cho `/api/v1/checkout/*`.
-  - 🛡️ *Anti-Scraping API*: 120 req / 1m ➔ JS Challenge cho `/api/v1/catalog/*`.
+  - *Anti-Brute-Force Login*: 10 req / 1m -> Ban 5m cho endpoint `/api/v1/auth/login`.
+  - *Payment Gateway Shield*: 15 req / 1m -> Managed Challenge cho `/api/v1/checkout/*`.
+  - *Anti-Scraping API*: 120 req / 1m -> JS Challenge cho `/api/v1/catalog/*`.
 - **Biểu đồ & Telemetry Vi phạm**:
   - Thống kê tổng số lần vượt ngưỡng (Breaches), số request bị chặn (Blocked 429), và số request bị thử thách (Challenged).
   - Top Endpoints bị tấn công nhiều nhất và Top IP vi phạm theo quốc gia.
 
-### 14. Zero Trust Access & Cloudflare Tunnels (cloudflared)
+### 17. Zero Trust Access & Cloudflare Tunnels (cloudflared)
 - **Zero Trust Access Applications**:
   - Bảo vệ các cổng nội bộ (Jira, Grafana, Admin Panel) bằng xác thực định danh (IdPs: Google Workspace, GitHub Enterprise SAML, Azure AD).
   - Cấu hình Session Duration và chính sách Access Policies (cho phép theo Email, Domain `@company.com`, hoặc IP Whitelist).
@@ -186,7 +186,7 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - Giám sát trạng thái Tunnel (Healthy / Down), Active Edge Connectors, và Public Ingress Routing.
   - **1-Click Launch Command**: Lệnh khởi chạy connector nhanh `cloudflared tunnel run --token <TOKEN>`.
 
-### 15. Nhật ký Thao tác & Khôi phục (System Audit Trail & Rollback Engine)
+### 18. Nhật ký Thao tác & Khôi phục (System Audit Trail & Rollback Engine)
 - **Nhật ký Thao tác Hệ thống (System Audit Trail)**:
   - Tự động ghi lại lịch sử mọi hành động mutation trên hạ tầng (*Ai, Vai trò RBAC, Làm gì, Thời gian, Domain mục tiêu, Trạng thái*).
   - Phân loại rõ ràng: Bật/Tắt Dev Mode, Purge Cache chi tiết, Đổi SSL Mode, Thêm/Sửa/Xóa DNS, Tạo WAF rule, Khôi phục Snapshot.
@@ -198,19 +198,19 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - **Trình Đối soát Pre-Restore Diff Inspector**: So sánh chi tiết từng tham số giữa cấu hình Live và Snapshot trước khi áp dụng.
   - **1-Click Restore Execution**: Khôi phục lại toàn bộ thiết lập SSL, TLS, Always HTTPS, HSTS, DNS và WAF về trạng thái cũ an toàn.
 
-### 16. Bộ Công cụ Chẩn đoán Mạng & Kiểm tra Cấu hình (Network & DNS Diagnostics Suite)
+### 19. Bộ Công cụ Chẩn đoán Mạng & Kiểm tra Cấu hình (Network & DNS Diagnostics Suite)
 - **Kiểm tra Phân giải DNS Trực tiếp (In-line DNS Quick Test)**:
-  - Tích hợp nút kiểm tra nhanh (biểu tượng `<Activity />`) trên từng dòng bản ghi DNS (`A`, `CNAME`, `TXT`, `MX`,...).
+  - Tích hợp nút kiểm tra nhanh trên từng dòng bản ghi DNS (`A`, `CNAME`, `TXT`, `MX`,...).
   - Mở modal chẩn đoán tức thì: kiểm tra phân giải qua **Cloudflare (1.1.1.1)** và **Google DNS (8.8.8.8)**, phát hiện trạng thái Cloudflare Proxy (Orange Cloud) vs Direct Origin (Grey Cloud), và kiểm tra tính sẵn sàng của cổng Web HTTP/HTTPS.
 - **Trung tâm Chẩn đoán Mạng Toàn diện (Network Diagnostics Suite)**:
-  - 🌐 **DNS & DoH Propagation Matrix**: Truy vấn phân giải bản ghi đa Resolver (Cloudflare, Google, System).
-  - ⚡ **Ping & HTTP Latency**: Đo thời gian truyền gói RTT (Min/Avg/Max), tỷ lệ Packet Loss, HTTP Status, Server Header và mã định danh Cloudflare Ray ID (`cf-ray`).
-  - 🔌 **Telnet & Cổng TCP (TCP Port Reachability)**: Kiểm tra mở cổng Socket TCP (`80`, `443`, `22`, `8080`, `8443`, `3306`, `5432` hoặc cổng tùy chỉnh) và thời gian bắt tay TCP.
-  - 🗺️ **Tra cứu IP, ASN & GeoIP Intelligence**: Tra cứu thông tin IP, ISP, Tổ chức ASN (`AS13335`), Quốc gia, Thành phố và nhận diện IP có thuộc hạ tầng Cloudflare Proxy hay trỏ thẳng Origin.
-  - 🔒 **SSL/TLS Handshake & Certificate Inspector**: Kiểm tra kết nối TLS Handshake thực tế, Cipher Suite, giao thức TLS (1.2 / 1.3), nhà phát hành chứng chỉ (Issuer), thời hạn còn lại (Days Remaining) và danh sách tên miền mở rộng (SANs).
-  - 🚀 **Traceroute & Hops Simulator**: Mô phỏng các chặng định tuyến mạng từ Edge đến Origin.
+  - **DNS & DoH Propagation Matrix**: Truy vấn phân giải bản ghi đa Resolver (Cloudflare, Google, System).
+  - **Ping & HTTP Latency**: Đo thời gian truyền gói RTT (Min/Avg/Max), tỷ lệ Packet Loss, HTTP Status, Server Header và mã định danh Cloudflare Ray ID (`cf-ray`).
+  - **Telnet & Cổng TCP (TCP Port Reachability)**: Kiểm tra mở cổng Socket TCP (`80`, `443`, `22`, `8080`, `8443`, `3306`, `5432` hoặc cổng tùy chỉnh) và thời gian bắt tay TCP.
+  - **Tra cứu IP, ASN & GeoIP Intelligence**: Tra cứu thông tin IP, ISP, Tổ chức ASN (`AS13335`), Quốc gia, Thành phố và nhận diện IP có thuộc hạ tầng Cloudflare Proxy hay trỏ thẳng Origin.
+  - **SSL/TLS Handshake & Certificate Inspector**: Kiểm tra kết nối TLS Handshake thực tế, Cipher Suite, giao thức TLS (1.2 / 1.3), nhà phát hành chứng chỉ (Issuer), thời hạn còn lại (Days Remaining) và danh sách tên miền mở rộng (SANs).
+  - **Traceroute & Hops Simulator**: Mô phỏng các chặng định tuyến mạng từ Edge đến Origin.
 
-### 17. Tối ưu Giao diện, Menu Thu gọn & Nút Cuộn Lên Đầu Trang (UI/UX Ergonomics)
+### 20. Tối ưu Giao diện, Menu Thu gọn & Nút Cuộn Lên Đầu Trang (UI/UX Ergonomics)
 - **Thanh Menu Tinh gọn & Đóng Mở Linh hoạt (Collapsible Sidebar)**:
   - Phân nhóm chức năng khoa học: *Hạ tầng & Định tuyến, Lá chắn Bảo mật, Điện toán & Ứng dụng, Giám sát & Tuân thủ*.
   - Hỗ trợ thu gọn toàn bộ Sidebar sang chế độ icon mini (`w-16`) giúp tối ưu diện tích làm việc.
@@ -218,8 +218,8 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 - **Nút Cuộn Lên Đầu Trang (Scroll To Top)**:
   - Tự động xuất hiện mượt mà khi cuộn trang xuống quá `300px` với hiệu ứng gradient cam DevSecOps, hỗ trợ cuộn 1-click mượt mà (`smooth scroll`).
 
-### 18. Kiểm thử Tự động E2E & CI/CD Pipeline (Playwright Test Automation)
-- **Bộ Kiểm thử Tự động Playwright (18/18 Passed • 100% Green)**:
+### 21. Kiểm thử Tự động E2E & CI/CD Pipeline (Playwright Test Automation)
+- **Bộ Kiểm thử Tự động Playwright (18/18 Passed - 100% Green)**:
   - `cache-and-devmode.spec.ts`: Kiểm tra hộp thoại xác nhận an toàn Dev Mode, Granular Purge Center tabs, và 1-click Purge All.
   - `compliance-and-iac.spec.ts`: Kiểm tra trích xuất Terraform HCL (`main.tf`, `terraform.tfvars`), CRON drift scanner, và Webhook alert channels.
   - `dashboard-navigation.spec.ts`: Kiểm tra Zone listing, chuyển đổi song ngữ VI/EN, điều hướng toàn bộ menu sidebar.
@@ -229,7 +229,7 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 
 ---
 
-## 🚀 Hướng dẫn Cài đặt & Khởi chạy
+## Hướng dẫn Cài đặt & Khởi chạy
 
 ### 1. Cài đặt Dependencies
 ```bash
@@ -244,7 +244,7 @@ Truy cập giao diện tại: [http://localhost:3000](http://localhost:3000)
 
 ### 3. Chạy Kiểm thử Tự động E2E (Playwright Test Suites)
 ```bash
-# Chạy toàn bộ 15 bài test E2E ở chế độ headless
+# Chạy toàn bộ bài test E2E ở chế độ headless
 npm run test:e2e
 
 # Mở giao diện tương tác trực quan Playwright Test Runner UI
@@ -261,7 +261,7 @@ npm run test:e2e:report
 CLOUDFLARE_API_TOKEN=your_cloudflare_api_token_here
 ```
 
-### 4. Danh mục Quyền hạn API Token Yêu cầu (Cloudflare API Permissions Table):
+### 5. Danh mục Quyền hạn API Token Yêu cầu (Cloudflare API Permissions Table):
 Khi tạo Token trên [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens), chọn **Create Custom Token** và cấp đầy đủ các quyền sau:
 
 #### A. Quyền cấp độ Vùng (Zone-Level Permissions)
@@ -287,7 +287,7 @@ Khi tạo Token trên [Cloudflare API Tokens](https://dash.cloudflare.com/profil
 
 ---
 
-## 🔒 Bảo mật Kiến trúc (DevSecOps Security Architecture)
+## Bảo mật Kiến trúc (DevSecOps Security Architecture)
 - Toàn bộ giao tiếp với Cloudflare API v4 được thực hiện tại **Server-Side Route Handlers (BFF Architecture)**.
 - API Token được bảo vệ an toàn trên backend và lưu trữ client-side cách ly, không bao giờ bị rò rỉ.
 - Hỗ trợ chế độ **Sandbox Demo** để kiểm thử mọi tính năng mà không cần Token thật.

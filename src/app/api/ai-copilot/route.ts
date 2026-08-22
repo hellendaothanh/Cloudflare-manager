@@ -32,7 +32,7 @@ export interface RayIdAnalysis {
 }
 
 // Logic engine: biên dịch prompt tự nhiên sang Wirefilter Expression
-function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): GeneratedWafRule {
+function synthesizeWirefilter(prompt: string, zoneName = 'example.com', lang = 'vi'): GeneratedWafRule {
   const lower = prompt.toLowerCase();
   const conditions: string[] = [];
   const matchedConditions: Array<{ field: string; operator: string; value: string; desc: string }> = [];
@@ -45,7 +45,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
     action = 'js_challenge';
   } else if (lower.includes('cho phép') || lower.includes('allow') || lower.includes('whitelist')) {
     action = 'allow';
-  } else if (lower.includes('ghi log') || lower.includes('log only') || lower.includes('monitor')) {
+  } else if (lower.includes('ghi log') || lower.includes('log only') || lower.includes('monitor') || lower.includes('log')) {
     action = 'log';
   } else {
     action = 'block';
@@ -61,7 +61,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
         field: 'http.request.uri.path',
         operator: 'wildcard',
         value: p,
-        desc: `Đường dẫn URI khớp với mẫu '${p}'`,
+        desc: lang === 'en' ? `URI path matches wildcard pattern '${p}'` : `Đường dẫn URI khớp với mẫu '${p}'`,
       });
     } else {
       conditions.push(`http.request.uri.path eq "${p}"`);
@@ -69,7 +69,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
         field: 'http.request.uri.path',
         operator: 'eq',
         value: p,
-        desc: `Đường dẫn URI chính xác '${p}'`,
+        desc: lang === 'en' ? `Exact URI path '${p}'` : `Đường dẫn URI chính xác '${p}'`,
       });
     }
   }
@@ -81,7 +81,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'http.request.method',
       operator: 'eq',
       value: 'POST',
-      desc: 'Phương thức HTTP POST',
+      desc: lang === 'en' ? 'HTTP POST Method' : 'Phương thức HTTP POST',
     });
   } else if (lower.includes('get')) {
     conditions.push('http.request.method eq "GET"');
@@ -89,7 +89,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'http.request.method',
       operator: 'eq',
       value: 'GET',
-      desc: 'Phương thức HTTP GET',
+      desc: lang === 'en' ? 'HTTP GET Method' : 'Phương thức HTTP GET',
     });
   } else if (lower.includes('put') || lower.includes('delete')) {
     conditions.push('(http.request.method in {"PUT" "DELETE"})');
@@ -97,18 +97,18 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'http.request.method',
       operator: 'in',
       value: 'PUT, DELETE',
-      desc: 'Phương thức HTTP PUT hoặc DELETE',
+      desc: lang === 'en' ? 'HTTP PUT or DELETE Methods' : 'Phương thức HTTP PUT hoặc DELETE',
     });
   }
 
   // 4. Country / Geofence detection
-  if (lower.includes('ngoài nước') || lower.includes('nước ngoài') || lower.includes('ngoài việt nam') || lower.includes('foreign')) {
+  if (lower.includes('ngoài nước') || lower.includes('nước ngoài') || lower.includes('ngoài việt nam') || lower.includes('foreign') || lower.includes('outside vn') || lower.includes('outside vietnam')) {
     conditions.push('ip.geoip.country ne "VN"');
     matchedConditions.push({
       field: 'ip.geoip.country',
       operator: 'ne',
       value: 'VN',
-      desc: 'Quốc gia nguồn không phải Việt Nam (VN)',
+      desc: lang === 'en' ? 'Source country is outside Vietnam (VN)' : 'Quốc gia nguồn không phải Việt Nam (VN)',
     });
   } else if (lower.includes('từ trung quốc') || lower.includes('china') || lower.includes('cn')) {
     conditions.push('ip.geoip.country eq "CN"');
@@ -116,7 +116,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'ip.geoip.country',
       operator: 'eq',
       value: 'CN',
-      desc: 'Quốc gia nguồn là Trung Quốc (CN)',
+      desc: lang === 'en' ? 'Source country is China (CN)' : 'Quốc gia nguồn là Trung Quốc (CN)',
     });
   } else if (lower.includes('từ nga') || lower.includes('russia') || lower.includes('ru')) {
     conditions.push('ip.geoip.country eq "RU"');
@@ -124,7 +124,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'ip.geoip.country',
       operator: 'eq',
       value: 'RU',
-      desc: 'Quốc gia nguồn là Nga (RU)',
+      desc: lang === 'en' ? 'Source country is Russia (RU)' : 'Quốc gia nguồn là Nga (RU)',
     });
   }
 
@@ -137,7 +137,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'cf.threat_score',
       operator: 'gt',
       value: num,
-      desc: `Threat Score lớn hơn ${num}`,
+      desc: lang === 'en' ? `Cloudflare Threat Score greater than ${num}` : `Threat Score lớn hơn ${num}`,
     });
   } else if (lower.includes('threat score') || lower.includes('điểm đe dọa cao') || lower.includes('bad bot')) {
     conditions.push('cf.threat_score gt 20');
@@ -145,29 +145,29 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'cf.threat_score',
       operator: 'gt',
       value: '20',
-      desc: 'Threat Score do Cloudflare Intelligence đánh giá > 20',
+      desc: lang === 'en' ? 'Cloudflare Intelligence Threat Score > 20' : 'Threat Score do Cloudflare Intelligence đánh giá > 20',
     });
   }
 
   // 6. SQL Injection / XSS probe detection
-  if (lower.includes('sqli') || lower.includes('sql injection') || lower.includes('xss') || lower.includes('payload độc hại')) {
+  if (lower.includes('sqli') || lower.includes('sql injection') || lower.includes('xss') || lower.includes('payload độc hại') || lower.includes('malicious')) {
     conditions.push('(http.request.uri.query contains "union select" or http.request.uri.query contains "<script>")');
     matchedConditions.push({
       field: 'http.request.uri.query',
       operator: 'contains',
       value: 'SQLi / XSS signatures',
-      desc: 'Chứa payload tấn công SQL Injection hoặc Cross-Site Scripting',
+      desc: lang === 'en' ? 'Contains SQL Injection or Cross-Site Scripting signatures' : 'Chứa payload tấn công SQL Injection hoặc Cross-Site Scripting',
     });
   }
 
   // 7. User-Agent detection
-  if (lower.includes('user-agent') || lower.includes('curl') || lower.includes('python') || lower.includes('bot cào')) {
+  if (lower.includes('user-agent') || lower.includes('curl') || lower.includes('python') || lower.includes('bot cào') || lower.includes('scraper')) {
     conditions.push('(http.user_agent contains "curl" or http.user_agent contains "python-requests" or http.user_agent contains "Go-http-client")');
     matchedConditions.push({
       field: 'http.user_agent',
       operator: 'contains',
       value: 'curl, python, Go-http-client',
-      desc: 'User-Agent tự động hóa / crawler scripts',
+      desc: lang === 'en' ? 'Automated scraper / crawler User-Agents' : 'User-Agent tự động hóa / crawler scripts',
     });
   }
 
@@ -178,23 +178,27 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
       field: 'http.request.uri.path',
       operator: 'eq',
       value: '/api/login',
-      desc: 'Đường dẫn endpoint đăng nhập',
+      desc: lang === 'en' ? 'Authentication login endpoint' : 'Đường dẫn endpoint đăng nhập',
     });
     matchedConditions.push({
       field: 'ip.geoip.country',
       operator: 'ne',
       value: 'VN',
-      desc: 'IP ngoài lãnh thổ Việt Nam',
+      desc: lang === 'en' ? 'Client IP outside Vietnam' : 'IP ngoài lãnh thổ Việt Nam',
     });
   }
 
   const finalExpression = `(${conditions.join(' and ')})`;
 
+  const explanation = lang === 'en'
+    ? `This rule will ${action.toUpperCase()} all matching requests meeting all ${matchedConditions.length} conditions: ${matchedConditions.map(c => c.desc).join(', ')}.`
+    : `Quy tắc này sẽ ${action.toUpperCase()} tất cả các yêu cầu khi thỏa mãn đồng thời ${matchedConditions.length} điều kiện: ${matchedConditions.map(c => c.desc).join(', ')}.`;
+
   return {
     description: `AI Rule: ${prompt.slice(0, 80)}`,
     expression: finalExpression,
     action,
-    explanation: `Quy tắc này sẽ ${action.toUpperCase()} tất cả các yêu cầu khi thỏa mãn đồng thời ${matchedConditions.length} điều kiện: ${matchedConditions.map(c => c.desc).join(', ')}.`,
+    explanation,
     matchedConditions,
     confidence: 0.98,
   };
@@ -203,7 +207,7 @@ function synthesizeWirefilter(prompt: string, zoneName = 'example.com'): Generat
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, prompt, rayId, zoneName = 'security-enterprise.io' } = body;
+    const { action, prompt, rayId, zoneName = 'security-enterprise.io', lang = 'vi' } = body;
 
     // 1. Generate WAF Rule from Natural Language Prompt
     if (action === 'generate_waf_rule') {
@@ -211,7 +215,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
       }
 
-      const generated = synthesizeWirefilter(prompt, zoneName);
+      const generated = synthesizeWirefilter(prompt, zoneName, lang);
       return NextResponse.json({
         success: true,
         rule: generated,
@@ -222,25 +226,39 @@ export async function POST(req: NextRequest) {
     if (action === 'analyze_ray_id') {
       const targetRayId = rayId || `8a7b9c${Math.random().toString(16).substring(2, 8)}`;
       
+      const isEn = lang === 'en';
+
+      const rootCause = isEn
+        ? 'This request originated from an anonymous Tor Exit Node in Germany (IP: 185.220.101.45). The client submitted over 140 rapid POST login requests within 30 seconds exhibiting credential stuffing behavior. Cloudflare Intelligence evaluated Threat Score = 88 and immediately triggered HTTP 403 Forbidden.'
+        : 'Yêu cầu này xuất phát từ một Tor Exit Node ẩn danh tại Đức (IP: 185.220.101.45). Client đã gửi hơn 140 request POST đăng nhập trong vòng 30 giây với các cặp tài khoản credential stuffing. Cloudflare Intelligence nhận diện Threat Score = 88 và lập tức chặn (HTTP 403 Forbidden).';
+
+      const remediation = isEn
+        ? [
+            'Enable Cloudflare Bot Management or Turnstile CAPTCHA for endpoint /api/v1/auth/login.',
+            'Enforce Rate Limiting: Limit to maximum 5 POST requests per 1 minute per IP address.',
+            'Create an IP Access Rule to block ASN AS208294 or known Tor Exit Node ranges.',
+          ]
+        : [
+            'Kích hoạt Cloudflare Bot Management hoặc Turnstile CAPTCHA cho endpoint /api/v1/auth/login.',
+            'Thiết lập Rate Limiting: Giới hạn tối đa 5 requests POST / 1 phút cho mỗi IP.',
+            'Tạo IP Access Rule chặn hoàn toàn ASN AS208294 hoặc dải Tor Exit Nodes.',
+          ];
+
       const analysis: RayIdAnalysis = {
         rayId: targetRayId,
         timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
         clientIp: '185.220.101.45',
-        country: 'DE (Germany - Tor Exit Node)',
+        country: isEn ? 'DE (Germany - Tor Exit Node)' : 'DE (Đức - Tor Exit Node)',
         asn: 'AS208294 (Tor Network)',
         uriPath: '/api/v1/auth/login',
         httpMethod: 'POST',
         httpStatus: 403,
         threatScore: 88,
         botScore: 1, // Extremely likely automated bot
-        wafActionTriggered: 'WAF Custom Rule: Block High Threat Score Tor Nodes',
-        rootCauseAnalysis: 'Yêu cầu này xuất phát từ một Tor Exit Node ẩn danh tại Đức (IP: 185.220.101.45). Client đã gửi hơn 140 request POST đăng nhập trong vòng 30 giây với các cặp tài khoản credential stuffing. Cloudflare Intelligence nhận diện Threat Score = 88 và lập tức chặn (HTTP 403 Forbidden).',
+        wafActionTriggered: isEn ? 'WAF Custom Rule: Block High Threat Score Tor Nodes' : 'WAF Custom Rule: Chặn Tor Nodes có Threat Score cao',
+        rootCauseAnalysis: rootCause,
         attackVector: 'Credential Stuffing & Automated Brute-Force Bot via Tor Network',
-        remediationSuggestions: [
-          'Kích hoạt Cloudflare Bot Management hoặc Turnstile CAPTCHA cho endpoint /api/v1/auth/login.',
-          'Thiết lập Rate Limiting: Giới hạn tối đa 5 requests POST / 1 phút cho mỗi IP.',
-          'Tạo IP Access Rule chặn hoàn toàn ASN AS208294 hoặc dải Tor Exit Nodes.',
-        ],
+        remediationSuggestions: remediation,
         suggestedPreventiveRule: {
           description: 'AI Defense: Enforce Managed Challenge on Login from Tor/High-Threat IPs',
           expression: '(http.request.uri.path eq "/api/v1/auth/login" and (cf.threat_score gt 40 or ip.geoip.country in {"T1" "A1"}))',
