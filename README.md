@@ -49,7 +49,18 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
 - **Modal Xác nhận Xóa DNS Record**: Hộp thoại an toàn cảnh báo rủi ro downtime dịch vụ trước khi xóa.
 - Xuất file cấu hình chuẩn **BIND Zone File (`.zone.txt`)**.
 
-### 3. Tường lửa WAF, Giới hạn Tần suất & Xác nhận Thao tác (WAF & Rate Limiting Shield)
+### 3. Quản lý Origin Pools, Health Checks & Origin Shield (Origin & Failover Hub)
+- **Origin Server Pools & Automated DNS Failover**:
+  - Quản lý các cụm Origin Server Nodes (Primary, Secondary Standby, Disaster Recovery Backup).
+  - Giám sát sức khỏe định kỳ (HTTP/HTTPS/TCP Probes, Interval, Timeout, Status Code) và đo độ trễ RTT & Uptime thời gian thực.
+  - **Tự động kích hoạt DNS Failover**: Tự động phát hiện khi Primary Origin sập (Unhealthy) và lập tức điều phối lưu lượng sang Standby Origin để chống downtime.
+  - **Lịch sử Sự cố Failover (Failover Audit Log)**: Ghi nhận chi tiết lịch sử các lần chuyển đổi failover tự động kèm lý do lỗi.
+- **Origin Shield & Header Validation (X-Origin-Verify-Secret)**:
+  - Chống kẻ tấn công quét tìm Origin IP thật để bypass qua Cloudflare WAF/DDoS.
+  - Tự động sinh và lưu trữ mã Secret Header `X-Origin-Verify-Secret`.
+  - **1-Click Config Snippet Generator**: Tự động sinh mã cấu hình chuẩn và nút Copy cho **Nginx**, **Apache (.htaccess)**, **IIS (web.config)** và **HAProxy** để chặn thẳng mã HTTP 403 Forbidden nếu request không đi qua Cloudflare Edge.
+
+### 4. Tường lửa WAF, Giới hạn Tần suất & Xác nhận Thao tác (WAF & Rate Limiting Shield)
 - **Nút Refresh List**: Tải mới quy tắc WAF, IP Access List và Rate Limiting tức thì.
 - **Modal Xác nhận Xóa WAF / IP / RateLimit**: Ngăn chặn việc vô tình xóa bỏ các bộ lọc bảo vệ hệ thống.
 - **Modal Xác nhận Đổi Security Level**: Cảnh báo tác động đến trải nghiệm người dùng cuối khi chuyển đổi sang chế độ *Under Attack* hoặc *Essentially Off*.

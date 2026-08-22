@@ -15,6 +15,7 @@ import { AnalyticsView } from '@/components/views/AnalyticsView';
 import { AuditView } from '@/components/views/AuditView';
 import { ComplianceView } from '@/components/views/ComplianceView';
 import { DiagnosticsView } from '@/components/views/DiagnosticsView';
+import { OriginView } from '@/components/views/OriginView';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe, Key, FlaskConical, ShieldCheck } from 'lucide-react';
@@ -43,6 +44,7 @@ export default function DashboardPage() {
         <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
           {activeTab === 'overview' && <ZonesView />}
           {activeTab === 'dns' && <DnsView />}
+          {activeTab === 'origin' && <OriginView />}
           {activeTab === 'diagnostics' && <DiagnosticsView />}
           {activeTab === 'security' && <SecurityView />}
           {activeTab === 'ratelimit' && <RateLimitView />}

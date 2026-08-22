@@ -19,12 +19,14 @@ import {
   ChevronRight,
   PanelLeftClose,
   PanelLeftOpen,
-  Radio
+  Radio,
+  Server
 } from 'lucide-react';
 
 export type NavTab = 
   | 'overview' 
   | 'dns' 
+  | 'origin'
   | 'security' 
   | 'ratelimit'
   | 'ssl' 
@@ -71,6 +73,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
           id: 'dns' as NavTab,
           label: t.sidebar.dns.title,
           icon: Layers,
+        },
+        {
+          id: 'origin' as NavTab,
+          label: t.sidebar.origin.title,
+          icon: Server,
+          badge: t.sidebar.origin.badge,
         },
         {
           id: 'diagnostics' as NavTab,

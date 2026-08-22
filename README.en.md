@@ -49,7 +49,18 @@ The application includes built-in multilingual capabilities with fully synchroni
 - **DNS Record Deletion Safety Modal**: Protects production environments from unintended record drops and service downtime.
 - Standard **BIND Zone File export (`.zone.txt`)**.
 
-### 3. Web Application Firewall & Rate Limiting (WAF & Rate Limiting Shield)
+### 3. Origin Server Pools, Health Checks & Origin Shield (Origin Hub)
+- **Origin Server Pools & Automated DNS Failover**:
+  - Manage origin server nodes (Primary, Secondary Standby, Disaster Recovery Backup nodes).
+  - Continuous health check probes (HTTP/HTTPS/TCP Probes, Interval, Timeout, Expected Status Codes) with real-time RTT latency and Uptime telemetry.
+  - **Automated DNS Failover Mechanism**: Automatically detects when the primary origin is unreachable and immediately fails over traffic to standby origins to eliminate downtime.
+  - **Failover Audit Log**: Comprehensive event logs capturing automated failover transitions and underlying probe failure reasons.
+- **Origin Shield & Header Validation (X-Origin-Verify-Secret)**:
+  - Prevents attackers from scanning and hitting your origin IP directly to bypass Cloudflare WAF/DDoS.
+  - Automatically generates, rotates, and manages shared secret headers (`X-Origin-Verify-Secret`).
+  - **1-Click Web Server Config Generator**: Generates production-ready configurations with 1-click copy for **Nginx**, **Apache (.htaccess)**, **IIS (web.config)**, and **HAProxy** to enforce immediate HTTP 403 Forbidden on direct access.
+
+### 4. Web Application Firewall & Rate Limiting (WAF & Rate Limiting Shield)
 - **Proactive Refresh List buttons**: Refresh WAF rules, IP Access Rules, and Rate Limiting configurations on demand.
 - **Safety Confirmation Modals for Deletions**: Prevents accidental deletion of custom WAF filters, IP Access rules, and Rate Limiting policies.
 - **Security Level Transition Safety Modal**: Detailed impact warning when switching to *Under Attack* or *Essentially Off* modes.
