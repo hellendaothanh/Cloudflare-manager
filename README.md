@@ -163,8 +163,28 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
   - **Trình Đối soát Pre-Restore Diff Inspector**: So sánh chi tiết từng tham số giữa cấu hình Live và Snapshot trước khi áp dụng.
   - **1-Click Restore Execution**: Khôi phục lại toàn bộ thiết lập SSL, TLS, Always HTTPS, HSTS, DNS và WAF về trạng thái cũ an toàn.
 
-### 16. Kiểm thử Tự động E2E & CI/CD Pipeline (Playwright Test Automation)
-- **Bộ Kiểm thử Tự động Playwright (15/15 Passed • 100% Green)**:
+### 16. Bộ Công cụ Chẩn đoán Mạng & Kiểm tra Cấu hình (Network & DNS Diagnostics Suite)
+- **Kiểm tra Phân giải DNS Trực tiếp (In-line DNS Quick Test)**:
+  - Tích hợp nút kiểm tra nhanh (biểu tượng `<Activity />`) trên từng dòng bản ghi DNS (`A`, `CNAME`, `TXT`, `MX`,...).
+  - Mở modal chẩn đoán tức thì: kiểm tra phân giải qua **Cloudflare (1.1.1.1)** và **Google DNS (8.8.8.8)**, phát hiện trạng thái Cloudflare Proxy (Orange Cloud) vs Direct Origin (Grey Cloud), và kiểm tra tính sẵn sàng của cổng Web HTTP/HTTPS.
+- **Trung tâm Chẩn đoán Mạng Toàn diện (Network Diagnostics Suite)**:
+  - 🌐 **DNS & DoH Propagation Matrix**: Truy vấn phân giải bản ghi đa Resolver (Cloudflare, Google, System).
+  - ⚡ **Ping & HTTP Latency**: Đo thời gian truyền gói RTT (Min/Avg/Max), tỷ lệ Packet Loss, HTTP Status, Server Header và mã định danh Cloudflare Ray ID (`cf-ray`).
+  - 🔌 **Telnet & Cổng TCP (TCP Port Reachability)**: Kiểm tra mở cổng Socket TCP (`80`, `443`, `22`, `8080`, `8443`, `3306`, `5432` hoặc cổng tùy chỉnh) và thời gian bắt tay TCP.
+  - 🗺️ **Tra cứu IP, ASN & GeoIP Intelligence**: Tra cứu thông tin IP, ISP, Tổ chức ASN (`AS13335`), Quốc gia, Thành phố và nhận diện IP có thuộc hạ tầng Cloudflare Proxy hay trỏ thẳng Origin.
+  - 🔒 **SSL/TLS Handshake & Certificate Inspector**: Kiểm tra kết nối TLS Handshake thực tế, Cipher Suite, giao thức TLS (1.2 / 1.3), nhà phát hành chứng chỉ (Issuer), thời hạn còn lại (Days Remaining) và danh sách tên miền mở rộng (SANs).
+  - 🚀 **Traceroute & Hops Simulator**: Mô phỏng các chặng định tuyến mạng từ Edge đến Origin.
+
+### 17. Tối ưu Giao diện, Menu Thu gọn & Nút Cuộn Lên Đầu Trang (UI/UX Ergonomics)
+- **Thanh Menu Tinh gọn & Đóng Mở Linh hoạt (Collapsible Sidebar)**:
+  - Phân nhóm chức năng khoa học: *Hạ tầng & Định tuyến, Lá chắn Bảo mật, Điện toán & Ứng dụng, Giám sát & Tuân thủ*.
+  - Hỗ trợ thu gọn toàn bộ Sidebar sang chế độ icon mini (`w-16`) giúp tối ưu diện tích làm việc.
+  - Hỗ trợ đóng/mở (Accordion) từng nhóm danh mục con.
+- **Nút Cuộn Lên Đầu Trang (Scroll To Top)**:
+  - Tự động xuất hiện mượt mà khi cuộn trang xuống quá `300px` với hiệu ứng gradient cam DevSecOps, hỗ trợ cuộn 1-click mượt mà (`smooth scroll`).
+
+### 18. Kiểm thử Tự động E2E & CI/CD Pipeline (Playwright Test Automation)
+- **Bộ Kiểm thử Tự động Playwright (18/18 Passed • 100% Green)**:
   - `cache-and-devmode.spec.ts`: Kiểm tra hộp thoại xác nhận an toàn Dev Mode, Granular Purge Center tabs, và 1-click Purge All.
   - `compliance-and-iac.spec.ts`: Kiểm tra trích xuất Terraform HCL (`main.tf`, `terraform.tfvars`), CRON drift scanner, và Webhook alert channels.
   - `dashboard-navigation.spec.ts`: Kiểm tra Zone listing, chuyển đổi song ngữ VI/EN, điều hướng toàn bộ menu sidebar.

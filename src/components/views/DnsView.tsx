@@ -15,9 +15,11 @@ import {
   Download, 
   CheckCircle2, 
   AlertCircle, 
-  RefreshCw
+  RefreshCw,
+  Activity
 } from 'lucide-react';
 import { ActionConfirmModal } from '@/components/common/ActionConfirmModal';
+import { DnsRecordTesterModal } from '@/components/dns/DnsRecordTesterModal';
 
 export const DnsView: React.FC = () => {
   const { selectedZone, authFetch, hasPermission, role } = useAuth();
@@ -28,6 +30,10 @@ export const DnsView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('ALL');
   
+  // Modal state for Testing DNS Record
+  const [testingRecord, setTestingRecord] = useState<DnsRecord | null>(null);
+  const [isTesterModalOpen, setIsTesterModalOpen] = useState(false);
+
   // Modal state for Add/Edit
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<DnsRecord | null>(null);
@@ -423,6 +429,16 @@ export const DnsView: React.FC = () => {
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5 opacity-80 group-hover:opacity-100">
                           <button
+                            onClick={() => {
+                              setTestingRecord(record);
+                              setIsTesterModalOpen(true);
+                            }}
+                            className="p-1.5 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 transition-colors cursor-pointer"
+                            title="Kiểm tra phân giải DNS & Cổng (Quick Verify / Resolve Test)"
+                          >
+                            <Activity className="w-3.5 h-3.5" />
+                          </button>
+                          <button
                             onClick={() => canEditDns && openEditModal(record)}
                             disabled={!canEditDns}
                             className={`p-1.5 rounded-lg transition-colors ${
@@ -656,6 +672,17 @@ export const DnsView: React.FC = () => {
           }}
         />
       )}
+
+      {/* Real-time In-line DNS Record Tester Modal */}
+      <DnsRecordTesterModal
+        isOpen={isTesterModalOpen}
+        onClose={() => {
+          setIsTesterModalOpen(false);
+          setTestingRecord(null);
+        }}
+        record={testingRecord}
+        zoneName={selectedZone?.name || ''}
+      />
     </div>
   );
 };

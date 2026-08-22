@@ -14,7 +14,12 @@ import {
   GitBranch,
   Cpu,
   Shield,
-  Network
+  Network,
+  ChevronDown,
+  ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Radio
 } from 'lucide-react';
 
 export type NavTab = 
@@ -28,7 +33,8 @@ export type NavTab =
   | 'zerotrust'
   | 'analytics' 
   | 'audit' 
-  | 'compliance';
+  | 'compliance'
+  | 'diagnostics';
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -38,152 +44,238 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
   const { t } = useLanguage();
 
-  const menuItems = [
+  // State: Thu gọn / mở rộng toàn bộ thanh Sidebar
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+
+  // State: Thu gọn / mở rộng từng nhóm danh mục
+  const [collapsedGroups, setCollapsedGroups] = React.useState<Record<string, boolean>>({});
+
+  const toggleGroup = (groupKey: string) => {
+    setCollapsedGroups((prev) => ({
+      ...prev,
+      [groupKey]: !prev[groupKey],
+    }));
+  };
+
+  const menuSections = [
     {
-      id: 'overview' as NavTab,
-      label: t.sidebar.overview.title,
-      subtitle: t.sidebar.overview.subtitle,
-      icon: Globe,
-      color: 'text-blue-400',
+      key: 'connectivity',
+      group: t.sidebar.groups.connectivity,
+      items: [
+        {
+          id: 'overview' as NavTab,
+          label: t.sidebar.overview.title,
+          icon: Globe,
+        },
+        {
+          id: 'dns' as NavTab,
+          label: t.sidebar.dns.title,
+          icon: Layers,
+        },
+        {
+          id: 'diagnostics' as NavTab,
+          label: t.sidebar.diagnostics.title,
+          icon: Radio,
+          badge: t.sidebar.diagnostics.badge,
+        },
+        {
+          id: 'page-rules' as NavTab,
+          label: t.sidebar.pageRules.title,
+          icon: SlidersHorizontal,
+        },
+      ],
     },
     {
-      id: 'dns' as NavTab,
-      label: t.sidebar.dns.title,
-      subtitle: t.sidebar.dns.subtitle,
-      icon: Layers,
-      color: 'text-amber-400',
+      key: 'security',
+      group: t.sidebar.groups.security,
+      items: [
+        {
+          id: 'security' as NavTab,
+          label: t.sidebar.security.title,
+          icon: ShieldAlert,
+        },
+        {
+          id: 'ratelimit' as NavTab,
+          label: t.sidebar.rateLimit.title,
+          icon: Shield,
+          badge: 'L7',
+        },
+        {
+          id: 'ssl' as NavTab,
+          label: t.sidebar.ssl.title,
+          icon: Lock,
+        },
+        {
+          id: 'zerotrust' as NavTab,
+          label: t.sidebar.zeroTrust.title,
+          icon: Network,
+          badge: 'ACCESS',
+        },
+      ],
     },
     {
-      id: 'security' as NavTab,
-      label: t.sidebar.security.title,
-      subtitle: t.sidebar.security.subtitle,
-      icon: ShieldAlert,
-      color: 'text-rose-400',
+      key: 'compute',
+      group: t.sidebar.groups.compute,
+      items: [
+        {
+          id: 'workers' as NavTab,
+          label: t.sidebar.workers.title,
+          icon: Cpu,
+          badge: 'EDGE',
+        },
+      ],
     },
     {
-      id: 'ratelimit' as NavTab,
-      label: t.sidebar.rateLimit.title,
-      subtitle: t.sidebar.rateLimit.subtitle,
-      icon: Shield,
-      color: 'text-red-400',
-      badge: 'L7',
-    },
-    {
-      id: 'ssl' as NavTab,
-      label: t.sidebar.ssl.title,
-      subtitle: t.sidebar.ssl.subtitle,
-      icon: Lock,
-      color: 'text-emerald-400',
-    },
-    {
-      id: 'page-rules' as NavTab,
-      label: t.sidebar.pageRules.title,
-      subtitle: t.sidebar.pageRules.subtitle,
-      icon: SlidersHorizontal,
-      color: 'text-purple-400',
-    },
-    {
-      id: 'workers' as NavTab,
-      label: t.sidebar.workers.title,
-      subtitle: t.sidebar.workers.subtitle,
-      icon: Cpu,
-      color: 'text-orange-400',
-      badge: 'EDGE',
-    },
-    {
-      id: 'zerotrust' as NavTab,
-      label: t.sidebar.zeroTrust.title,
-      subtitle: t.sidebar.zeroTrust.subtitle,
-      icon: Network,
-      color: 'text-indigo-400',
-      badge: 'VPN-LESS',
-    },
-    {
-      id: 'analytics' as NavTab,
-      label: t.sidebar.analytics.title,
-      subtitle: t.sidebar.analytics.subtitle,
-      icon: BarChart3,
-      color: 'text-cyan-400',
-    },
-    {
-      id: 'audit' as NavTab,
-      label: t.sidebar.audit.title,
-      subtitle: t.sidebar.audit.subtitle,
-      icon: ActivitySquare,
-      color: 'text-orange-400',
-      badge: t.sidebar.audit.badge,
-    },
-    {
-      id: 'compliance' as NavTab,
-      label: t.sidebar.compliance.title,
-      subtitle: t.sidebar.compliance.subtitle,
-      icon: GitBranch,
-      color: 'text-cyan-400',
-      badge: t.sidebar.compliance.badge,
+      key: 'governance',
+      group: t.sidebar.groups.governance,
+      items: [
+        {
+          id: 'analytics' as NavTab,
+          label: t.sidebar.analytics.title,
+          icon: BarChart3,
+        },
+        {
+          id: 'audit' as NavTab,
+          label: t.sidebar.audit.title,
+          icon: ActivitySquare,
+          badge: t.sidebar.audit.badge,
+        },
+        {
+          id: 'compliance' as NavTab,
+          label: t.sidebar.compliance.title,
+          icon: GitBranch,
+          badge: t.sidebar.compliance.badge,
+        },
+      ],
     },
   ];
 
   return (
-    <aside className="w-full md:w-64 lg:w-72 shrink-0 border-r border-gray-800/80 bg-gray-950/60 p-4 flex flex-col justify-between">
-      <div className="space-y-1.5">
-        <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-gray-500">
-          {t.sidebar.controlPlane}
+    <aside className={`shrink-0 border-r border-gray-800/80 bg-gray-950/70 p-3 flex flex-col justify-between select-none transition-all duration-200 ${
+      isCollapsed ? 'w-16 md:w-20' : 'w-full md:w-60 lg:w-64'
+    }`}>
+      <div className="space-y-3">
+        {/* Toggle Sidebar Button Header */}
+        <div className="flex items-center justify-between px-1 pb-1 border-b border-gray-850">
+          {!isCollapsed && (
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+              {t.sidebar.controlPlane}
+            </span>
+          )}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-850 transition-colors mx-auto md:mx-0"
+            title={isCollapsed ? 'Mở rộng Menu (Expand)' : 'Thu gọn Menu (Collapse)'}
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="w-4 h-4 text-orange-400" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4" />
+            )}
+          </button>
         </div>
 
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
+        {/* Menu Sections */}
+        {menuSections.map((section) => {
+          const isGroupCollapsed = !!collapsedGroups[section.key];
 
           return (
-            <button
-              key={item.id}
-              onClick={() => onSelectTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left transition-all group relative ${
-                isActive
-                  ? 'bg-gradient-to-r from-gray-900 to-gray-850 text-white border border-gray-750 shadow-md'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900/60'
-              }`}
-            >
-              {isActive && (
-                <div className="absolute left-0 top-2 bottom-2 w-1 bg-gradient-to-b from-orange-500 to-amber-500 rounded-r-full" />
+            <div key={section.key} className="space-y-1">
+              {/* Group Header (Clickable to collapse/expand group when sidebar is open) */}
+              {!isCollapsed ? (
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(section.key)}
+                  className="w-full flex items-center justify-between px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-gray-400 hover:text-gray-200 rounded transition-colors group"
+                >
+                  <span>{section.group}</span>
+                  <div className="text-gray-400 group-hover:text-gray-300">
+                    {isGroupCollapsed ? (
+                      <ChevronRight className="w-3 h-3" />
+                    ) : (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </div>
+                </button>
+              ) : (
+                <div className="h-px bg-gray-850 my-1.5" />
               )}
-              <div className={`p-2 rounded-lg ${isActive ? 'bg-gray-800 text-orange-400' : 'bg-gray-900/80 text-gray-400 group-hover:text-gray-200'}`}>
-                <Icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 truncate">
-                <div className="flex items-center justify-between">
-                  <span className={`text-xs font-semibold ${isActive ? 'text-white' : 'text-gray-300'}`}>
-                    {item.label}
-                  </span>
-                  {item.badge && (
-                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-gradient-to-r from-orange-500 to-amber-500 text-white">
-                      {item.badge}
-                    </span>
-                  )}
+
+              {/* Group Items */}
+              {(!isGroupCollapsed || isCollapsed) && (
+                <div className="space-y-0.5 animate-in fade-in duration-100">
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeTab === item.id;
+
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => onSelectTab(item.id)}
+                        title={isCollapsed ? item.label : undefined}
+                        className={`w-full flex items-center ${
+                          isCollapsed ? 'justify-center py-2 px-1' : 'justify-between px-2.5 py-2'
+                        } rounded-xl text-left transition-all group relative ${
+                          isActive
+                            ? 'bg-gradient-to-r from-orange-500/15 via-amber-500/10 to-transparent text-white border border-orange-500/30 shadow-sm font-semibold'
+                            : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900/60 font-medium'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className={`p-1.5 rounded-lg transition-colors ${
+                            isActive
+                              ? 'bg-orange-500 text-white shadow-md shadow-orange-500/30'
+                              : 'bg-gray-900/80 text-gray-400 group-hover:text-gray-200 group-hover:bg-gray-850'
+                          }`}>
+                            <Icon className="w-3.5 h-3.5 shrink-0" />
+                          </div>
+                          {!isCollapsed && (
+                            <span className={`text-xs truncate ${isActive ? 'text-white' : 'text-gray-300'}`}>
+                              {item.label}
+                            </span>
+                          )}
+                        </div>
+
+                        {!isCollapsed && item.badge && (
+                          <span className={`text-[9px] font-extrabold px-1.5 py-0.2 rounded shrink-0 ${
+                            isActive
+                              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs'
+                              : 'bg-gray-850 text-gray-400 border border-gray-750'
+                          }`}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
-                <span className="text-[10px] text-gray-400 block truncate">{item.subtitle}</span>
-              </div>
-            </button>
+              )}
+            </div>
           );
         })}
       </div>
 
-      {/* DevSecOps Quick Card in Sidebar */}
-      <div className="p-3.5 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 text-xs text-gray-400 mt-6">
-        <div className="flex items-center gap-2 text-white font-semibold text-xs mb-1">
-          <Workflow className="w-4 h-4 text-orange-400" />
-          <span>{t.sidebar.automationCard.title}</span>
+      {/* DevSecOps Automation Card */}
+      {!isCollapsed ? (
+        <div className="p-3 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800/90 text-xs text-gray-400 mt-4">
+          <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-1.5 text-white font-semibold text-xs">
+              <Workflow className="w-3.5 h-3.5 text-orange-400" />
+              <span>{t.sidebar.automationCard.title}</span>
+            </div>
+            <span className="text-emerald-400 text-[10px] font-mono flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> {t.sidebar.automationCard.live}
+            </span>
+          </div>
+          <p className="text-[10px] text-gray-400 leading-normal">
+            {t.sidebar.automationCard.desc}
+          </p>
         </div>
-        <p className="text-[11px] text-gray-400 leading-relaxed mb-2">
-          {t.sidebar.automationCard.desc}
-        </p>
-        <div className="flex items-center justify-between text-[10px] text-gray-400 pt-2 border-t border-gray-800/80 font-mono">
-          <span>{t.sidebar.automationCard.restApi}</span>
-          <span className="text-emerald-400 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> {t.sidebar.automationCard.live}
-          </span>
+      ) : (
+        <div className="p-2 rounded-xl bg-gray-900/60 border border-gray-800 flex justify-center text-orange-400 mt-4" title={t.sidebar.automationCard.title}>
+          <Workflow className="w-4 h-4" />
         </div>
-      </div>
+      )}
     </aside>
   );
 };

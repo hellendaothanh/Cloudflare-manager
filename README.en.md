@@ -163,8 +163,28 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
   - **Pre-Restore Diff Inspector**: Detailed visual parameter diff comparison between Live state and Snapshot before execution.
   - **1-Click Rollback**: Restore SSL, TLS, Always HTTPS, HSTS, DNS, and WAF settings with a safety confirmation modal.
 
-### 16. E2E Automated Testing & CI/CD Pipeline (Playwright Test Automation)
-- **Playwright Automated Test Suite (15/15 Passed • 100% Green)**:
+### 16. Network & DNS Diagnostics Suite (Verification & Telemetry)
+- **In-line Real-time DNS Record Tester**:
+  - Integrated quick test trigger (`<Activity />` pulse icon) directly on every DNS table record row (`A`, `CNAME`, `TXT`, `MX`, etc.).
+  - Instant diagnostic modal: resolves target hostnames across **Cloudflare (1.1.1.1)** and **Google DNS (8.8.8.8)**, identifies Cloudflare Edge Proxy (Orange Cloud) vs Direct Origin (Grey Cloud), and tests web port reachability (HTTP/HTTPS).
+- **Comprehensive Network Diagnostics Suite**:
+  - 🌐 **DNS & DoH Propagation Matrix**: Multi-resolver query engine testing propagation across global resolvers.
+  - ⚡ **Ping & HTTP Latency**: Round-trip packet latency telemetry (Min/Avg/Max RTT), Packet Loss percentage, HTTP status codes, server headers, and Cloudflare Ray ID (`cf-ray`).
+  - 🔌 **Telnet & TCP Port Reachability**: Socket connectivity testing for standard service ports (`80`, `443`, `22`, `8080`, `8443`, `3306`, `5432` or custom ports) with handshake latency.
+  - 🗺️ **IP, ASN & GeoIP Intelligence**: Origin vs Cloudflare CDN Proxy IP detection, ISP classification, Autonomous System (`AS13335`), and geographic geolocation telemetry.
+  - 🔒 **SSL/TLS Handshake & Certificate Inspector**: Live TLS handshake verifier, cipher suites, TLS version (1.2 / 1.3), certificate issuer, remaining validity days, and Subject Alternative Names (SANs).
+  - 🚀 **Traceroute & Hops Simulator**: Simulates network path traversal from edge Anycast nodes to origin data centers.
+
+### 17. UI/UX Ergonomics, Collapsible Sidebar & Scroll To Top
+- **Collapsible & Streamlined Sidebar Navigation**:
+  - Categorized into functional sections: *Network & Routing, Security & Shields, Edge & Compute, Telemetry & Compliance*.
+  - Full sidebar collapse to compact icon mode (`w-16`) for maximum workspace canvas.
+  - Accordion group expand/collapse toggles for focused workflow navigation.
+- **Floating Scroll To Top Utility**:
+  - Automatically fades in when scrolling exceeds `300px` with branded DevSecOps amber gradient and smooth 1-click scroll restoration.
+
+### 18. E2E Automated Testing & CI/CD Pipeline (Playwright Test Automation)
+- **Playwright Automated Test Suite (18/18 Passed • 100% Green)**:
   - `cache-and-devmode.spec.ts`: Validates Dev Mode safety confirmation modal, Granular Purge Center tabs, and 1-click Purge All.
   - `compliance-and-iac.spec.ts`: Validates Terraform HCL synthesis (`main.tf`, `terraform.tfvars`), scheduled CRON drift scanner, and Webhook alert channels.
   - `dashboard-navigation.spec.ts`: Validates Zone listing, bilingual VI/EN language switching, and primary sidebar navigation.
