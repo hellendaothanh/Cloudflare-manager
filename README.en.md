@@ -117,7 +117,16 @@ Four built-in operational roles to prevent misconfigurations and enforce least-p
 - **Multi-Channel Alert Dispatcher**:
   - Dispatch alerts to Slack (BlockKit), Discord (Embed), Telegram (HTML), and Custom SIEM/SOAR Webhooks.
 
-### 11. Infrastructure as Code (IaC) Terraform Export
+### 12. Cost Management & Edge Performance Optimization (Cost & FinOps Hub)
+- **Cache Hit-Ratio & Cost Optimization Engine**:
+  - Deep telemetry into Cache Hit Ratios (Edge Cached vs. Origin Misses), total bandwidth saved (GB/TB), and estimated origin egress bandwidth savings based on AWS/GCP/Azure pricing (~$0.08 - $0.09/GB).
+  - **Automated FinOps Recommendations Engine**: 1-Click optimization to enable Tiered Caching, tune Browser & Edge Cache TTL for static assets, and activate Brotli compression + Early Hints (HTTP 103).
+  - **Top Egress Cost Drain Endpoints Matrix**: Pinpoint high-cost URI paths with low hit ratios pulling heavy bandwidth directly from origin servers.
+- **Workers CPU & R2 Storage Insights**:
+  - **Workers Compute Telemetry**: Total invocations, average CPU wall-time, p95 execution latency, and monthly projected compute cost per worker script.
+  - **R2 Object Storage & Zero Egress Savings**: Total stored GBs, Class A/B request metrics, and direct cost savings compared against standard AWS S3 pricing ($0 Egress Fee).
+
+### 13. Infrastructure as Code (IaC) Terraform Export
 - Export entire live zone state into production-ready Terraform HCL compatible with HashiCorp Cloudflare Provider `~> 4.25`.
 - Comprehensive resource coverage:
   - `cloudflare_zone_settings_override`: SSL mode (Strict), Minimum TLS (1.2/1.3), Always Use HTTPS, Automatic HTTPS Rewrites, Brotli, HTTP/3, 0-RTT, Security Level.
@@ -256,6 +265,7 @@ When creating an API Token at [Cloudflare API Tokens](https://dash.cloudflare.co
 | :--- | :--- | :---: | :--- |
 | `Account` | `Workers Scripts` | **Edit** | Manage serverless worker scripts, route bindings, and secrets |
 | `Account` | `Pages` | **Edit** | Manage Cloudflare Pages projects and build deployments |
+| `Account` | `Workers R2 Storage` | **Read** / **Edit** | Inspect R2 buckets, Class A/B request metrics, and storage costs |
 | `Account` | `Access: Apps and Policies` | **Edit** | Manage Zero Trust Access applications, IdPs, and access policies |
 | `Account` | `Cloudflare Tunnel` | **Edit** | Monitor and manage `cloudflared` edge tunnels |
 | `Account` | `Account Settings` | **Read** | Read account metadata and organization name |

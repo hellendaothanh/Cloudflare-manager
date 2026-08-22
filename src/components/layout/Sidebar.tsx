@@ -34,6 +34,7 @@ export type NavTab =
   | 'workers'
   | 'zerotrust'
   | 'analytics' 
+  | 'finops'
   | 'audit' 
   | 'compliance'
   | 'diagnostics';
@@ -141,6 +142,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
           id: 'analytics' as NavTab,
           label: t.sidebar.analytics.title,
           icon: BarChart3,
+        },
+        {
+          id: 'finops' as NavTab,
+          label: t.sidebar.finops.title,
+          icon: Workflow,
+          badge: t.sidebar.finops.badge,
         },
         {
           id: 'audit' as NavTab,

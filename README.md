@@ -117,7 +117,16 @@ Hệ thống tích hợp sẵn 4 vai trò vận hành DevSecOps giúp ngăn ng�
 - **Hệ thống Cảnh báo Đa kênh Tức thời (Multi-Channel Alert Dispatcher)**:
   - Gửi thông báo đến Slack (BlockKit), Discord (Embed), Telegram (HTML) và Custom Webhook SIEM/SOAR.
 
-### 11. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
+### 12. Quản trị Chi phí & Tối ưu Edge Performance (Cost & FinOps Hub)
+- **Cache Hit-Ratio & Cost Optimization Engine**:
+  - Đo lường chi tiết tỷ lệ Cache Hit Ratio (Edge Cached vs Origin Misses), tổng băng thông tiết kiệm được (GB/TB), và chi phí băng thông Egress máy chủ gốc tiết kiệm được (dựa trên đơn giá AWS/GCP/Azure: ~$0.08 - $0.09/GB).
+  - **Động cơ Đề xuất Tối ưu FinOps Tự động**: Gợi ý và hỗ trợ **1-Click Optimize** bật Tiered Cache, tối ưu Browser & Edge Cache TTL cho static assets, và kích hoạt nén Brotli + Early Hints (HTTP 103).
+  - **Top Egress Drain Endpoints Matrix**: Bảng theo dõi các URI/Endpoint có tỷ lệ Cache Miss cao và băng thông lớn kéo trực tiếp từ Origin Server.
+- **Workers CPU & R2 Storage Insights**:
+  - **Workers Compute Telemetry**: Thống kê số lượng Invocations, thời gian thực thi CPU trung bình / p95 Wall-time latency, và ước tính chi phí theo từng Worker Script.
+  - **R2 Object Storage & Zero Egress Fee Comparison**: Thống kê dung lượng lưu trữ (GB Stored), số lượng Class A (Write) & Class B (Read) operations, và so sánh chi phí tiết kiệm không mất phí tải xuống ($0 Egress Fee) so với AWS S3.
+
+### 13. Xuất Mã Nguồn Hạ tầng Terraform (IaC Generator)
 - Trích xuất toàn bộ trạng thái Zone hiện tại thành mã nguồn Terraform HCL chuẩn HashiCorp Cloudflare Provider `~> 4.25`.
 - Bao gồm đầy đủ các khối tài nguyên:
   - `cloudflare_zone_settings_override`: SSL mode (Strict), Minimum TLS (1.2/1.3), Always Use HTTPS, Automatic HTTPS Rewrites, Brotli, HTTP/3, 0-RTT, Security Level.
@@ -256,6 +265,7 @@ Khi tạo Token trên [Cloudflare API Tokens](https://dash.cloudflare.com/profil
 | :--- | :---: | :--- | :--- |
 | `Account - Workers Scripts` | **Edit** | Workers & Pages | Quản lý Serverless Worker scripts, route bindings, secrets |
 | `Account - Pages` | **Edit** | Workers & Pages | Quản lý dự án Cloudflare Pages và lịch sử deployment Git |
+| `Account - Workers R2 Storage` | **Read** / **Edit** | Cost & FinOps Hub | Giám sát dung lượng R2 Buckets, Class A/B Operations và chi phí |
 | `Account - Access: Apps and Policies` | **Edit** | Zero Trust Access | Quản trị ứng dụng nội bộ, IdPs và chính sách Access Policies |
 | `Account - Cloudflare Tunnel` | **Edit** | Cloudflare Tunnels | Giám sát và quản trị kết nối Tunnels `cloudflared` |
 | `Account - Account Settings` | **Read** | Multi-Account | Đọc thông tin tổ chức và xác thực tài khoản |

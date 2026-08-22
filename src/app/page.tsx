@@ -16,6 +16,7 @@ import { AuditView } from '@/components/views/AuditView';
 import { ComplianceView } from '@/components/views/ComplianceView';
 import { DiagnosticsView } from '@/components/views/DiagnosticsView';
 import { OriginView } from '@/components/views/OriginView';
+import { FinOpsView } from '@/components/views/FinOpsView';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe, Key, FlaskConical, ShieldCheck } from 'lucide-react';
@@ -53,6 +54,7 @@ export default function DashboardPage() {
           {activeTab === 'workers' && <WorkersView />}
           {activeTab === 'zerotrust' && <ZeroTrustView />}
           {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'finops' && <FinOpsView />}
           {activeTab === 'audit' && <AuditView />}
           {activeTab === 'compliance' && <ComplianceView />}
         </main>
