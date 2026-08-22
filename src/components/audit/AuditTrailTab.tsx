@@ -197,11 +197,11 @@ export const AuditTrailTab: React.FC = () => {
               className="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-orange-500"
             >
               <option value="ALL">{t.auditView.auditTrailSection.filterAllActions}</option>
-              <option value="TOGGLE_DEV_MODE">⚡ Dev Mode Change</option>
-              <option value="PURGE_CACHE">🧹 Purge Cache</option>
-              <option value="UPDATE_SSL">🔒 SSL/TLS Config</option>
-              <option value="CREATE_DNS">🌐 DNS Record Modification</option>
-              <option value="RESTORE_SNAPSHOT">🔄 Snapshot Restore</option>
+              <option value="TOGGLE_DEV_MODE">{t.auditView.auditTrailSection.actionOptions.toggleDevMode}</option>
+              <option value="PURGE_CACHE">{t.auditView.auditTrailSection.actionOptions.purgeCache}</option>
+              <option value="UPDATE_SSL">{t.auditView.auditTrailSection.actionOptions.updateSsl}</option>
+              <option value="CREATE_DNS">{t.auditView.auditTrailSection.actionOptions.createDns}</option>
+              <option value="RESTORE_SNAPSHOT">{t.auditView.auditTrailSection.actionOptions.restoreSnapshot}</option>
             </select>
           </div>
         </div>

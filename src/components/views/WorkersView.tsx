@@ -17,7 +17,6 @@ import {
   ExternalLink, 
   CheckCircle2, 
   AlertCircle, 
-  Sparkles,
   Radio,
   FileCode,
   Shield

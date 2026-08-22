@@ -57,7 +57,7 @@ export const SnapshotRollbackTab: React.FC = () => {
         const defaultSnap: SavedSnapshot = {
           id: `snap-${Date.now()}`,
           name: `Baseline Gold Snapshot (${selectedZone.name})`,
-          description: 'Bản sao lưu cấu hình chuẩn DevSecOps ban đầu (SSL Strict, TLS 1.3, Always HTTPS, WAF)',
+          description: 'DevSecOps Baseline Initial Configuration (SSL Strict, TLS 1.3, Always HTTPS, WAF)',
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
           createdBy: activeAccount?.name || 'DevSecOps Admin',
           zoneName: selectedZone.name,

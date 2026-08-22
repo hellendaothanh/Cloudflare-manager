@@ -10,7 +10,7 @@ import {
   Globe, 
   RefreshCw,
   ExternalLink,
-  Sparkles,
+  Terminal,
   CheckCircle2,
   AlertCircle,
   Zap,
@@ -197,7 +197,7 @@ export const ZonesView: React.FC = () => {
                     }`}
                     title="Development Mode"
                   >
-                    <Sparkles className="w-3 h-3" />
+                    <Terminal className="w-3 h-3" />
                     <span>{t.zonesView.devModeLabel} {isDevMode ? t.zonesView.devModeOn : t.zonesView.devModeOff}</span>
                   </button>
 
@@ -240,7 +240,7 @@ export const ZonesView: React.FC = () => {
                   ? 'bg-gray-800 text-gray-400 border-gray-700'
                   : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
               }`}>
-                <Sparkles className="w-6 h-6" />
+                <Terminal className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="text-base font-bold text-white">

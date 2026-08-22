@@ -16,7 +16,7 @@ import { AuditView } from '@/components/views/AuditView';
 import { ComplianceView } from '@/components/views/ComplianceView';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { Globe, Key, Sparkles, ShieldCheck } from 'lucide-react';
+import { Globe, Key, FlaskConical, ShieldCheck } from 'lucide-react';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
@@ -30,7 +30,7 @@ export default function DashboardPage() {
       {/* Demo Sandbox Alert Banner */}
       {isDemo && (
         <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border-b border-amber-500/20 px-4 py-2 text-center text-xs text-amber-300 flex items-center justify-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 shrink-0" />
+          <FlaskConical className="w-3.5 h-3.5 shrink-0" />
           <span>{t.app.demoAlert}</span>
         </div>
       )}

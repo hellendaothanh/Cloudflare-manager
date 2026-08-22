@@ -12,7 +12,7 @@ export const INITIAL_MOCK_AUDIT_LOGS: SystemAuditLogEntry[] = [
     zoneName: 'security-enterprise.io',
     resource: 'Development Mode: ENABLED (3h auto-expire)',
     status: 'SUCCESS',
-    details: 'Đã bật Development Mode trên domain security-enterprise.io để kiểm thử bản build release.',
+    details: 'Enabled Development Mode on domain security-enterprise.io for staging release verification.',
     ipAddress: '118.69.182.45',
   },
   {
@@ -24,7 +24,7 @@ export const INITIAL_MOCK_AUDIT_LOGS: SystemAuditLogEntry[] = [
     zoneName: 'security-enterprise.io',
     resource: 'Granular Cache: Hosts (api.security-enterprise.io)',
     status: 'SUCCESS',
-    details: 'Đã thực hiện xóa Cache chi tiết cho Hostname api.security-enterprise.io.',
+    details: 'Executed granular host cache purge for api.security-enterprise.io.',
     ipAddress: '14.161.40.12',
   },
   {
@@ -36,7 +36,7 @@ export const INITIAL_MOCK_AUDIT_LOGS: SystemAuditLogEntry[] = [
     zoneName: 'security-enterprise.io',
     resource: 'SSL Encryption Mode: Full ➔ Strict',
     status: 'SUCCESS',
-    details: 'Đã nâng cấp chuẩn mã hóa SSL/TLS sang Strict để đảm bảo tuân thủ tiêu chuẩn an ninh CIS Benchmark.',
+    details: 'Upgraded SSL/TLS encryption mode to Strict to enforce CIS Benchmark compliance.',
     ipAddress: '14.161.40.12',
   },
   {
@@ -48,7 +48,7 @@ export const INITIAL_MOCK_AUDIT_LOGS: SystemAuditLogEntry[] = [
     zoneName: 'security-enterprise.io',
     resource: 'DNS Record: A api.security-enterprise.io ➔ 104.21.45.10 (Proxied)',
     status: 'SUCCESS',
-    details: 'Đã tạo mới bản ghi DNS loại A với trạng thái CDN Proxy kích hoạt.',
+    details: 'Created new DNS Type A record with Cloudflare CDN Proxy enabled.',
     ipAddress: '125.235.10.88',
   },
   {
@@ -60,7 +60,7 @@ export const INITIAL_MOCK_AUDIT_LOGS: SystemAuditLogEntry[] = [
     zoneName: 'security-enterprise.io',
     resource: 'Snapshot Rollback: "Baseline Release v2.4"',
     status: 'SUCCESS',
-    details: 'Đã thực hiện khôi phục toàn bộ cấu hình Zone từ bản sao lưu JSON Baseline Release v2.4.',
+    details: 'Executed full zone configuration rollback from JSON snapshot Baseline Release v2.4.',
     ipAddress: '118.69.182.45',
   },
 ];

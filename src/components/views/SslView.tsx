@@ -31,6 +31,9 @@ export const SslView: React.FC = () => {
   const [targetSslMode, setTargetSslMode] = useState<'off' | 'flexible' | 'full' | 'strict' | null>(null);
   const [isSslModalOpen, setIsSslModalOpen] = useState(false);
 
+  const [isAlwaysHttpsModalOpen, setIsAlwaysHttpsModalOpen] = useState(false);
+  const [isAutoHttpsModalOpen, setIsAutoHttpsModalOpen] = useState(false);
+
   const fetchSslData = async () => {
     if (!selectedZone) return;
     setLoading(true);
@@ -97,7 +100,7 @@ export const SslView: React.FC = () => {
     }
   };
 
-  const handleToggleAlwaysHttps = async () => {
+  const confirmToggleAlwaysHttps = async () => {
     const newValue = !sslData?.always_use_https;
     setSavingSetting('always_use_https');
     try {
@@ -120,10 +123,11 @@ export const SslView: React.FC = () => {
       setNotification({ type: 'error', text: err.message || t.common.error });
     } finally {
       setSavingSetting(null);
+      setIsAlwaysHttpsModalOpen(false);
     }
   };
 
-  const handleToggleAutoHttps = async () => {
+  const confirmToggleAutoHttps = async () => {
     const newValue = !sslData?.automatic_https_rewrites;
     setSavingSetting('automatic_https_rewrites');
     try {
@@ -144,6 +148,7 @@ export const SslView: React.FC = () => {
       setNotification({ type: 'error', text: err.message || t.common.error });
     } finally {
       setSavingSetting(null);
+      setIsAutoHttpsModalOpen(false);
     }
   };
 
@@ -332,43 +337,69 @@ export const SslView: React.FC = () => {
         </div>
 
         {/* Always Use HTTPS & Auto Rewrites */}
-        <div className="p-5 rounded-2xl bg-gray-900/70 border border-gray-800 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xs font-bold text-white block">{t.sslView.alwaysHttpsTitle}</span>
-              <span className="text-[11px] text-gray-400">{t.sslView.alwaysHttpsDesc}</span>
+        <div className="p-5 rounded-2xl bg-gray-900/70 border border-gray-800 flex flex-col justify-between space-y-4">
+          <div className="space-y-4">
+            {/* Always Use HTTPS Row */}
+            <div className="p-3.5 rounded-xl bg-gray-950/80 border border-gray-800/80 flex items-center justify-between gap-3 hover:border-gray-700/80 transition-all">
+              <div className="flex-1 pr-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="text-xs font-bold text-white leading-none">{t.sslView.alwaysHttpsTitle}</span>
+                </div>
+                <span className="text-[11px] text-gray-400 block leading-relaxed">{t.sslView.alwaysHttpsDesc}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => canEditSsl && setIsAlwaysHttpsModalOpen(true)}
+                disabled={savingSetting === 'always_use_https' || !canEditSsl}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  !canEditSsl
+                    ? 'opacity-50 cursor-not-allowed bg-gray-850'
+                    : sslData?.always_use_https
+                    ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20'
+                    : 'bg-gray-800'
+                }`}
+                title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    sslData?.always_use_https ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
             </div>
-            <button
-              onClick={() => canEditSsl && handleToggleAlwaysHttps()}
-              disabled={savingSetting === 'always_use_https' || !canEditSsl}
-              className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                !canEditSsl ? 'opacity-50 cursor-not-allowed bg-gray-850' : sslData?.always_use_https ? 'bg-emerald-500' : 'bg-gray-800'
-              }`}
-              title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
-            >
-              <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                sslData?.always_use_https ? 'translate-x-5' : 'translate-x-0'
-              }`} />
-            </button>
-          </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-gray-800">
-            <div>
-              <span className="text-xs font-bold text-white block">{t.sslView.autoHttpsTitle}</span>
-              <span className="text-[11px] text-gray-400">{t.sslView.autoHttpsDesc}</span>
+            {/* Automatic HTTPS Rewrites Row */}
+            <div className="p-3.5 rounded-xl bg-gray-950/80 border border-gray-800/80 flex items-center justify-between gap-3 hover:border-gray-700/80 transition-all">
+              <div className="flex-1 pr-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <RefreshCw className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <span className="text-xs font-bold text-white leading-none">{t.sslView.autoHttpsTitle}</span>
+                </div>
+                <span className="text-[11px] text-gray-400 block leading-relaxed">{t.sslView.autoHttpsDesc}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => canEditSsl && setIsAutoHttpsModalOpen(true)}
+                disabled={savingSetting === 'automatic_https_rewrites' || !canEditSsl}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  !canEditSsl
+                    ? 'opacity-50 cursor-not-allowed bg-gray-850'
+                    : sslData?.automatic_https_rewrites
+                    ? 'bg-emerald-500 shadow-lg shadow-emerald-500/20'
+                    : 'bg-gray-800'
+                }`}
+                title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    sslData?.automatic_https_rewrites ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
             </div>
-            <button
-              onClick={() => canEditSsl && handleToggleAutoHttps()}
-              disabled={savingSetting === 'automatic_https_rewrites' || !canEditSsl}
-              className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                !canEditSsl ? 'opacity-50 cursor-not-allowed bg-gray-850' : sslData?.automatic_https_rewrites ? 'bg-emerald-500' : 'bg-gray-800'
-              }`}
-              title={!canEditSsl ? formatText(t.rbac.permissionDeniedTooltip, { role: t.rbac.roles[role]?.name || role }) : ''}
-            >
-              <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                sslData?.automatic_https_rewrites ? 'translate-x-5' : 'translate-x-0'
-              }`} />
-            </button>
           </div>
         </div>
 
@@ -479,6 +510,50 @@ export const SslView: React.FC = () => {
           warningNote={t.sslView.sslModeModal.warningNote}
         />
       )}
+
+      {/* Safety Confirmation Modal: Always Use HTTPS */}
+      <ActionConfirmModal
+        isOpen={isAlwaysHttpsModalOpen}
+        onClose={() => setIsAlwaysHttpsModalOpen(false)}
+        onConfirm={confirmToggleAlwaysHttps}
+        title={t.sslView.alwaysHttpsModal.title}
+        description={formatText(
+          !sslData?.always_use_https
+            ? t.sslView.alwaysHttpsModal.enableDesc
+            : t.sslView.alwaysHttpsModal.disableDesc,
+          { name: selectedZone?.name || '' }
+        )}
+        variant={!sslData?.always_use_https ? 'info' : 'warning'}
+        confirmText={t.sslView.alwaysHttpsModal.btnConfirm}
+        affectedResource={{
+          label: 'Always Use HTTPS Setting',
+          value: !sslData?.always_use_https ? 'OFF ➔ ON (Enforce 301 Redirect)' : 'ON ➔ OFF',
+          badge: selectedZone?.name,
+        }}
+        isLoading={savingSetting === 'always_use_https'}
+      />
+
+      {/* Safety Confirmation Modal: Automatic HTTPS Rewrites */}
+      <ActionConfirmModal
+        isOpen={isAutoHttpsModalOpen}
+        onClose={() => setIsAutoHttpsModalOpen(false)}
+        onConfirm={confirmToggleAutoHttps}
+        title={t.sslView.autoHttpsModal.title}
+        description={formatText(
+          !sslData?.automatic_https_rewrites
+            ? t.sslView.autoHttpsModal.enableDesc
+            : t.sslView.autoHttpsModal.disableDesc,
+          { name: selectedZone?.name || '' }
+        )}
+        variant={!sslData?.automatic_https_rewrites ? 'info' : 'warning'}
+        confirmText={t.sslView.autoHttpsModal.btnConfirm}
+        affectedResource={{
+          label: 'Automatic HTTPS Rewrites Setting',
+          value: !sslData?.automatic_https_rewrites ? 'OFF ➔ ON (Fix Mixed Content)' : 'ON ➔ OFF',
+          badge: selectedZone?.name,
+        }}
+        isLoading={savingSetting === 'automatic_https_rewrites'}
+      />
     </div>
   );
 };

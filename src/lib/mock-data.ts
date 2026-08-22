@@ -153,7 +153,7 @@ export const MOCK_FIREWALL_RULES: FirewallRule[] = [
   {
     id: "fw-01",
     paused: false,
-    description: "Chặn truy cập Admin Panel từ bên ngoài VPN / Văn phòng",
+    description: "Block Admin Panel access from outside Corporate VPN / Office CIDRs",
     action: "managed_challenge",
     priority: 1,
     filter: {
@@ -164,7 +164,7 @@ export const MOCK_FIREWALL_RULES: FirewallRule[] = [
   {
     id: "fw-02",
     paused: false,
-    description: "Giới hạn và thách thức các Bot cào dữ liệu có Threat Score > 30",
+    description: "Challenge and throttle automated scraper bots with Threat Score > 30",
     action: "js_challenge",
     priority: 2,
     filter: {
@@ -175,7 +175,7 @@ export const MOCK_FIREWALL_RULES: FirewallRule[] = [
   {
     id: "fw-03",
     paused: false,
-    description: "Chặn hoàn toàn các request chứa payload SQLi / XSS phổ biến",
+    description: "Strictly block malicious requests containing SQLi / XSS payloads",
     action: "block",
     priority: 3,
     filter: {
@@ -189,7 +189,7 @@ export const MOCK_IP_RULES: IpAccessRule[] = [
   {
     id: "ip-rule-1",
     mode: "whitelist",
-    notes: "Văn phòng DevSecOps Hà Nội (Primary HQ)",
+    notes: "Primary Corporate DevSecOps Office (HQ Network)",
     allowed_modes: ["whitelist", "block", "challenge", "js_challenge"],
     configuration: {
       target: "ip_range",
@@ -200,7 +200,7 @@ export const MOCK_IP_RULES: IpAccessRule[] = [
   {
     id: "ip-rule-2",
     mode: "block",
-    notes: "Dải IP tấn công Brute Force SSH & API đã xác nhận",
+    notes: "Known Malicious SSH & API Brute Force IP Subnet",
     allowed_modes: ["whitelist", "block", "challenge", "js_challenge"],
     configuration: {
       target: "ip_range",
@@ -331,7 +331,7 @@ export const MOCK_RATE_LIMITS = [
   {
     id: "rl-auth-bruteforce",
     disabled: false,
-    description: "Chống Brute Force API Đăng nhập & Xác thực OAuth",
+    description: "Prevent Auth & OAuth Login Brute Force Attacks",
     match: {
       request: {
         url: "*.security-enterprise.io/api/v1/auth/login",
@@ -350,7 +350,7 @@ export const MOCK_RATE_LIMITS = [
       timeout: 300,
       response: {
         content_type: "application/json",
-        body: '{"error": "Too Many Requests", "message": "Quá nhiều yêu cầu đăng nhập thất bại. Vui lòng thử lại sau 5 phút."}'
+        body: '{"error": "Too Many Requests", "message": "Too many failed login attempts. Please try again after 5 minutes."}'
       }
     },
     created_on: "2025-01-12T00:00:00Z"
@@ -358,7 +358,7 @@ export const MOCK_RATE_LIMITS = [
   {
     id: "rl-payment-protect",
     disabled: false,
-    description: "Bảo vệ Cổng thanh toán & Checkout Endpoint",
+    description: "Protect Payment Gateway & Checkout Endpoints",
     match: {
       request: {
         url: "*.security-enterprise.io/api/v1/checkout/*",
@@ -376,7 +376,7 @@ export const MOCK_RATE_LIMITS = [
   {
     id: "rl-anti-scraping",
     disabled: false,
-    description: "Giới hạn tần suất cào dữ liệu danh mục & sản phẩm",
+    description: "Throttle Product Catalog & Data Scraping Frequency",
     match: {
       request: {
         url: "*.security-enterprise.io/api/v1/catalog/*",
@@ -433,7 +433,7 @@ export const MOCK_ACCESS_APPS = [
     policies: [
       {
         id: "pol-corp-staff",
-        name: "Cho phép toàn bộ Nhân sự DevSecOps @company.io",
+        name: "Allow all DevSecOps Staff @company.io",
         decision: "allow",
         rules: {
           include: [{ email_domain: "security-enterprise.io" }],
@@ -442,7 +442,7 @@ export const MOCK_ACCESS_APPS = [
       },
       {
         id: "pol-contractors",
-        name: "Đối tác & Nhà thầu chỉ định",
+        name: "Designated Third-Party Contractors",
         decision: "allow",
         rules: {
           include: [{ email: "contractor-audit@partner.org" }]

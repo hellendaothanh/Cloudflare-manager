@@ -15,12 +15,15 @@ import {
   Globe, 
   Check, 
   RefreshCw,
-  Sparkles,
+  FlaskConical,
   Languages,
   Building2,
   Shield,
   UserCheck,
-  Plus
+  Plus,
+  ShieldAlert,
+  Eye,
+  ServerCog
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -48,11 +51,11 @@ export const Navbar: React.FC = () => {
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
 
-  const roleConfigs: Record<UserRole, { badgeColor: string; icon: string }> = {
-    admin: { badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30', icon: '👑' },
-    dns_operator: { badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30', icon: '🌐' },
-    security_engineer: { badgeColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30', icon: '🛡️' },
-    viewer: { badgeColor: 'text-gray-400 bg-gray-500/10 border-gray-500/30', icon: '👁️' },
+  const roleConfigs: Record<UserRole, { badgeColor: string; icon: React.ComponentType<{ className?: string }> }> = {
+    admin: { badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30', icon: ServerCog },
+    dns_operator: { badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30', icon: Globe },
+    security_engineer: { badgeColor: 'text-orange-400 bg-orange-500/10 border-orange-500/30', icon: ShieldAlert },
+    viewer: { badgeColor: 'text-gray-400 bg-gray-500/10 border-gray-500/30', icon: Eye },
   };
 
   return (
@@ -255,7 +258,7 @@ export const Navbar: React.FC = () => {
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all ${roleConfigs[role].badgeColor}`}
                 title={t.rbac.subtitle}
               >
-                <span>{roleConfigs[role].icon}</span>
+                {React.createElement(roleConfigs[role].icon, { className: 'w-3.5 h-3.5 shrink-0' })}
                 <span className="hidden sm:inline font-mono uppercase text-[10px] tracking-wider">
                   {t.rbac.roles[role]?.badge || role}
                 </span>
@@ -273,6 +276,7 @@ export const Navbar: React.FC = () => {
                       const cfg = roleConfigs[r];
                       const roleData = t.rbac.roles[r];
                       const isCurr = role === r;
+                      const RoleIcon = cfg.icon;
 
                       return (
                         <button
@@ -285,7 +289,9 @@ export const Navbar: React.FC = () => {
                             isCurr ? 'bg-orange-500/15 border border-orange-500/30' : 'hover:bg-gray-800'
                           }`}
                         >
-                          <span className="text-base mt-0.5">{cfg.icon}</span>
+                          <div className={`p-1 rounded-md mt-0.5 ${isCurr ? 'bg-orange-500/20 text-orange-400' : 'bg-gray-800 text-gray-400'}`}>
+                            <RoleIcon className="w-4 h-4 shrink-0" />
+                          </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
                               <span className={`text-xs font-bold ${isCurr ? 'text-orange-400' : 'text-white'}`}>
@@ -376,7 +382,7 @@ export const Navbar: React.FC = () => {
               </span>
               {isDemo && (
                 <span className="flex items-center gap-1 text-[10px] bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-200">
-                  <Sparkles className="w-2.5 h-2.5" /> {t.navbar.sandbox}
+                  <FlaskConical className="w-2.5 h-2.5" /> {t.navbar.sandbox}
                 </span>
               )}
             </button>

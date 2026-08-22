@@ -10,7 +10,7 @@ import {
   SlidersHorizontal, 
   BarChart3, 
   ActivitySquare,
-  Sparkles,
+  Workflow,
   GitBranch,
   Cpu,
   Shield,
@@ -171,7 +171,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
       {/* DevSecOps Quick Card in Sidebar */}
       <div className="p-3.5 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 text-xs text-gray-400 mt-6">
         <div className="flex items-center gap-2 text-white font-semibold text-xs mb-1">
-          <Sparkles className="w-4 h-4 text-orange-400" />
+          <Workflow className="w-4 h-4 text-orange-400" />
           <span>{t.sidebar.automationCard.title}</span>
         </div>
         <p className="text-[11px] text-gray-400 leading-relaxed mb-2">
