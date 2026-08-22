@@ -21,7 +21,8 @@ import {
   PanelLeftOpen,
   Radio,
   Server,
-  Sparkles
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
 
 export type NavTab = 
@@ -29,6 +30,7 @@ export type NavTab =
   | 'dns' 
   | 'origin'
   | 'security' 
+  | 'api-shield'
   | 'ai-copilot'
   | 'ratelimit'
   | 'ssl' 
@@ -104,6 +106,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) => {
           id: 'security' as NavTab,
           label: t.sidebar.security.title,
           icon: ShieldAlert,
+        },
+        {
+          id: 'api-shield' as NavTab,
+          label: t.sidebar.apiShield.title,
+          icon: ShieldCheck,
+          badge: 'mTLS',
         },
         {
           id: 'ai-copilot' as NavTab,

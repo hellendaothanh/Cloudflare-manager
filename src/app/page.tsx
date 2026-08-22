@@ -18,6 +18,7 @@ import { DiagnosticsView } from '@/components/views/DiagnosticsView';
 import { OriginView } from '@/components/views/OriginView';
 import { FinOpsView } from '@/components/views/FinOpsView';
 import { AiCopilotView } from '@/components/views/AiCopilotView';
+import { ApiShieldView } from '@/components/views/ApiShieldView';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { Globe, Key, FlaskConical, ShieldCheck } from 'lucide-react';
@@ -49,6 +50,7 @@ export default function DashboardPage() {
           {activeTab === 'origin' && <OriginView />}
           {activeTab === 'diagnostics' && <DiagnosticsView />}
           {activeTab === 'security' && <SecurityView />}
+          {activeTab === 'api-shield' && <ApiShieldView />}
           {activeTab === 'ai-copilot' && <AiCopilotView />}
           {activeTab === 'ratelimit' && <RateLimitView />}
           {activeTab === 'ssl' && <SslView />}

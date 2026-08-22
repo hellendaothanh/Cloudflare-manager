@@ -60,7 +60,15 @@ The application natively supports real-time bilingual switching with synchronize
   - Generate and securely store shared `X-Origin-Verify-Secret` headers.
   - **1-Click Config Snippet Generator**: Copy-paste snippets for **Nginx**, **Apache (.htaccess)**, **IIS (web.config)**, and **HAProxy** to enforce HTTP 403 Forbidden for direct non-Cloudflare traffic.
 
-### 4. WAF Firewall, Rate Limiting & Safety Modals (WAF & Rate Limiting Shield)
+### 4. WAF Firewall, Rate Limiting & Enterprise API Shield (mTLS & OpenAPI Validation)
+- **Enterprise Mutual TLS (mTLS) Manager**:
+  - Issue and orchestrate client x509 certificates to mandate two-way cryptographic verification between Edge and Backend APIs / Microservices.
+  - Granular client classification: *B2B Partner Gateway*, *Internal Microservice Mesh*, *Native Mobile Apps*, *IoT Devices*.
+  - SHA-256 fingerprint verification and instant rejection of unauthorized requests (HTTP 403 Forbidden).
+- **API Shield & OpenAPI / Swagger Schema Validation**:
+  - Direct import for OpenAPI 3.0/3.1 and Swagger 2.0 specifications (YAML/JSON).
+  - Enforces a strict **Positive Security Model**: Inspects incoming request payloads (data types, required fields, constraints) at the Edge and rejects malformed inputs before reaching origin servers (HTTP 400 Bad Request).
+  - Real-time audit logs for Schema and mTLS handshake violation telemetry.
 - **Refresh List**: Real-time refresh for custom WAF rules, IP Access lists, and Rate Limiting configurations.
 - **Safety Deletion Modals**: Prevent accidental removal of active security filters.
 - **Security Level Transition Modal**: Impact warnings when adjusting security postures (e.g., *Under Attack* vs *Essentially Off*).

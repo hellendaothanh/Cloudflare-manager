@@ -60,7 +60,15 @@ Hệ thống tích hợp sẵn tính năng đa ngôn ngữ với bộ từ đi�
   - Tự động sinh và lưu trữ mã Secret Header `X-Origin-Verify-Secret`.
   - **1-Click Config Snippet Generator**: Tự động sinh mã cấu hình chuẩn và nút Copy cho **Nginx**, **Apache (.htaccess)**, **IIS (web.config)** và **HAProxy** để chặn thẳng mã HTTP 403 Forbidden nếu request không đi qua Cloudflare Edge.
 
-### 4. Tường lửa WAF, Giới hạn Tần suất & Xác nhận Thao tác (WAF & Rate Limiting Shield)
+### 4. Tường lửa WAF, Giới hạn Tần suất & Bảo mật API Nâng cao (WAF, Rate Limiting & Enterprise API Shield)
+- **Bảo mật API & Xác thực mTLS Song phương (Enterprise Mutual TLS Manager)**:
+  - Cấp phát và quản lý **Client Certificates (x509)** để thực hiện xác thực hai chiều mã hóa giữa Edge và Backend API / Microservices Mesh.
+  - Phân loại Client rõ ràng: *B2B Partner Gateway*, *Internal Microservice Mesh*, *Native Mobile Apps*, *IoT Devices*.
+  - Kiểm tra Fingerprint SHA-256, hạn sử dụng và tự động từ chối kết nối không có chứng chỉ hợp lệ (HTTP 403 Forbidden).
+- **API Shield & OpenAPI / Swagger Schema Validation**:
+  - Hỗ trợ Import trực tiếp file đặc tả API OpenAPI 3.0/3.1 hoặc Swagger 2.0 (YAML/JSON).
+  - Tự động phân tích và kích hoạt cơ chế **Positive Security Model**: Kiểm tra tính hợp lệ của request payload (kiểu dữ liệu, required fields, định dạng số/chuỗi) tại Edge và chặn đứng các request sai cấu trúc trước khi tới máy chủ gốc (HTTP 400 Bad Request).
+  - Bảng theo dõi và thống kê thời gian thực các sự kiện vi phạm Schema Payload & mTLS Handshake.
 - **Nút Refresh List**: Tải mới quy tắc WAF, IP Access List và Rate Limiting tức thì.
 - **Modal Xác nhận Xóa WAF / IP / RateLimit**: Ngăn chặn việc vô tình xóa bỏ các bộ lọc bảo vệ hệ thống.
 - **Modal Xác nhận Đổi Security Level**: Cảnh báo tác động đến trải nghiệm người dùng cuối khi chuyển đổi sang chế độ *Under Attack* hoặc *Essentially Off*.
